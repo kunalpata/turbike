@@ -21,7 +21,9 @@ router.get('/', (req, res) => {
                 }
                 items.push(item);
             }
-            res.render('../views/home',{data:items});
+            //console.log(items)
+            res.send(JSON.stringify({data:items}));
+            //res.render('../views/home',{data:items});
         }
     });
 });
