@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const handlebars = require('express-handlebars').create({ defaultLayout: 'main', helpers: helpers });
+const handlebars = require('express-handlebars').create({ defaultLayout: 'main'});
+const path = require('path');
+const cors = require('cors');
 
 const app = express();
 
@@ -24,6 +26,9 @@ app.set('port', process.env.PORT || 9000);
 
 //Specify static files routes
 app.use(express.static(path.join(__dirname, '/public')));
+
+//CORS-enabled
+app.use(cors());
 
 /* User login and session functionalities
 

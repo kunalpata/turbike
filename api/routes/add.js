@@ -54,12 +54,13 @@ function getLocationID(address){  //address is an object: {street:,city:,state:,
     let promise = new Promise(async (resolve, reject)=>{
         //query database for location_id
         pool.query('SELECT * FROM location WHERE address=? AND city = ? AND state = ? AND zip = ?',
-                    [address.street,address.city,address.state,address.zip],(err, result)=>{
+                    [address.street,address.city,address.state,address.zip], async (err, result)=>{
                         if(err){
                             resolve({err:err});
                         }else{
                             if(result.length == 0){
-                                resolve({location_id: await addNewLocation(address)});
+                                let newLocID = await addNewLocation(address);
+                                resolve({location_id: newLocID});
                             }else{
                                 resolve({location_id: result[0].location_id});
                             }

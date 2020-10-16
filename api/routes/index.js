@@ -10,13 +10,13 @@ router.use('/', require('./home.js'));
 router.use('/add', require('./add.js'));
 
 //delete item page
-router.use('/delete', require('./delete.js'));
+//router.use('/delete', require('./delete.js'));
 
 //update item page
-router.use('/update', require('./update.js'));
+//router.use('/update', require('./update.js'));
 
 //display items
-router.use('/search', require('./search'));
+//router.use('/search', require('./search'));
 
 //aws file storage
 //router.use('/aws', require('./aws.js'));
