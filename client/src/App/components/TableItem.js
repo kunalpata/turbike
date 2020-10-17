@@ -1,3 +1,5 @@
+// TableItem.js
+
 import React from "react";
 
 const TableItem = ({price, owner, location, contact}) => {

@@ -1,14 +1,18 @@
-import React, { Component } from 'react';
-import './App.css';
-import Table from "./Components/Table.js";
+// Home.js
 
-class App extends Component {
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import '../App.css';
+
+import Table from "../components/Table.js";
+
+class Home extends Component {
   // Initialize the default state
   constructor(props) {
     super(props);
     this.state = { 
       apiResponse: [],
-      error:null,
+      error: null,
       isLoaded: false
     };
   }
@@ -40,6 +44,7 @@ class App extends Component {
 
   render() {
     const {apiResponse, error, isLoaded} = this.state;
+
     if(error){
       console.log(error.message);
     }else if (!isLoaded){
@@ -57,4 +62,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default Home;
