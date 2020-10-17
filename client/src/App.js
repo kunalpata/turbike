@@ -1,20 +1,36 @@
 import React, { Component } from 'react';
 import './App.css';
-
+import Table from "./Components/Table.js";
 
 class App extends Component {
   // Initialize the default state
   constructor(props) {
     super(props);
-    this.state = { apiResponse: "" };
+    this.state = { 
+      apiResponse: [],
+      error:null,
+      isLoaded: false
+    };
   }
 
   // Fetch data from API and store it in the response on this.state.apiResonse
   callAPI() {
     fetch("http://localhost:9000/")
-      .then(res => res.text())
-      .then(res => this.setState({ apiResponse: res}))
-      .catch(err => err);
+      .then(res => res.json())
+      .then((res) => {
+        this.setState({ 
+          apiResponse: res.data,
+          error: null,  
+          isLoaded: true
+        });
+      },
+      (error) => {
+        this.setState({
+          apiResponse: [],
+          error
+        });
+      }
+    )
   }
 
   // Lifecycle method to execute callAPI() after this component mounts
@@ -23,14 +39,21 @@ class App extends Component {
   }
 
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Turbike</h1>
-        </header>
-        <p className="App-intro">{this.state.apiResponse}</p>
-      </div>
-    );
+    const {apiResponse, error, isLoaded} = this.state;
+    if(error){
+      console.log(error.message);
+    }else if (!isLoaded){
+      return <div>Loading...</div>;
+    }else{
+      return (
+        <div className="App">
+          <header className="App-header">
+            <h1 className="App-title">Turbike</h1>
+          </header>
+          <Table data={apiResponse} />
+        </div>
+      );
+    }
   }
 }
 

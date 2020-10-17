@@ -1,0 +1,28 @@
+<h1>Display bike data</h1>
+<div>
+    {{#if data}}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Price</th>
+                    <th>Owner</th>
+                    <th>Bike Location</th>
+                    <th>Contact</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each data}}
+                    <tr>
+                        <td>&#36;{{this.price}}</td>
+                        <td>{{this.user_name}}</td>
+                        <td>{{this.address}}, {{this.city}}, {{this.state}} {{this.zip}}</td>
+                        <td>{{this.email}}</td>
+                    </tr>          
+                {{/each}}
+            </tbody>          
+        </table>
+    {{else}}
+        <h2>No Data found!</h2>
+    {{/if}}
+    
+</div>
