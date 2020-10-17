@@ -1,7 +1,7 @@
 // BikeTable.js
 
 import React, { Component } from 'react';
-import '..//App.css';
+import '../App.css';
 import Table from '../components/Table.js';
 
 class BikeTable extends Component {

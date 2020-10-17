@@ -6,6 +6,8 @@ import './App.css';
 
 import Home from './pages/Home';
 import BikeTable from './pages/BikeTable';
+import SignUp from './pages/SignUp';
+import Login from './pages/Login';
 
 class App extends Component {
   render() {
@@ -14,6 +16,8 @@ class App extends Component {
         <Switch>
           <Route exact path='/' component={Home} />
           <Route path='/bikeTable' component={BikeTable} />
+          <Route path='/signUp' component={SignUp} />
+          <Route path='/login' component={Login} />
         </Switch>
       </div>
     )

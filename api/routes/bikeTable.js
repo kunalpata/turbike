@@ -23,7 +23,7 @@ router.get('/api/getBikes', (req, res) => {
                 }
                 items.push(item);
             }
-            console.log(items)
+            //console.log(items)
             res.send(JSON.stringify({data:items}));
             //res.render('../views/home',{data:items});
         }
