@@ -9,6 +9,9 @@ router.use('/', require('./home.js'));
 //add item page
 router.use('/add', require('./add.js'));
 
+//bike table page
+router.use('/', require('./bikeTable.js'));
+
 //delete item page
 //router.use('/delete', require('./delete.js'));
 

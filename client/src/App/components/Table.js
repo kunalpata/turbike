@@ -1,3 +1,5 @@
+// Table.js
+
 import React from "react";
 import './Table.css';
 import TableItem from "./TableItem.js";
