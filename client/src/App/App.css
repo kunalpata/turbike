@@ -1,3 +1,5 @@
+/*App.css*/
+
 .App {
   text-align: center;
   justify-content: center;
@@ -21,4 +23,3 @@ table thead th{
 table tbody td{
   border : 1px solid black
 }
-
