@@ -7,10 +7,10 @@ const router = express.Router();
 router.use('/', require('./home.js'));
 
 //add item page
-router.use('/add', require('./add.js'));
+router.use('/api/add', require('./add.js'));
 
 //bike table page
-router.use('/', require('./bikeTable.js'));
+router.use('/api/getBikes', require('./bikeTable.js'));
 
 //delete item page
 //router.use('/delete', require('./delete.js'));

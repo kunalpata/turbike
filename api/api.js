@@ -1,5 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require("cookie-parser");
+const passport = require("passport");
+const passportLocal = require("passport-local").Strategy;
+const bcrypt = require("bcrypt");
+const session = require("express-session");
 const handlebars = require('express-handlebars').create({ defaultLayout: 'main'});
 const path = require('path');
 const cors = require('cors');
@@ -28,19 +33,32 @@ app.set('port', process.env.PORT || 9000);
 app.use(express.static(path.join(__dirname, '/public')));
 
 //CORS-enabled
-app.use(cors());
+app.use(cors({
+	origin: "http://localhost:3000",  //react server
+	credentials: true
+}));
 
-/* User login and session functionalities
-
-app.use(flash());
+//User login and session functionalities
 app.use(
 	session({
 		secret: process.env.SESSION_SECRET,
-		resave: false,
-		saveUninitialized: false
+		resave: true,
+		saveUninitialized: true
 	})
 );
-*/
+app.use(cookieParser(process.env.SESSION_SECRET));
+
+//authentication routes
+app.post("/api/login", (req, res) => {
+	console.log(req.body);
+	res.send({good:"good"})
+})
+app.post("/api/register", (req, res) => {
+	console.log(req.body);
+})
+app.get("/api/user", (req, res) => {
+
+})
 
 // Specify remaining routes
 app.use('/', require('./routes/index.js'));

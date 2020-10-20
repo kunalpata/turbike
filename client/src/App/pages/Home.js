@@ -21,8 +21,8 @@ class Home extends Component {
           <Link to={'./bikeTable'}>
           	<button variant='raised'>Bike Table</button>
           </Link>
-          <Link to={'./signUp'}>
-            <button variant='raised'>SignUp</button>
+          <Link to={'./register'}>
+            <button variant='raised'>Register</button>
           </Link>
           <Link to={'./login'}>
             <button variant='raised'>Login</button>
