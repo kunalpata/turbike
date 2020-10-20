@@ -28,7 +28,7 @@ app.set('port', process.env.PORT || 9000);
 app.use(express.static(path.join(__dirname, '/public')));
 
 // Server the static files from the React app
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, '..', 'client/build')));
 
 //CORS-enabled
 app.use(cors());
