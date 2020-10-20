@@ -37,7 +37,7 @@ app.use(express.static(path.join(__dirname, '..', 'client/build')));
 
 //CORS-enabled
 app.use(cors({
-	origin: "http://localhost:3000",  //react server
+	//origin: "http://localhost:3000",  //react server
 	credentials: true
 }));
 
@@ -54,20 +54,21 @@ app.use(cookieParser(process.env.SESSION_SECRET));
 //authentication routes
 app.post("/api/login", (req, res) => {
 	console.log(req.body);
-	res.send({good:"good"})
+	res.send({login:"good"});
 })
 app.post("/api/register", (req, res) => {
 	console.log(req.body);
+	res.send({register:"good"});
 })
 app.get("/api/user", (req, res) => {
 
 })
 
 // Specify remaining routes
-//app.use('/', require('./routes/index.js'));
+app.use('/', require('./routes/index.js'));
 // Handle reqs that don't match any other routes
 app.get('*', (req, res) => {
-	res.sendFile(path.join(__dirname + '/client/build/index.html'));
+	res.sendFile(path.join(__dirname, '..', '/client/build/index.html'));
 });
 
 

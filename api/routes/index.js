@@ -4,7 +4,7 @@ const router = express.Router();
 //This file contains all routing information
 
 //used to show home page
-router.use('/', require('./home.js'));
+//router.use('/', require('./home.js'));
 
 //add item page
 router.use('/api/add', require('./add.js'));

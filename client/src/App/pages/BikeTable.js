@@ -70,7 +70,7 @@ function BikeTable(){
 
 	const fetchBikes = async () => {
 		const data = await fetch(
-			'http://localhost:9000/api/getBikes'
+			'/api/getBikes'
 		);
 
 		const bikes = await data.json();
