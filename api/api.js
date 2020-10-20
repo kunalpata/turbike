@@ -32,6 +32,9 @@ app.set('port', process.env.PORT || 9000);
 //Specify static files routes
 app.use(express.static(path.join(__dirname, '/public')));
 
+// Server the static files from the React app
+app.use(express.static(path.join(__dirname, '..', 'client/build')));
+
 //CORS-enabled
 app.use(cors({
 	origin: "http://localhost:3000",  //react server
@@ -61,7 +64,12 @@ app.get("/api/user", (req, res) => {
 })
 
 // Specify remaining routes
-app.use('/', require('./routes/index.js'));
+//app.use('/', require('./routes/index.js'));
+// Handle reqs that don't match any other routes
+app.get('*', (req, res) => {
+	res.sendFile(path.join(__dirname + '/client/build/index.html'));
+});
+
 
 //Go here when 404
 app.use(function(req, res) {
