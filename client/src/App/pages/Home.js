@@ -1,7 +1,7 @@
 // Home.js
 
-import React, { Components, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useHistory, Link } from 'react-router-dom';
 import MyNavbar from '../components/MyNavbar';
 import './Home.css';
 
@@ -14,32 +14,34 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-function Home() {
-  const [searchTerm, setSearchTerm] = useState("");
 
+const Home = () => {
 
-  const onSubmit = (e) => {
-    const searched = e.target.elements.search.value;
-    alert(searched)
-  };
+  const [search, setSearch] = useState();  // store the search results
+  const { push } = useHistory();  // for redirecting after getting form data
 
+  // On submit redirect to listings with search entry from form
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    push({
+      pathname: './listings',
+      state: {search: search}
+    })
+  }
 
   return (
     <div className="home">
       <MyNavbar/>
       <Container>
         <Row>
-          <Col></Col>
-          <Col className="main-text">
+          <Col sm={{span: 6, offset: 6}} xs={{span: 6, offset:3}} className="main-text">
             <p>go anywhere</p>
             <p>be anywhere</p>
-            <Form inline>
-              <Form.Control className="col-md" type="text" placeholder="where do you want to ride?" name="search" />
-              <Link className="search-button" to='./listings'>
-                <Button type="submit" className="search-button" variant="dark">
-                  <FontAwesomeIcon icon={faBicycle} />
-                </Button>
-              </Link>
+            <Form onSubmit={handleSubmit} inline>
+              <Form.Control className="col-md" type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="where do you want to ride?" name="search" />
+              <Button type="submit" className="search-button" variant="dark">
+                <FontAwesomeIcon icon={faBicycle} />
+              </Button>
             </Form>
           </Col>
         </Row>

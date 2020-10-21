@@ -7,11 +7,14 @@ import './Listings.css';
 
 const Listings = (props) => {
 
-  return (
-  	<div>
-  		<h1>Bike Listings</h1>
-  	</div>
-  )
+	const searchTerm = props.location.state.search;
+
+  	return (
+  		<div>
+  			<h1>Bike Listings</h1>
+  			<p>{searchTerm}</p>
+  		</div>
+  	)
 };
 
 export default Listings;
