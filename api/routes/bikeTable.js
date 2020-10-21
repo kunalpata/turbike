@@ -8,7 +8,7 @@ const pool = require('../dbcon').pool;
 require('dotenv').config();
 
 //get bike information
-router.get('/api/getBikes', (req, res) => {
+router.get('/', (req, res) => {
     let query = 'SELECT b.bike_id,b.price,b.bike_details,u.user_name,u.email,l.address,l.city,l.state,l.zip' +
                 ' FROM bike b inner join user u on b.user_id = u.user_id ' + 
                 'inner join location l on b.location_id = l.location_id;'
