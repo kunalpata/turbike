@@ -10,7 +10,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 const MyNavbar = (props) => {
 	return (
-	  <Navbar scrolling dark expand="md" fixed="top">
+	  <Navbar expand="md" fixed="top">
         <Navbar.Brand as={Link} to="./">Turbike
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

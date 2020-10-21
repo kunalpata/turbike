@@ -1,9 +1,10 @@
 // Home.js
 
-import React from 'react';
+import React, { Components, useState } from 'react';
 import { Link } from 'react-router-dom';
 import MyNavbar from '../components/MyNavbar';
 import './Home.css';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBicycle } from '@fortawesome/free-solid-svg-icons';
 
@@ -13,7 +14,16 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-const Home = (props) => {
+function Home() {
+  const [searchTerm, setSearchTerm] = useState("");
+
+
+  const onSubmit = (e) => {
+    const searched = e.target.elements.search.value;
+    alert(searched)
+  };
+
+
   return (
     <div className="home">
       <MyNavbar/>
@@ -25,7 +35,11 @@ const Home = (props) => {
             <p>be anywhere</p>
             <Form inline>
               <Form.Control className="col-md" type="text" placeholder="where do you want to ride?" name="search" />
-              <Button className="search-button" variant="dark"><FontAwesomeIcon icon={faBicycle} /></Button>
+              <Link className="search-button" to='./listings'>
+                <Button type="submit" className="search-button" variant="dark">
+                  <FontAwesomeIcon icon={faBicycle} />
+                </Button>
+              </Link>
             </Form>
           </Col>
         </Row>
