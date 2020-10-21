@@ -30,11 +30,13 @@ const Home = () => {
   }
 
   return (
-    <div className="home">
+    <div>
       <MyNavbar/>
-      <Container>
-        <Row>
-          <Col sm={{span: 6, offset: 6}} xs={{span: 6, offset:3}} className="main-text">
+
+      <Container-fluid>
+        {/* Search box section */}
+        <Row className="top-home">
+          <Col md={{span: 5, offset: 6}} xs={{span: 6, offset:3}} className="main-text">
             <p>go anywhere</p>
             <p>be anywhere</p>
             <Form onSubmit={handleSubmit} inline>
@@ -45,10 +47,33 @@ const Home = () => {
             </Form>
           </Col>
         </Row>
-      </Container>
-      <Link to={'./bikeTable'}>
-        <button variant='raised'>Bike Table</button>
-      </Link>
+
+        {/* Inforamtion section */}
+        <Row>
+          <Col>
+            <h1 className="info-title">Ride Your Bike With Ease</h1>
+          </Col>
+        </Row>
+        <Row>
+            <Col md={{span: 2, offset: 2}}>
+              <img className="info-img" src={require("../images/disinfect_200.png")} />
+              <p className="info-text">Thoroughly disinfected bicycles for your protection and convenience</p>
+            </Col>
+            <Col md={{span: 2, offset: 1}}>
+              <img className="info-img" src={require("../images/contact_200.png")} />
+              <p className="info-text">No contact pick up - Pick up your bike with peace of mind</p>
+            </Col>
+            <Col md={{span: 2, offset: 1}}>
+              <img className="info-img" src={require("../images/cancel_bike_200.png")} />
+              <p className="info-text">Need to cancel? You can cancel your reservation for free up to 24 hours prior</p>
+            </Col>
+        </Row>
+
+        {/* Browse by category */}
+        <Row>
+
+        </Row>
+      </Container-fluid>
     </div>
   )
 };

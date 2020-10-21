@@ -13,6 +13,9 @@ const Listings = (props) => {
   		<div>
   			<h1>Bike Listings</h1>
   			<p>{searchTerm}</p>
+  			<Link to={'./bikeTable'}>
+        		<button variant='raised'>Bike Table</button>
+      		</Link>
   		</div>
   	)
 };
