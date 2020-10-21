@@ -22,7 +22,7 @@ const Table = ({data}) => {
                         owner = {bike.user_name}
                         location = {`${bike.address}, ${bike.city}, ${bike.state}, ${bike.zip}`}
                         contact = {bike.email}
-                        key = {bike.bike_id}
+                        key = {bike.id}
                     />
                 ))}
             </tbody>
