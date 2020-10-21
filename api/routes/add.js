@@ -6,7 +6,7 @@ const pool = require('../dbcon').pool;
 require('dotenv').config();
 
 //Add new bike, user must login to add bike
-router.post('/add/bike', async (req, res) => {
+router.post('/bike', async (req, res) => {
     console.log(req.body); //body should have {user_id:,streetAddress:,city:,state:,zip:,functional:,price:,penalty:,bike_details:}
     let location_id = await getLocationID({ street: req.body.streetAddress,
                                             city: req.body.city,
