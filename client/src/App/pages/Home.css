@@ -1,0 +1,9 @@
+/*Home.css*/
+
+.home {
+	background-image: url('../images/home_bike.jpg');
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	height: 100vh;
+}

@@ -1,36 +1,22 @@
 // Home.js
 
-import React, { Component } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import '../App.css';
+import MyNavbar from '../components/MyNavbar';
+import './Home.css';
 
-//import Table from "../components/Table.js";
+//import Navbar from 'react-bootstrap/Navbar';
+//import Nav from 'react-bootstrap/Nav';
 
-class Home extends Component {
-  // Initialize the default state
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-      return (
-        <div className="App">
-          <header className="App-header">
-            <h1 className="App-title">Turbike</h1>
-          </header>
-          <Link to={'./bikeTable'}>
-          	<button variant='raised'>Bike Table</button>
-          </Link>
-          <Link to={'./register'}>
-            <button variant='raised'>Register</button>
-          </Link>
-          <Link to={'./login'}>
-            <button variant='raised'>Login</button>
-          </Link>
-        </div>
-      );
-    //}
-  }
-}
+const Home = (props) => {
+  return (
+    <div className="home">
+      <MyNavbar/>
+    </div>
+//   <Link to={'./bikeTable'}>
+//    <button variant='raised'>Bike Table</button>
+//   </Link>
+  )
+};
 
 export default Home;
