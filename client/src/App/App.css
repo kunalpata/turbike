@@ -1,6 +1,6 @@
 /*App.css*/
 
-.App {
+/*.App {
   text-align: center;
   justify-content: center;
 }
@@ -14,7 +14,7 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-}
+}*/
 
 table thead th{
   border : 1px solid black
