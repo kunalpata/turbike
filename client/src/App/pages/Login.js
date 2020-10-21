@@ -3,6 +3,9 @@
 import React, { Component , useEffect, useState} from 'react';
 import '../App.css';
 
+import MyNavbar from "../components/MyNavbar";
+
+
 function Login (){
 
 	const [loginUsername, setLoginUsername] = useState("");
