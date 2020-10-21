@@ -44,10 +44,10 @@ function Home() {
           </Col>
         </Row>
       </Container>
+      <Link to={'./bikeTable'}>
+        <button variant='raised'>Bike Table</button>
+      </Link>
     </div>
-//   <Link to={'./bikeTable'}>
-//    <button variant='raised'>Bike Table</button>
-//   </Link>
   )
 };
 
