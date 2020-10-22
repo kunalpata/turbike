@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import MyNavbar from '../components/MyNavbar';
+import Footer from '../components/Footer';
 import './Home.css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -31,6 +32,7 @@ const Home = () => {
 
   return (
     <div>
+
       <MyNavbar/>
 
       <Container-fluid>
@@ -78,33 +80,64 @@ const Home = () => {
         </Row>
         <Row>
           <Col>
-            <img className="browse-img" alt="road bike" src={require("../images/road_bike.jpg")} />
-            <p className="browse-text">Road Bikes</p>
+            <Link to={{
+              pathname: "./listings",
+              state: {search: "road"}
+            }}>
+              <img className="browse-img" alt="road bike" src={require("../images/road_bike.jpg")} />
+              <p className="browse-text">Road Bikes</p>
+            </Link>
           </Col>
           <Col>
-            <img className="browse-img" alt="electric bike" src={require("../images/electric_bike.jpg")} />
-            <p className="browse-text">Electric Bikes</p>
+            <Link to={{
+              pathname: "./listings",
+              state: {search: "electric"}
+            }}>
+              <img className="browse-img" alt="electric bike" src={require("../images/electric_bike.jpg")} />
+              <p className="browse-text">Electric Bikes</p>
+            </Link>
           </Col>
           <Col>
-            <img className="browse-img" alt="mountain bike" src={require("../images/mountain_bike.jpg")} />
-            <p className="browse-text">Mountain Bikes</p>
+            <Link to={{
+              pathname: "./listings",
+              state: {search: "mountain"}
+            }}>
+              <img className="browse-img" alt="mountain bike" src={require("../images/mountain_bike.jpg")} />
+              <p className="browse-text">Mountain Bikes</p>
+            </Link>
           </Col>
         </Row>
         <Row>
           <Col>
-            <img className="browse-img" alt="hybrid bike" src={require("../images/hybrid_bike.jpg")} />
-            <p className="browse-text">Hybrid Bikes</p>
+            <Link to={{
+              pathname: "./listings",
+              state: {search: "hybrid"}
+            }}>
+              <img className="browse-img" alt="hybrid bike" src={require("../images/hybrid_bike.jpg")} />
+              <p className="browse-text">Hybrid Bikes</p>
+            </Link>
           </Col>
           <Col>
-            <img className="browse-img" alt="comfort bike" src={require("../images/comfort_bike.jpg")} />
-            <p className="browse-text">Comfort Bikes</p>
+            <Link to={{
+              pathname: "./listings",
+              state: {search: "comfort"}
+            }}>
+              <img className="browse-img" alt="comfort bike" src={require("../images/comfort_bike.jpg")} />
+              <p className="browse-text">Comfort Bikes</p>
+            </Link>
           </Col>
           <Col>
-            <img className="browse-img" alt="kids bike" src={require("../images/kids_bike.jpg")} />
-            <p className="browse-text">Kids Bikes</p>
+            <Link to={{
+              pathname: "./listings",
+              state: {search: "kids"}
+            }}>
+              <img className="browse-img" alt="kids bike" src={require("../images/kids_bike.jpg")} />
+              <p className="browse-text">Kids Bikes</p>
+            </Link>
           </Col>
         </Row>
 
+        <Footer/>
       </Container-fluid>
     </div>
   )

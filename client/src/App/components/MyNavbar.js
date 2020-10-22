@@ -11,7 +11,8 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 const MyNavbar = (props) => {
 	return (
 	  <Navbar expand="md" fixed="top">
-        <Navbar.Brand as={Link} to="./">Turbike
+        <Navbar.Brand as={Link} to="./">
+          <img alt="turbike logo" src={require("../images/logo_black_200.png")} height="100" width="100"/>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">

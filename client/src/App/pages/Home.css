@@ -32,6 +32,7 @@ body {
 
 /* Information section - middle*/
 .info-title {
+	color: #3B3B3B;
 	text-align: center;
 	margin: 25px 0 25px 0;
 }
@@ -54,6 +55,8 @@ hr {
 
 /* Browse section - bottom */
 .browse-title {
+	color: #3B3B3B;
+	text-align: center;
 	margin: 25px 0 25px 0;
 }
 
@@ -64,8 +67,16 @@ hr {
 	height: 200px;
 }
 
-.browse-text {
+p.browse-text {
 	text-align: center;
+	color: black;
+}
+
+
+.footer {
+	text-align: center;
+	background-color: #3B3B3B;
+	/*background-color: #F29898;*/
 }
 
 @media only screen and (max-width: 768px) {
