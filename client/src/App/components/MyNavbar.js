@@ -14,6 +14,7 @@ const MyNavbar = (props) => {
         <Navbar.Brand as={Link} to="./">
           <img alt="turbike logo" src={require("../images/logo_black_200.png")} height="100" width="100"/>
         </Navbar.Brand>
+        
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
@@ -24,7 +25,7 @@ const MyNavbar = (props) => {
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>
-      </Navbar>
+    </Navbar>
 	)
 };
 
