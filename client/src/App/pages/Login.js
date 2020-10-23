@@ -1,24 +1,44 @@
 // Login.js
 
 import React, { Component , useEffect, useState} from 'react';
+import { Redirect } from 'react-router-dom';
 import '../App.css';
 
-function Login (){
+function Login (props){
 
 	const [loginUsername, setLoginUsername] = useState("");
 	const [loginPassword, setLoginPassword] = useState("");
+	const [loginStatus, setLoginStatus] = useState({});
 
 	const login = async () => {
 		await fetch('/api/login',{
 			method: 'POST',
 			headers: { 'Content-Type' : 'application/json' },
-			body: JSON.stringify({loginUsername, loginPassword})
+			body: JSON.stringify({username:loginUsername, password:loginPassword})
 			
 		})
 		.then((res) => { return res.json()})
-		.then((res) => { console.log(res)})
+		.then((res) => { 
+							console.log(res);
+							setLoginStatus(res);
+							props.passUser({isAuthenticated:res.login,user:res.user});
+						})
 		.catch((err) => { console.log(err)})
 	};
+
+	const logout = async () => {
+		await fetch('/api/logout')
+		.then((res) => {return res.json()})
+		.then((res) => {console.log(res)})
+		.catch((err) => {console.log(err)});
+	};
+
+	const getUser = async () => {
+		await fetch('/api/user')
+		.then((res) => {return res.json()})
+		.then((res) => {console.log(res)})
+		.catch((err) => {console.log(err)});
+	}
 
 	const textChangeHandler = (e) => {
 		(e.target.name === "username") ? setLoginUsername(e.target.value) :
@@ -32,6 +52,11 @@ function Login (){
 				<input type="text" name="username" placeholder="username" onChange={textChangeHandler}></input>
 				<input type="password" name="password" onChange={textChangeHandler}></input>
 				<button onClick={login}>Login</button>
+				{/*loginStatus.login? <Redirect to="/" /> : null*/}
+				<br/>
+				<button onClick={getUser}>Get User</button>
+				<br/>
+				<button onClick={logout}>Log Out</button>
 			</div>
 		</div>
 	);

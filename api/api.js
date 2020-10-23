@@ -8,6 +8,7 @@ const session = require("express-session");
 const handlebars = require('express-handlebars').create({ defaultLayout: 'main'});
 const path = require('path');
 const cors = require('cors');
+const pool = require('./dbcon.js').pool;
 
 const app = express();
 
@@ -49,19 +50,70 @@ app.use(
 		saveUninitialized: true
 	})
 );
+
+const initializePassport = require('./helpers/passportConfig.js');
+let complete = (results) => {
+	console.log(results);
+}
+initializePassport(passport,complete);
 app.use(cookieParser(process.env.SESSION_SECRET));
+app.use(passport.initialize());
+app.use(passport.session());
 
 //authentication routes
-app.post("/api/login", (req, res) => {
+const authHelpers = require("./helpers/authenticateHelpers.js");
+app.post("/api/login", (req, res, next) => {
 	console.log(req.body);
-	res.send({login:"good"});
-})
-app.post("/api/register", (req, res) => {
-	console.log(req.body);
-	res.send({register:"good"});
-})
-app.get("/api/user", (req, res) => {
+	passport.authenticate("local", (err, user, info) => {
+		if(err) res.send({err:err});
+		if(!user){
+			res.send({err:"No user found"});
+		}else{
+			//res.send({user:user});
+			
+			req.logIn(user, err => {
+				if(err){
+					res.send({login:false,err:err});
+				}else{
+					res.send({login:true, user:user});
+				}
+			})
+			
+		}
+	})(req,res,next)
 
+})
+app.post("/api/register", authHelpers.checkNotAuthenticated, async (req, res) => {
+	console.log(req.body);
+	let registerResult = await authHelpers.registerUser(req.body, pool);
+	res.send(registerResult);
+})
+
+app.get("/api/logout", authHelpers.checkAuthenticated, (req, res) => {
+	req.logOut();
+	res.send({isAuthenticated:false,isLogOut:true});
+})
+
+//This is for testing only
+app.get("/api/user", authHelpers.checkAuthenticated, (req, res) => {
+	res.send({
+				isAuthenticated:true,
+				user: {
+						user_name:req.user.user_name, 
+						email:req.user.email,
+						id:req.user.id,
+						first_name: req.user.first_name,
+						last_name:req.user.last_name
+					  }
+			});
+})
+
+//helper route
+
+app.post("/api/register/check", authHelpers.checkNotAuthenticated, async(req, res) => {
+	let {target,targetfield,tableName} = req.body;
+	let checkResult = await authHelpers.checkExists(target,targetfield,tableName,pool);
+	res.send(checkResult);
 })
 
 // Specify remaining routes

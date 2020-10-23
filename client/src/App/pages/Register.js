@@ -2,33 +2,53 @@
 
 import React, { Component, useState, useEffect } from 'react';
 import '../bootstrap/bootstrap.min.css';
+import './styles.css';
+import InformSpan from '../components/InformSpan.js';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { Redirect } from 'react-router-dom';
 
 
-function Register (){
-
-	const [registerUsername, setRegisterUsername] = useState("");
-	const [registerPassword, setRegisterPassword] = useState("");
-	const [registerEmail, setRegisterEmail] = useState("");
-	const [registerFirstname, setRegisterFirstname] = useState("");
-	const [registerLastname, setRegisterLastname] = useState("");
+function Register (props){
+	console.log(props)
+	const [regUsername, setRegisterUsername] = useState("");
+	const [regPassword, setRegisterPassword] = useState("");
+	const [regEmail, setRegisterEmail] = useState("");
+	const [regFirstname, setRegisterFirstname] = useState("");
+	const [regLastname, setRegisterLastname] = useState("");
 	const [registerStatus, setRegisterStatus] = useState({});
+	const [checkExist, setCheckStatus] = useState({});
 
 	const register = async () => {
 		await fetch('/api/register',{
 			method: 'POST',
 			headers: { 'Content-Type' : 'application/json' },
-			body: JSON.stringify({registerUsername, registerPassword, registerEmail, registerFirstname, registerLastname})
+			body: JSON.stringify({regUsername, regPassword, regEmail, regFirstname, regLastname})
 			
 		})
 		.then((res) => { return res.json()})
-		.then((res) => { setRegisterStatus(res)})
+		.then((res) => { setRegisterStatus(res); console.log(res)})
 		.catch((err) => { console.log(err)})
 	};
+
+
+	const checkIfExist = async (target, targetfield, tableName, targetKey) => {
+		await fetch('/api/register/check',{
+			method: 'POST',
+			headers: { 'Content-Type' : 'application/json' },
+			body: JSON.stringify({target, targetfield, tableName})
+		})
+		.then((res) => {return res.json()})
+		.then((res) => {
+							let newCheckStatus = {...checkExist};
+							newCheckStatus[targetKey] = res.isExist?true:false;
+							setCheckStatus(newCheckStatus);
+					   })
+		.catch((err) => {console.log(err)});
+	}
 
 	const textChangeHandler = (e) => {
 		let inputName = e.target.name;
@@ -36,9 +56,11 @@ function Register (){
 		switch(inputName){
 			case "username":
 				setRegisterUsername(e.target.value);
+				checkIfExist(e.target.value, "user_name", "user", "username");				
 				break;
 			case "email":
 				setRegisterEmail(e.target.value);
+				checkIfExist(e.target.value, "email", "user", "email");		
 				break;
 			case "password":
 				setRegisterPassword(e.target.value);
@@ -53,6 +75,8 @@ function Register (){
 		}
 	}
 
+	
+
 	return (
 		<div className="Register">
 			<Container>
@@ -64,6 +88,7 @@ function Register (){
 							<Form.Group>
 								<Form.Label>Username</Form.Label>
 								<Form.Control type="text" placeholder="User Name" name = "username" onChange={textChangeHandler} />
+								{checkExist.username? (<InformSpan classname="warningText" textMsg = "*Username in use!" />) : (<div/>)}
 							</Form.Group>
 							<Form.Group>
 								<Form.Label>Password</Form.Label>
@@ -72,6 +97,7 @@ function Register (){
 							<Form.Group>
 								<Form.Label>Email</Form.Label>
 								<Form.Control type="email" name = "email" placeholder="abc@test.com" onChange={textChangeHandler} />
+								{checkExist.email? (<InformSpan classname="warningText" textMsg = "*Email in use!" />) : (<div/>)}
 							</Form.Group>
 							<Form.Group>
 								<Form.Label>First Name</Form.Label>
@@ -84,6 +110,7 @@ function Register (){
 						</Form>
 					
 						<Button className = "btn-info" onClick={register}>Register</Button>
+						{registerStatus.isRegister? <Redirect to='/'/>:null}
 					</Col>
 					<Col></Col>
 				</Row>
@@ -93,12 +120,5 @@ function Register (){
 		</div>
 	);
 }
-
-/*<input type="text" name="username" placeholder="username" onChange={textChangeHandler}></input>
-					<input type="password" name="password" onChange={textChangeHandler}></input>
-					<input type="email" name="email" placeholder="abc@test.com" onChange={textChangeHandler}></input>
-					<input type="text" name="firstname" placeholder="First Name" onChange={textChangeHandler}></input>
-					<input type="text" name="lastname" placeholder="Last Name" onChange={textChangeHandler}></input>
-*/
 
 export default Register;

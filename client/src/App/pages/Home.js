@@ -14,9 +14,9 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-function Home() {
+function Home(props) {
   const [searchTerm, setSearchTerm] = useState("");
-
+  console.log(props);
 
   const onSubmit = (e) => {
     const searched = e.target.elements.search.value;
@@ -26,7 +26,7 @@ function Home() {
 
   return (
     <div className="home">
-      <MyNavbar/>
+      <MyNavbar userInfo={props.userInfo}/>
       <Container>
         <Row>
           <Col></Col>
