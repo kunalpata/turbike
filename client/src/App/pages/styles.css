@@ -1,0 +1,9 @@
+.warningText {
+    display: block;
+    color: red;
+}
+
+.hideText {
+    display: none;
+    color: black;
+}

@@ -33,9 +33,7 @@ const Home = () => {
 
   return (
     <div>
-
       <MyNavbar/>
-
       <Container-fluid>
         {/* Search box section */}
         <Row className="top-home">
