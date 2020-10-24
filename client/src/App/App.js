@@ -1,7 +1,7 @@
 // App.js
 
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import './App.css';
 
 import Home from './pages/Home';
@@ -10,29 +10,53 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Listings from './pages/Listings';
 
+
 class App extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      isAuthenticated: false,
+      user:{}
+    }
+    this.authenticateInfo = this.authenticateInfo.bind(this);
+  }
+
+  //fetch user
+  componentDidMount(){
+    this.getUser();
+  }
+
+  //get user from backend
+  getUser = async() => {
+    await fetch('/api/auth/user')
+    .then(res => res.json())
+    .then((res) => {
+      //console.log(res)
+      this.authenticateInfo(res);
+    })
+  }
+
+  authenticateInfo(userInfo){
+    this.setState({isAuthenticated: userInfo.isAuthenticated,
+                   user: {...userInfo}
+                  });
+  }
+
   render() {
-   /* const App = () => (
-      <div>
-        <Switch>
-          <Route exact path='/' component={Home} />
-          <Route path='/bikeTable' component={BikeTable} />
-          <Route path='/signUp' component={SignUp} />
-          <Route path='/login' component={Login} />
-        </Switch>
-      </div>
-    )
+
     return (
       <Switch>
-        <App />
-      </Switch>
-    );*/
-    return (
-      <Switch>
-          <Route exact path='/' component={Home} />
+          <Route exact path='/' render={(props) => <Home {...props} userInfo={this.state.user}/>} />
           <Route path='/bikeTable' component={BikeTable} />
-          <Route path='/register' component={Register} />
-          <Route path='/login' component={Login} />
+          <Route 
+            path='/register' 
+            render={(props) => !this.state.isAuthenticated?<Register {...props} passUser={this.authenticateInfo}/> : <Redirect to='/' />}
+          />
+          <Route 
+            path='/login' 
+            render={(props) => !this.state.isAuthenticated?<Login {...props} passUser={this.authenticateInfo}/> : <Redirect to='/' />}
+          />
+
           <Route exact path='/listings' component={Listings} />
       </Switch>
     );
@@ -40,3 +64,11 @@ class App extends Component {
 }
 
 export default App;
+
+{/*<Switch>
+          <Route exact path='/' component={Home} />
+          <Route path='/bikeTable' component={BikeTable} />
+          <Route path='/register' component={Register} />
+          <Route path='/login' component={Login} />
+          <Route exact path='/listings' component={Listings} />
+</Switch>*/}
