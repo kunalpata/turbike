@@ -4,6 +4,9 @@ import React, { Component , useEffect, useState} from 'react';
 import { Redirect } from 'react-router-dom';
 import '../App.css';
 
+import MyNavbar from "../components/MyNavbar";
+
+
 function Login (props){
 
 	const [loginUsername, setLoginUsername] = useState("");

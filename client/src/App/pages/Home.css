@@ -1,11 +1,7 @@
 /*Home.css*/
 
-.home {
-	background-image: url('../images/home_bike.jpg');
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
-	height: 100vh;
+body {
+	overflow-x: hidden;
 }
 
 /* Navbar styles */
@@ -13,7 +9,16 @@
 	margin-left: 10px;
 }
 
-/* Body styles */
+
+/* Search box section - top */
+.top-home {
+	background-image: url('../images/home_bike.jpg');
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	height: 90vh;
+}
+
 .main-text {
 	color: white;
 	font-size: 4vw;
@@ -21,17 +26,71 @@
 }
 
 .search-button {
-	margin-top: -3%;
 	margin-left: 2%;
+}
+
+
+/* Information section - middle*/
+.info-title {
+	color: #3B3B3B;
+	text-align: center;
+	margin: 25px 0 25px 0;
+}
+
+.info-img {
+	margin: auto;
+	display: block;
+}
+
+.info-text {
+	text-align: center;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
+
+/* Browse section - bottom */
+.browse-title {
+	color: #3B3B3B;
+	text-align: center;
+	margin: 25px 0 25px 0;
+}
+
+.browse-img {
+	margin: auto;
+	display: block;
+	width: 300px;
+	height: 200px;
+}
+
+p.browse-text {
+	text-align: center;
+	color: black;
+}
+
+
+.footer {
+	text-align: center;
+	background-color: #3B3B3B;
+	/*background-color: #F29898;*/
 }
 
 @media only screen and (max-width: 768px) {
 	.search-button {
-	 	margin-left: 0;
-	 	margin-top: 2%;
-	 	width: 100%;
-	 }
+		margin-left: 0;
+		margin-top: 2%;
+		width: 100%;
+	}
+
+	.main-text {
+		margin-top: 30%;
+	}
 }
+
 
 
 @media only screen and (min-width: 1200px) {
