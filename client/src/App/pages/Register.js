@@ -23,7 +23,7 @@ function Register (props){
 	const [checkExist, setCheckStatus] = useState({});
 
 	const register = async () => {
-		await fetch('/api/register',{
+		await fetch('/api/auth/register',{
 			method: 'POST',
 			headers: { 'Content-Type' : 'application/json' },
 			body: JSON.stringify({regUsername, regPassword, regEmail, regFirstname, regLastname})
@@ -36,7 +36,7 @@ function Register (props){
 
 
 	const checkIfExist = async (target, targetfield, tableName, targetKey) => {
-		await fetch('/api/register/check',{
+		await fetch('/api/check/checkRegisterInfo',{
 			method: 'POST',
 			headers: { 'Content-Type' : 'application/json' },
 			body: JSON.stringify({target, targetfield, tableName})

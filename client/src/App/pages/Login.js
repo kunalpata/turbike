@@ -11,7 +11,7 @@ function Login (props){
 	const [loginStatus, setLoginStatus] = useState({});
 
 	const login = async () => {
-		await fetch('/api/login',{
+		await fetch('/api/auth/login',{
 			method: 'POST',
 			headers: { 'Content-Type' : 'application/json' },
 			body: JSON.stringify({username:loginUsername, password:loginPassword})
@@ -27,14 +27,14 @@ function Login (props){
 	};
 
 	const logout = async () => {
-		await fetch('/api/logout')
+		await fetch('/api/auth/logout')
 		.then((res) => {return res.json()})
 		.then((res) => {console.log(res)})
 		.catch((err) => {console.log(err)});
 	};
 
 	const getUser = async () => {
-		await fetch('/api/user')
+		await fetch('/api/auth/user')
 		.then((res) => {return res.json()})
 		.then((res) => {console.log(res)})
 		.catch((err) => {console.log(err)});
@@ -52,7 +52,7 @@ function Login (props){
 				<input type="text" name="username" placeholder="username" onChange={textChangeHandler}></input>
 				<input type="password" name="password" onChange={textChangeHandler}></input>
 				<button onClick={login}>Login</button>
-				{/*loginStatus.login? <Redirect to="/" /> : null*/}
+				{loginStatus.login? <Redirect to="/" /> : null}
 				<br/>
 				<button onClick={getUser}>Get User</button>
 				<br/>

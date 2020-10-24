@@ -24,4 +24,10 @@ router.use('/api/getBikes', require('./bikeTable.js'));
 //aws file storage
 //router.use('/aws', require('./aws.js'));
 
+//input validation
+router.use('/api/check', require('./inputValidate.js'));
+
+//Authentication
+router.use('/api/auth', require('./authentication.js'));
+
 module.exports = router;

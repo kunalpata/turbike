@@ -28,7 +28,7 @@ class App extends Component {
 
   //get user from backend
   getUser = async() => {
-    await fetch('/api/user')
+    await fetch('/api/auth/user')
     .then(res => res.json())
     .then((res) => {
       //console.log(res)

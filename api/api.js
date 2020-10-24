@@ -62,7 +62,7 @@ app.use(passport.session());
 
 //authentication routes
 const authHelpers = require("./helpers/authenticateHelpers.js");
-app.post("/api/login", (req, res, next) => {
+/*app.post("/api/login", (req, res, next) => {
 	console.log(req.body);
 	passport.authenticate("local", (err, user, info) => {
 		if(err) res.send({err:err});
@@ -94,7 +94,6 @@ app.get("/api/logout", authHelpers.checkAuthenticated, (req, res) => {
 	res.send({isAuthenticated:false,isLogOut:true});
 })
 
-//This is for testing only
 app.get("/api/user", authHelpers.checkAuthenticated, (req, res) => {
 	res.send({
 				isAuthenticated:true,
@@ -106,15 +105,8 @@ app.get("/api/user", authHelpers.checkAuthenticated, (req, res) => {
 						last_name:req.user.last_name
 					  }
 			});
-})
+})*/
 
-//helper route
-
-app.post("/api/register/check", authHelpers.checkNotAuthenticated, async(req, res) => {
-	let {target,targetfield,tableName} = req.body;
-	let checkResult = await authHelpers.checkExists(target,targetfield,tableName,pool);
-	res.send(checkResult);
-})
 
 // Specify remaining routes
 app.use('/', require('./routes/index.js'));
