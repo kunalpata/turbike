@@ -7,11 +7,17 @@ import './Listings.css';
 
 const Listings = (props) => {
 
-  return (
-  	<div>
-  		<h1>Bike Listings</h1>
-  	</div>
-  )
+	const searchTerm = props.location.state.search;
+
+  	return (
+  		<div>
+  			<h1>Bike Listings</h1>
+  			<p>{searchTerm}</p>
+  			<Link to={'./bikeTable'}>
+        		<button variant='raised'>Bike Table</button>
+      		</Link>
+  		</div>
+  	)
 };
 
 export default Listings;
