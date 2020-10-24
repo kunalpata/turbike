@@ -7,7 +7,7 @@ import '../App.css';
 import MyNavbar from "../components/MyNavbar";
 
 
-function Login (){
+function Login (props){
 
 	const [loginUsername, setLoginUsername] = useState("");
 	const [loginPassword, setLoginPassword] = useState("");
