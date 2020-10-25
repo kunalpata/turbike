@@ -59,33 +59,40 @@ function Login (props){
 	return (
 		<div className="Login">
 			<Container>
-				<Card style={{ width: '30rem', height: '20rem' }}>
-					<Row>
-						<Col>
-							<Card.Img variant="top" src={require("../images/turbike_logo.png")} style={{width: '17vh', height: '17vh'}} />
-						</Col>
-						<Col>
-							<Card.Title style={{ fontSize: '4vh' }}>Login</Card.Title>
-						</Col>
-					</Row>
-					<Card.Body>
-						<Card.Text>
-							Welcome Back!
-						</Card.Text>
-						<Form>
-							<Form.Control className="col-md" type="text" placeholder="Email" name="email" />
-						</Form>
-						<Form>
-							<Form.Control className="col-md" type="password" placeholder="Password" name="email" />
-						</Form>
-						<Link to={'./'}>
-							<Button variant="danger" >Login</Button>
-						</Link>
-					</Card.Body>
-				</Card>
+				<Row>
+					<div className="boxLayout">
+						<Card style={{ width: '30rem', height: '20rem' }} >
+							<Link to={"./"} className="linkForLogo">
+								<Card.Img variant="top" className="logoImg" src={require("../images/turbike_logo.png")} />
+							</Link>
+							<Card.Body className="cardBody">
+								<Card.Text>
+									<p className="topText">Login</p>
+									<p className="Welcome">Welcome Back!</p>
+								</Card.Text>
+								<div className="formBox">
+									<Form>
+										<Form.Control type="text" placeholder="Email" name="email" onChange={textChangeHandler} />
+									</Form>
+									<Form>
+										<Form.Control type="password" placeholder="Password" name="password" onChange={textChangeHandler} />
+									</Form>
+								</div>
+								<div className="loginButton">
+									<Link to={'./'}>
+										<Button type="submit" variant="danger" className="actualButton">Login</Button>
+									</Link>
+								</div>
+								<Card.Text>
+									<p className="accountSignUp">Don't have an account? <b><Link to={'./Register'} className="signUp">Sign Up</Link></b></p>
+								</Card.Text>
+							</Card.Body>
+
+
+						</Card>
+					</div>
+				</Row>
 			</Container>
-			{/*<div>*/}
-			{/*	<h1>Login</h1>*/}
 			{/*	<input type="text" name="username" placeholder="username" onChange={textChangeHandler}></input>*/}
 			{/*	<input type="password" name="password" onChange={textChangeHandler}></input>*/}
 			{/*	<button onClick={login}>Login</button>*/}
