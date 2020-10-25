@@ -2,9 +2,7 @@
 
 import React, { Component , useEffect, useState} from 'react';
 import { Redirect } from 'react-router-dom';
-import '../App.css';
-
-import MyNavbar from "../components/MyNavbar";
+import './Login.css';
 
 
 function Login (props){
@@ -29,13 +27,6 @@ function Login (props){
 		.catch((err) => { console.log(err)})
 	};
 
-	const logout = async () => {
-		await fetch('/api/auth/logout')
-		.then((res) => {return res.json()})
-		.then((res) => {console.log(res)})
-		.catch((err) => {console.log(err)});
-	};
-
 	const getUser = async () => {
 		await fetch('/api/auth/user')
 		.then((res) => {return res.json()})
@@ -58,8 +49,7 @@ function Login (props){
 				{loginStatus.login? <Redirect to="/" /> : null}
 				<br/>
 				<button onClick={getUser}>Get User</button>
-				<br/>
-				<button onClick={logout}>Log Out</button>
+
 			</div>
 		</div>
 	);

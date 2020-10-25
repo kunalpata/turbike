@@ -1,7 +1,7 @@
 // App.js
 
 import React, { Component } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import './App.css';
 
 import Home from './pages/Home';
@@ -9,6 +9,7 @@ import BikeTable from './pages/BikeTable';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Listings from './pages/Listings';
+import MyNavbar from './components/MyNavbar';
 
 
 class App extends Component {
@@ -45,20 +46,24 @@ class App extends Component {
   render() {
 
     return (
-      <Switch>
-          <Route exact path='/' render={(props) => <Home {...props} userInfo={this.state.user}/>} />
-          <Route path='/bikeTable' component={BikeTable} />
-          <Route 
-            path='/register' 
-            render={(props) => !this.state.isAuthenticated?<Register {...props} passUser={this.authenticateInfo}/> : <Redirect to='/' />}
-          />
-          <Route 
-            path='/login' 
-            render={(props) => !this.state.isAuthenticated?<Login {...props} passUser={this.authenticateInfo}/> : <Redirect to='/' />}
-          />
+      <Router>
+          <MyNavbar userInfo={this.state.user} passUser={this.authenticateInfo}/>
+          <Switch>
+              <Route exact path='/' render={(props) => <Home {...props} userInfo={this.state.user}/>} />
+              <Route path='/bikeTable' component={BikeTable} />
+              <Route 
+                path='/register' 
+                render={(props) => !this.state.isAuthenticated?<Register {...props} passUser={this.authenticateInfo}/> : <Redirect to='/' />}
+              />
+              <Route 
+                path='/login' 
+                render={(props) => !this.state.isAuthenticated?<Login {...props} passUser={this.authenticateInfo}/> : <Redirect to='/' />}
+              />
 
-          <Route exact path='/listings' component={Listings} />
-      </Switch>
+              <Route exact path='/listings' component={Listings} />
+          </Switch>
+      </Router>
+      
     );
   }
 }

@@ -10,6 +10,8 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Redirect } from 'react-router-dom';
+import DismissibleAlert from '../components/DismissibleAlert.js';
+import './Register.css';
 
 
 function Register (props){
@@ -116,8 +118,9 @@ function Register (props){
 				</Row>
 				
 			</Container>
-
+			
 		</div>
+		
 	);
 }
 

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import MyNavbar from '../components/MyNavbar';
+
 import BrowseGrid from '../components/BrowseGrid';
 import Footer from '../components/Footer';
 import './Home.css';
@@ -33,7 +33,7 @@ const Home = (props) => {
 
   return (
     <div>
-      <MyNavbar userInfo={props.userInfo}/>
+      
       <Container-fluid>
         {/* Search box section */}
         <Row className="top-home">
