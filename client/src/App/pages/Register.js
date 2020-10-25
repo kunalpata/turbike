@@ -2,7 +2,7 @@
 
 import React, { Component, useState, useEffect } from 'react';
 import '../bootstrap/bootstrap.min.css';
-import './styles.css';
+import './Register.css';
 import InformSpan from '../components/InformSpan.js';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
