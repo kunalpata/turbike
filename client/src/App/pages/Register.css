@@ -17,7 +17,7 @@
 }
 
 .topText {
-    width: 120px;
+    width: 320px;
     padding: 2px;
     margin-right: auto;
     margin-left: auto;
@@ -27,12 +27,13 @@
     justify-content: center;
     font-size: 40px;
     position: relative;
-    top: -520px;
+    top: -30px;
+    bottom: 0px;   
 }
 
-.logoImg {
-    width: 12vh;
-    height: 12vh;
+.logoImg1 {
+    width: 120px;
+    height: 120px;
     padding: 0;
     margin-bottom: 0;
 }
@@ -46,12 +47,15 @@
 
 .accountSignUp {
     width: 50%;
-    margin: 0 auto;
+
+    margin-left: 5px;
+    margin-right: 5px;
     font-size: 12px;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     position: relative;
-    top: 80px;
+    top: 5px;
 }
 
 @media only screen and (min-width: 200px) {

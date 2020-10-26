@@ -84,47 +84,53 @@ function Register (props){
 		<div className="Register">
 			<Container>
 				<Row>
-					<Col></Col>
-					<Col xs={6}>
-						<div className="boxLayout">
-							<Card style={{ width: '30rem', height: '40rem' }} >
+					<Col md={6}></Col>
+					<Col md={6}>
+						<div className="boxLayout" style={{marginTop: "15%"}}>
+							<Card style={{ width: '30rem', height: '37rem'}} >
+								<Container>
 								<Link to={"./"} className="linkForLogo">
-									<Card.Img variant="top" className="logoImg" src={require("../images/turbike_logo.png")} />
+									<Card.Img variant="top" className="logoImg1" src={require("../images/turbike_logo.png")} />
 								</Link>
+								<Card.Title className="topText" style={{width:"450px",fontSize:"30px"}}>Let's get right into it!</Card.Title>
 								<Card.Body className="cardBody">
-									<div className="formBox">
+										
 										<Form>
 											<Form.Group>
-												<Form.Label>Username</Form.Label>
-												<Form.Control type="text" name = "username" onChange={textChangeHandler} />
+												<Form.Control type="text" name = "username" placeholder="Username" onChange={textChangeHandler} />
 												{checkExist.username? (<InformSpan classname="warningText" textMsg = "*Username in use!" />) : (<div/>)}
 											</Form.Group>
 											<Form.Group>
-												<Form.Label>Password</Form.Label>
-												<Form.Control type="password" name = "password" onChange={textChangeHandler} />
+												<Form.Control type="password" name = "password" placeholder="Password" onChange={textChangeHandler} />
 											</Form.Group>
 											<Form.Group>
-												<Form.Label>Email</Form.Label>
-												<Form.Control type="email" name = "email" onChange={textChangeHandler} />
+												<Form.Control type="email" name = "email" placeholder="Email" onChange={textChangeHandler} />
 												{checkExist.email? (<InformSpan classname="warningText" textMsg = "*Email in use!" />) : (<div/>)}
 											</Form.Group>
 											<Form.Group>
-												<Form.Label>First Name</Form.Label>
-												<Form.Control type="test" name = "firstname" onChange={textChangeHandler} />
+												<Form.Control type="test" name = "firstname" placeholder="First Name" onChange={textChangeHandler} />
 											</Form.Group>
 											<Form.Group>
-												<Form.Label>Last Name</Form.Label>
-												<Form.Control type="text" name = "lastname" onChange={textChangeHandler} />
+												<Form.Control type="text" name = "lastname" placeholder="Last Name" onChange={textChangeHandler} />
 											</Form.Group>
 										</Form>
-										<Button className = "btn-danger" onClick={register}>Register</Button>
+										
+									
+									
+										<div style={{fontSize: "12px", margin:"10px"}}>
+											By selecting <strong>{"Agree & Continue"}</strong> below, you agree to Turbike's Terms of Service, Payment Terms of Service and Privacy Policy
+										</div>
+									<div className="accountSignUp">
+										<div style={{margin : "10px"}}>
+										<Button className = "btn-danger" onClick={register}>{"Agree & Continue"}</Button>
 										{registerStatus.isRegister? <Redirect to='/'/>:null}
+										</div>
+										
+										<div>Already have an account? <b><Link to={'./Login'} className="signUp">Log in</Link></b></div>
 									</div>
-									<Card.Text>
-										<p className="accountSignUp">Already have an account? <b><Link to={'./Login'} className="signUp">Log in</Link></b></p>
-									</Card.Text>
 								</Card.Body>
-								<h1 className="topText">Register</h1>
+								
+								</Container>
 							</Card>
 						</div>
 					</Col>
