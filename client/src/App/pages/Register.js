@@ -9,7 +9,8 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { Redirect } from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
+import Card from "react-bootstrap/Card";
 
 
 function Register (props){
@@ -83,36 +84,48 @@ function Register (props){
 				<Row>
 					<Col></Col>
 					<Col xs={6}>
-						<h1>Register</h1>
-						<Form>
-							<Form.Group>
-								<Form.Label>Username</Form.Label>
-								<Form.Control type="text" placeholder="User Name" name = "username" onChange={textChangeHandler} />
-								{checkExist.username? (<InformSpan classname="warningText" textMsg = "*Username in use!" />) : (<div/>)}
-							</Form.Group>
-							<Form.Group>
-								<Form.Label>Password</Form.Label>
-								<Form.Control type="password" name = "password" onChange={textChangeHandler} />
-							</Form.Group>
-							<Form.Group>
-								<Form.Label>Email</Form.Label>
-								<Form.Control type="email" name = "email" placeholder="abc@test.com" onChange={textChangeHandler} />
-								{checkExist.email? (<InformSpan classname="warningText" textMsg = "*Email in use!" />) : (<div/>)}
-							</Form.Group>
-							<Form.Group>
-								<Form.Label>First Name</Form.Label>
-								<Form.Control type="test" name = "firstname" onChange={textChangeHandler} />
-							</Form.Group>
-							<Form.Group>
-								<Form.Label>Last Name</Form.Label>
-								<Form.Control type="text" name = "lastname" onChange={textChangeHandler} />
-							</Form.Group>
-						</Form>
-					
-						<Button className = "btn-info" onClick={register}>Register</Button>
-						{registerStatus.isRegister? <Redirect to='/'/>:null}
+						<div className="boxLayout">
+							<Card style={{ width: '30rem', height: '40rem' }} >
+								<Link to={"./"} className="linkForLogo">
+									<Card.Img variant="top" className="logoImg" src={require("../images/turbike_logo.png")} />
+								</Link>
+								<Card.Body className="cardBody">
+									<div className="formBox">
+										<Form>
+											<Form.Group>
+												<Form.Label>Username</Form.Label>
+												<Form.Control type="text" placeholder="User Name" name = "username" onChange={textChangeHandler} />
+												{checkExist.username? (<InformSpan classname="warningText" textMsg = "*Username in use!" />) : (<div/>)}
+											</Form.Group>
+											<Form.Group>
+												<Form.Label>Password</Form.Label>
+												<Form.Control type="password" name = "password" onChange={textChangeHandler} />
+											</Form.Group>
+											<Form.Group>
+												<Form.Label>Email</Form.Label>
+												<Form.Control type="email" name = "email" placeholder="abc@test.com" onChange={textChangeHandler} />
+												{checkExist.email? (<InformSpan classname="warningText" textMsg = "*Email in use!" />) : (<div/>)}
+											</Form.Group>
+											<Form.Group>
+												<Form.Label>First Name</Form.Label>
+												<Form.Control type="test" name = "firstname" onChange={textChangeHandler} />
+											</Form.Group>
+											<Form.Group>
+												<Form.Label>Last Name</Form.Label>
+												<Form.Control type="text" name = "lastname" onChange={textChangeHandler} />
+											</Form.Group>
+										</Form>
+										<Button className = "btn-danger" onClick={register}>Register</Button>
+										{registerStatus.isRegister? <Redirect to='/'/>:null}
+									</div>
+									<Card.Text>
+										<p className="accountSignUp">Don't have an account? <b><Link to={'./Register'} className="signUp">Sign Up</Link></b></p>
+									</Card.Text>
+								</Card.Body>
+								<h1 className="topText">Register</h1>
+							</Card>
+						</div>
 					</Col>
-					<Col></Col>
 				</Row>
 				
 			</Container>
