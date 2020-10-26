@@ -71,7 +71,7 @@ function Login (props){
 								</div>
 								<div className="loginButton">
 									
-										<Button type="submit" variant="danger" className="actualButton" conClick={login}>Login</Button>
+										<Button variant="danger" className="actualButton" onClick={login}>Login</Button>
 									
 								</div>
 								<Card.Text>
