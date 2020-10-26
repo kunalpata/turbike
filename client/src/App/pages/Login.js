@@ -20,6 +20,7 @@ function Login (props){
 	const [loginStatus, setLoginStatus] = useState({});
 
 	const login = async () => {
+		console.log(loginUsername, loginPassword);
 		await fetch('/api/auth/login',{
 			method: 'POST',
 			headers: { 'Content-Type' : 'application/json' },
@@ -84,7 +85,7 @@ function Login (props){
 					</div>
 				</Row>
 			</Container>
-      {loginStatus.login? <Redirect to="/" /> : null}
+      			{loginStatus.login? <Redirect to="/" /> : null}
 			
 		</div>
 	);
