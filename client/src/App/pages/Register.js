@@ -9,8 +9,10 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+
 import {Link, Redirect} from 'react-router-dom';
 import Card from "react-bootstrap/Card";
+import DismissibleAlert from '../components/DismissibleAlert.js';
 
 
 function Register (props){
@@ -129,8 +131,9 @@ function Register (props){
 				</Row>
 				
 			</Container>
-
+			
 		</div>
+		
 	);
 }
 

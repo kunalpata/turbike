@@ -3,9 +3,7 @@
 import React, { Component , useEffect, useState} from 'react';
 import './Login.css';
 import { Redirect } from 'react-router-dom';
-import '../App.css';
-
-import MyNavbar from "../components/MyNavbar";
+import './Login.css';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -35,13 +33,6 @@ function Login (props){
 							props.passUser({isAuthenticated:res.login,user:res.user});
 						})
 		.catch((err) => { console.log(err)})
-	};
-
-	const logout = async () => {
-		await fetch('/api/auth/logout')
-		.then((res) => {return res.json()})
-		.then((res) => {console.log(res)})
-		.catch((err) => {console.log(err)});
 	};
 
 	const getUser = async () => {
@@ -79,9 +70,9 @@ function Login (props){
 									</Form>
 								</div>
 								<div className="loginButton">
-									<Link to={'./'}>
-										<Button type="submit" variant="danger" className="actualButton">Login</Button>
-									</Link>
+									
+										<Button type="submit" variant="danger" className="actualButton" conClick={login}>Login</Button>
+									
 								</div>
 								<Card.Text>
 									<p className="accountSignUp">Don't have an account? <b><Link to={'./Register'} className="signUp">Sign Up</Link></b></p>
@@ -93,10 +84,8 @@ function Login (props){
 					</div>
 				</Row>
 			</Container>
-			{/*	<input type="text" name="username" placeholder="username" onChange={textChangeHandler}></input>*/}
-			{/*	<input type="password" name="password" onChange={textChangeHandler}></input>*/}
-			{/*	<button onClick={login}>Login</button>*/}
-			{/*</div>*/}
+      {loginStatus.login? <Redirect to="/" /> : null}
+			
 		</div>
 	);
 }
