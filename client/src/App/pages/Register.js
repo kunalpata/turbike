@@ -94,7 +94,7 @@ function Register (props){
 										<Form>
 											<Form.Group>
 												<Form.Label>Username</Form.Label>
-												<Form.Control type="text" placeholder="User Name" name = "username" onChange={textChangeHandler} />
+												<Form.Control type="text" name = "username" onChange={textChangeHandler} />
 												{checkExist.username? (<InformSpan classname="warningText" textMsg = "*Username in use!" />) : (<div/>)}
 											</Form.Group>
 											<Form.Group>
@@ -103,7 +103,7 @@ function Register (props){
 											</Form.Group>
 											<Form.Group>
 												<Form.Label>Email</Form.Label>
-												<Form.Control type="email" name = "email" placeholder="abc@test.com" onChange={textChangeHandler} />
+												<Form.Control type="email" name = "email" onChange={textChangeHandler} />
 												{checkExist.email? (<InformSpan classname="warningText" textMsg = "*Email in use!" />) : (<div/>)}
 											</Form.Group>
 											<Form.Group>
