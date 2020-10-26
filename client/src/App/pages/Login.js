@@ -64,7 +64,7 @@ function Login (props){
 								</Card.Text>
 								<div className="formBox">
 									<Form>
-										<Form.Control type="text" placeholder="Email" name="email" onChange={textChangeHandler} />
+										<Form.Control type="text" placeholder="Username" name="username" onChange={textChangeHandler} />
 									</Form>
 									<Form>
 										<Form.Control type="password" placeholder="Password" name="password" onChange={textChangeHandler} />
