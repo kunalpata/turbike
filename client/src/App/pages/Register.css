@@ -1,0 +1,63 @@
+.Register {
+    background-image: url('../images/yolanda-sun-1rsskca11-g-unsplash.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+}
+
+.formBox {
+    width: 40vh;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    position: relative;
+    top: 70px;
+}
+
+.topText {
+    width: 120px;
+    padding: 2px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 0;
+    margin-top: 0px;
+    display: flex;
+    justify-content: center;
+    font-size: 40px;
+    position: relative;
+    top: -520px;
+}
+
+.logoImg {
+    width: 12vh;
+    height: 12vh;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+.linkForLogo {
+    width: 12vh;
+    height: 8vh;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+.accountSignUp {
+    width: 50%;
+    margin: 0 auto;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    top: 80px;
+}
+
+@media only screen and (min-width: 200px) {
+    .boxLayout {
+        position: relative;
+        top: 25px;
+        left: 50px;
+    }
+}

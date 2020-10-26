@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import MyNavbar from '../components/MyNavbar';
+
 import BrowseGrid from '../components/BrowseGrid';
 import Footer from '../components/Footer';
 import './Home.css';
@@ -17,8 +17,8 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 
-const Home = () => {
-
+const Home = (props) => {
+  console.log(props);
   const [search, setSearch] = useState();  // store the search results
   const { push } = useHistory();  // for redirecting after getting form data
 
@@ -33,9 +33,7 @@ const Home = () => {
 
   return (
     <div>
-
-      <MyNavbar/>
-
+      
       <Container-fluid>
         {/* Search box section */}
         <Row className="top-home">
