@@ -119,7 +119,7 @@ function Register (props){
 										{registerStatus.isRegister? <Redirect to='/'/>:null}
 									</div>
 									<Card.Text>
-										<p className="accountSignUp">Don't have an account? <b><Link to={'./Register'} className="signUp">Sign Up</Link></b></p>
+										<p className="accountSignUp">Already have an account? <b><Link to={'./Login'} className="signUp">Log in</Link></b></p>
 									</Card.Text>
 								</Card.Body>
 								<h1 className="topText">Register</h1>
