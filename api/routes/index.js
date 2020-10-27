@@ -9,8 +9,8 @@ const router = express.Router();
 //add item page
 router.use('/api/add', require('./add.js'));
 
-//bike table page
-router.use('/api/getBikes', require('./bikeTable.js'));
+//get bikes 
+router.use('/api/getBikes', require('./bikes.js'));
 
 //delete item page
 //router.use('/delete', require('./delete.js'));
@@ -19,7 +19,7 @@ router.use('/api/getBikes', require('./bikeTable.js'));
 //router.use('/update', require('./update.js'));
 
 //display items
-//router.use('/search', require('./search'));
+//router.use('/api/searchBikes', require('./searchBikes.js'));
 
 //aws file storage
 //router.use('/aws', require('./aws.js'));

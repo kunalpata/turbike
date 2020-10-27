@@ -1,5 +1,3 @@
-// bikeTable.js
-
 const express = require('express');
 const router = express.Router();
 const pool = require('../dbcon').pool;
@@ -7,7 +5,7 @@ const pool = require('../dbcon').pool;
 //add dotenv functionality
 require('dotenv').config();
 
-//get bike information
+//get all bikes information
 router.get('/', (req, res) => {
     let query = 'SELECT b.id,b.price,b.bike_details,u.user_name,u.email,l.address,l.city,l.state,l.zip' +
                 ' FROM bike b inner join user u on b.user_id = u.id ' + 
@@ -27,13 +25,8 @@ router.get('/', (req, res) => {
             }
             //console.log(items)
             res.send(JSON.stringify({data:items,err:"",hasError:0}));
-            //res.render('../views/home',{data:items});
         }
     });
 });
-
-
-//helper function
-
 
 module.exports = router;

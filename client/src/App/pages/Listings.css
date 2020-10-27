@@ -1,1 +1,17 @@
 /*Listings.css*/
+
+.listing-body {
+	margin-top: 100px;
+}
+
+.info-bar {
+	text-align: center;
+	margin-bottom: 25px;
+	border: 1px solid gray;
+	border-radius: 10px;
+}
+
+.map {
+	height: 100%;
+	width: 100%;
+}
