@@ -23,7 +23,8 @@ function Register (props){
 	const [regFirstname, setRegisterFirstname] = useState("");
 	const [regLastname, setRegisterLastname] = useState("");
 	const [registerStatus, setRegisterStatus] = useState({});
-	const [checkExist, setCheckStatus] = useState({});
+	const [checkStatus, setCheckStatus] = useState({username:{},email:{}});
+	const [CardHeight, setCardHeight] = useState(37);
 
 	const register = async () => {
 		await fetch('/api/auth/register',{
@@ -37,6 +38,21 @@ function Register (props){
 		.catch((err) => { console.log(err)})
 	};
 
+	const checkFields = (fieldObj) => {
+		//set the card height to original value
+		let newCardHeight = 37;
+		let isInputsValid = true;
+		for(let key in fieldObj){
+			for(let subkey in fieldObj[key]){
+				if(fieldObj[key][subkey] === false){
+					newCardHeight += 2;
+					isInputsValid = false;
+				}
+			}
+		}
+		setCardHeight(newCardHeight);
+		return isInputsValid;
+	}
 
 	const checkIfExist = async (target, targetfield, tableName, targetKey) => {
 		await fetch('/api/check/checkRegisterInfo',{
@@ -46,24 +62,27 @@ function Register (props){
 		})
 		.then((res) => {return res.json()})
 		.then((res) => {
-							let newCheckStatus = {...checkExist};
-							newCheckStatus[targetKey] = res.isExist?true:false;
+							let newCheckStatus = {...checkStatus};
+							newCheckStatus[targetKey].isNotExist = !res.isExist;
+							
+							console.log(newCheckStatus);
 							setCheckStatus(newCheckStatus);
 					   })
 		.catch((err) => {console.log(err)});
 	}
 
-	const textChangeHandler = (e) => {
+
+	const textChangeHandler = async (e) => {
 		let inputName = e.target.name;
 		console.log(e.target, inputName)
 		switch(inputName){
 			case "username":
 				setRegisterUsername(e.target.value);
-				checkIfExist(e.target.value, "user_name", "user", "username");				
+				await checkIfExist(e.target.value, "user_name", "user", "username");				
 				break;
 			case "email":
 				setRegisterEmail(e.target.value);
-				checkIfExist(e.target.value, "email", "user", "email");		
+				await checkIfExist(e.target.value, "email", "user", "email");		
 				break;
 			case "password":
 				setRegisterPassword(e.target.value);
@@ -76,9 +95,41 @@ function Register (props){
 				break;
 
 		}
+		//check all inputs
+		checkFields(checkStatus);
 	}
 
-	
+
+	const inputValidate = (inputType, curInput) => {
+		let result = {isValid:true,errMsg:""};
+		switch(inputType){
+			case "username":
+				//setRegisterUsername(e.target.value);
+				//await checkIfExist(e.target.value, "user_name", "user", "username");				
+				break;
+			case "email":
+				//setRegisterEmail(e.target.value);
+				//await checkIfExist(e.target.value, "email", "user", "email");		
+				break;
+			case "password":
+				//setRegisterPassword(e.target.value);
+				break;
+			case "firstname":
+			case "lastname":
+				curInput = curInput.replace(/^\s+/,'');
+				curInput = curInput.replace(/\s+$/,'');
+				//(curInput != "")?setWarning(htmlID, 1):setWarning(htmlID,0);
+				break;
+
+		}
+		
+	}
+
+	/* This function performs extensive input test using regular expression.*/
+	const inputTest = (regexPattern, targetInput) => {
+		const regex = RegExp(regexPattern);
+		return regex.test(targetInput);
+	}
 
 	return (
 		<div className="Register">
@@ -87,7 +138,7 @@ function Register (props){
 					<Col md={6}></Col>
 					<Col md={6}>
 						<div className="boxLayout" style={{marginTop: "15%"}}>
-							<Card style={{ width: '30rem', height: '37rem'}} >
+							<Card style={{ width: '30rem', height: CardHeight+"rem"}} >
 								<Container>
 								<Link to={"./"} className="linkForLogo">
 									<Card.Img variant="top" className="logoImg1" src={require("../images/turbike_logo.png")} />
@@ -98,14 +149,14 @@ function Register (props){
 										<Form>
 											<Form.Group>
 												<Form.Control type="text" name = "username" placeholder="Username" onChange={textChangeHandler} />
-												{checkExist.username? (<InformSpan classname="warningText" textMsg = "*Username in use!" />) : (<div/>)}
+												{checkStatus.username.isNotExist===false? (<InformSpan classname="warningText" textMsg = "*Username in use!" />) : null}
 											</Form.Group>
 											<Form.Group>
 												<Form.Control type="password" name = "password" placeholder="Password" onChange={textChangeHandler} />
 											</Form.Group>
 											<Form.Group>
 												<Form.Control type="email" name = "email" placeholder="Email" onChange={textChangeHandler} />
-												{checkExist.email? (<InformSpan classname="warningText" textMsg = "*Email in use!" />) : (<div/>)}
+												{checkStatus.email.isNotExist===false? (<InformSpan classname="warningText" textMsg = "*Email in use!" />) : null}
 											</Form.Group>
 											<Form.Group>
 												<Form.Control type="test" name = "firstname" placeholder="First Name" onChange={textChangeHandler} />
