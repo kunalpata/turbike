@@ -11,34 +11,24 @@ import Col from 'react-bootstrap/Col';
 const Listings = (props) => {
   useEffect(() => {
     getBikesByLocation();
-  });
+  }, []);
 
   const [bikes, setBikes] = useState({});
   const [location, setLocation] = useState("");
   const encodedSearch = encodeURIComponent(props.location.state.search);
 
-  // const getBikesByLocation = async () => {
-  //   const data = await fetch(
-  //     '/api/getBikes'
-  //   );
-
-  //   const bikes = await data.json();
-
-  //   setBikes(bikes);
-  //   setLocation(bikes.data[0]["city"]); // Set location to first item in query results
-  //   console.log(bikes);
-  // };
-
   const getBikesByLocation = async () => {
-    const url = '/api/getBikes?loc=' + encodedSearch;
+    const url = '/api/getBikes';
+    //const url = '/api/getBikes?loc=' + encodedSearch;
+    //const url = '/api/search';
     const data = await fetch(url);
-    
-    const bikes = await data.json();
-    setBikes(bikes);
-    setLocation(bikes.data[0]["city"]);
-  }
 
-	
+    const bikes = await data.json();
+
+    setBikes(bikes);
+    setLocation(bikes.data[0]["city"]); // Set location to first item in query results
+    //console.log(bikes);
+  };
 
   	return (
   		<div className="listing-body">
@@ -69,6 +59,7 @@ const Listings = (props) => {
             </Col>
           </Row>
         </Container>
+       
       </div>
   	);
 };

@@ -20,7 +20,7 @@ function BikeTable(){
 		const bikes = await data.json();
 
 		setBikes(bikes);
-		console.log(bikes);
+		//console.log(bikes);
 	};
 
 	
