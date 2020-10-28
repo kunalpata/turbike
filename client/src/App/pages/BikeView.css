@@ -1,0 +1,16 @@
+.bike-view-body {
+	margin-top: 100px;
+}
+
+.bike-header {
+	display: inline;
+}
+
+#bike-name {
+	font-size: 1.5em;
+}
+
+#star-img {
+	margin-left: 10px;
+	margin-top: 10px;
+}
