@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from 'react-router-dom';
 import './BikeView.css';
 
 import Container from 'react-bootstrap/Container';

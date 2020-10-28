@@ -1,7 +1,6 @@
 // Listings.js
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import BikeCards from '../components/BikeCards';
 import './Listings.css';
 
@@ -12,24 +11,34 @@ import Col from 'react-bootstrap/Col';
 const Listings = (props) => {
   useEffect(() => {
     getBikesByLocation();
-  }, []);
+  });
 
   const [bikes, setBikes] = useState({});
   const [location, setLocation] = useState("");
+  const encodedSearch = encodeURIComponent(props.location.state.search);
+
+  // const getBikesByLocation = async () => {
+  //   const data = await fetch(
+  //     '/api/getBikes'
+  //   );
+
+  //   const bikes = await data.json();
+
+  //   setBikes(bikes);
+  //   setLocation(bikes.data[0]["city"]); // Set location to first item in query results
+  //   console.log(bikes);
+  // };
 
   const getBikesByLocation = async () => {
-    const data = await fetch(
-      '/api/getBikes'
-    );
-
+    const url = '/api/getBikes?loc=' + encodedSearch;
+    const data = await fetch(url);
+    
     const bikes = await data.json();
-
     setBikes(bikes);
-    setLocation(bikes.data[0]["city"]); // Set location to first item in query results
-    console.log(bikes);
-  };
+    setLocation(bikes.data[0]["city"]);
+  }
 
-	const searchTerm = props.location.state.search;
+	
 
   	return (
   		<div className="listing-body">
