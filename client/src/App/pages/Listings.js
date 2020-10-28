@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import MyNavbar from '../components/MyNavbar';
-import BikeList from '../components/BikeList';
+import BikeCards from '../components/BikeCards';
 import './Listings.css';
 
 import Container from 'react-bootstrap/Container';
@@ -26,7 +25,7 @@ const Listings = (props) => {
     const bikes = await data.json();
 
     setBikes(bikes);
-    setLocation(bikes.data[0]["city"]);
+    setLocation(bikes.data[0]["city"]); // Set location to first item in query results
     console.log(bikes);
   };
 
@@ -42,20 +41,22 @@ const Listings = (props) => {
           </Row>
 
           <Row>
+
+            {/* TODO: Implement map api */}
+            <Col md={{span: 7, offset: 0}}>
+              <img className="map" alt="static map" src={require("../images/map.png")} />
+            </Col>
+
             <Col md={{span: 5, offset: 0}}>
               {(bikes.hasOwnProperty("hasError") && !bikes.hasError) ? (
                 <div>
-                  <BikeList bikes={bikes.data}/>
+                  <BikeCards bikes={bikes.data}/>
                 </div>
               ) : (
                 <div>
-                  <p>Sorry, no bikes were found matching your search</p>
+                  <p>Sorry, no bikes were found for your search</p>
                 </div>
               )}
-            </Col>
-            
-            <Col md={{span: 7, offset: 0}}>
-              <img className="map" alt="static map" src={require("../images/map.png")} />
             </Col>
           </Row>
         </Container>
