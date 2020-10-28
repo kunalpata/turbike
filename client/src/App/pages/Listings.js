@@ -21,12 +21,20 @@ const Listings = (props) => {
     const url = '/api/getBikes';
     //const url = '/api/getBikes?loc=' + encodedSearch;
     //const url = '/api/search';
-    const data = await fetch(url);
+    const data = await fetch(url)
+    .catch((err)=>{console.log(err)});
 
-    const bikes = await data.json();
+    const bikes = await data.json()
+    .then((bikes)=>{
+      setBikes(bikes);
+      setLocation(bikes.data[0]["city"]); // Set location to first item in query results
+    })
+    .catch((err)=>{console.log(err)});
 
-    setBikes(bikes);
-    setLocation(bikes.data[0]["city"]); // Set location to first item in query results
+    //console.log(data);
+
+    //setBikes(bikes);
+    //setLocation(bikes.data[0]["city"]); // Set location to first item in query results
     //console.log(bikes);
   };
 
