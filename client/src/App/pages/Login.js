@@ -17,6 +17,7 @@ function Login (props){
 	const [loginUsername, setLoginUsername] = useState("");
 	const [loginPassword, setLoginPassword] = useState("");
 	const [loginStatus, setLoginStatus] = useState({});
+	const [enableButton, setEnableButton] = useState(false);
 
 	const login = async () => {
 		console.log(loginUsername, loginPassword);
@@ -51,37 +52,47 @@ function Login (props){
 		<div className="Login">
 			<Container>
 				<Row>
-					<div className="boxLayout">
-						<Card style={{ width: '30rem', height: '20rem' }} >
-							<Link to={"./"} className="linkForLogo">
-								<Card.Img variant="top" className="logoImg" src={require("../images/turbike_logo.png")} />
-							</Link>
-							<Card.Body className="cardBody">
-								<Card.Text>
-									<p className="topText">Login</p>
-									<p className="Welcome">Welcome Back!</p>
-								</Card.Text>
-								<div className="formBox">
-									<Form>
-										<Form.Control type="text" placeholder="Username" name="username" onChange={textChangeHandler} />
-									</Form>
-									<Form>
-										<Form.Control type="password" placeholder="Password" name="password" onChange={textChangeHandler} />
-									</Form>
-								</div>
-								<div className="loginButton">
+					
+					<Col md={6}>
+					<div className="boxLayout" style={{marginTop: "15%"}}>
+						<Card style={{ width: '30rem', height: '27rem' }} >
+							<Container>
+								<Link to={"./"} className="linkForLogo">
+									<Card.Img variant="top" className="logoImg1" src={require("../images/turbike_logo.png")} />
+								</Link>
+								<Card.Title className="topText" style={{display:"flex", flexWrap:"wrap", justifyContent:"center"}}>
+									<div style={{width:"450px",fontSize:"40px",textAlign:"center" }}>Login</div>
+									<div style={{width:"450px",fontSize:"15px",textAlign:"center",margin:"10px" }}>Welcome back!</div>
+								</Card.Title>
+								
+								<Card.Body className="cardBody">
 									
-										<Button variant="danger" className="actualButton" onClick={login}>Login</Button>
 									
-								</div>
-								<Card.Text>
-									<p className="accountSignUp">Don't have an account? <b><Link to={'./Register'} className="signUp">Sign Up</Link></b></p>
-								</Card.Text>
-							</Card.Body>
-
-
+									<Form>
+										<Form.Group>
+											<Form.Control type="text" placeholder="Username" name="username" onChange={textChangeHandler} />
+										</Form.Group>	
+										<Form.Group>
+											<Form.Control type="password" placeholder="Password" name="password" onChange={textChangeHandler} />
+										</Form.Group>	
+											
+									</Form>
+									
+									<div className="accountSignUp">
+										<div style={{margin : "10px"}}>
+											<Button className = "btn-danger" onClick={login} disabled={!enableButton}>Login</Button>										
+										</div>
+										
+										<div>Don't have an account? <b><Link to={'./Register'} className="signUp">Sign Up</Link></b></div>
+									</div>
+									
+								</Card.Body>
+							</Container>
+							
 						</Card>
 					</div>
+					</Col>
+					<Col md={6}></Col>
 				</Row>
 			</Container>
       			{loginStatus.login? <Redirect to="/" /> : null}
