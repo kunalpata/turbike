@@ -27,7 +27,7 @@ const MyNavbar = (props) => {
 	};
 
   const ResetLoggingOut = () => {
-    setLoggingOut(false)
+    setLoggingOut(false);
   }
 
 	return (
@@ -66,6 +66,8 @@ const MyNavbar = (props) => {
                           message="You have logged out successfully!" 
                           type = "info"
                           redirectLink="/" 
+                          shouldRedirect={true}
+                          duration={2000}
                           parentCleanup={ResetLoggingOut}
                       />:null}
     </Navbar>

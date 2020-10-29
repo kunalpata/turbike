@@ -15,13 +15,13 @@ function DismissibleAlert(props){
             console.log("I was called")
             setShow(false);
             props.parentCleanup();
-            setRedir(true);
+            setRedir(props.shouldRedirect);
         },second);
     }
 
     
     useEffect(() => {
-        autoDismissRedirect(2000,false);
+        autoDismissRedirect(props.duration,false);
     },[])
     
 
@@ -29,7 +29,7 @@ function DismissibleAlert(props){
             
             <div>
                 {show?
-                <Alert variant={props.type} onClose={()=>autoDismissRedirect(500,true)} dismissible>
+                <Alert variant={props.type} style={{position:"relative",zIndex:10}} onClose={()=>autoDismissRedirect(500,true)} dismissible>
                     <Alert.Heading>{props.title}</Alert.Heading>
                     <p>
                         {props.message}
