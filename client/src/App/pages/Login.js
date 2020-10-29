@@ -12,6 +12,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Card from "react-bootstrap/Card";
 import {Link} from "react-router-dom";
+import InformSpan from '../components/InformSpan.js';
 
 function Login (props){
 
@@ -19,9 +20,9 @@ function Login (props){
 	const [loginPassword, setLoginPassword] = useState("");
 	const [loginStatus, setLoginStatus] = useState({});
 	const [enableButton, setEnableButton] = useState(false);
+	const [attemptFailed, setAttemptFailed] = useState(false);
 
 	const login = async () => {
-		console.log(loginUsername, loginPassword);
 		await fetch('/api/auth/login',{
 			method: 'POST',
 			headers: { 'Content-Type' : 'application/json' },
@@ -33,6 +34,9 @@ function Login (props){
 							console.log(res);
 							setLoginStatus(res);
 							props.passUser({isAuthenticated:res.login,user:res.user});
+							if(!res.login){
+								setAttemptFailed(true);
+							}
 						})
 		.catch((err) => { console.log(err)})
 	};
@@ -45,9 +49,16 @@ function Login (props){
 	}
 
 	const textChangeHandler = (e) => {
-		(e.target.name === "username") ? setLoginUsername(e.target.value) :
-			setLoginPassword(e.target.value);
+		let curInput = e.target.value;
+		let curInputField = e.target.name;
+		setAttemptFailed(false);
+		(curInputField === "username") ? setLoginUsername(curInput) : setLoginPassword(curInput);
+		//enable login button if both are not empty
+		let otherInput = (curInputField==="username")? loginPassword : loginUsername;
+
+		(curInput !== "" && otherInput !== "")?setEnableButton(true):setEnableButton(false);
 	}
+
 
 	return (
 		<div className="Login">
@@ -56,7 +67,7 @@ function Login (props){
 					
 					<Col md={6}>
 					<div className="boxLayout" style={{marginTop: "15%"}}>
-						<Card style={{ width: '30rem', height: '27rem' }} >
+						<Card style={{ width: '30rem', height: '28rem' }} >
 							<Container>
 								<Link to={"./"} className="linkForLogo">
 									<Card.Img variant="top" className="logoImg1" src={require("../images/turbike_logo.png")} />
@@ -71,6 +82,7 @@ function Login (props){
 									
 									<Form>
 										<Form.Group>
+											{attemptFailed?(<InformSpan classname="warningText" textMsg="Incorrect Username and/or Password!"/>):null}
 											<Form.Control type="text" placeholder="Username" name="username" onChange={textChangeHandler} />
 										</Form.Group>	
 										<Form.Group>
