@@ -15,6 +15,10 @@
 	margin-top: 10px;
 }
 
+.carousel {
+	margin-top: 25px;
+}
+
 .reservation-button {
 	background-color: #F29898;
 	border-color: #F29898;
@@ -23,4 +27,8 @@
 .reservation-button:hover {
 	background-color: #B3B3B3;
 	border-color: #B3B3B3;
+}
+
+.label {
+	color: gray;
 }

@@ -17,6 +17,7 @@ const BikeView = (props) => {
     return(
     	<Container className="bike-view-body">
     		<Row>
+    	{/* Bike carousel section */}
     			<Col md={{span: 6, offset: 0}}>
 					<div id="bike-name" className="bike-header">Bike Name</div>
 					<div className="bike-header">
@@ -31,7 +32,7 @@ const BikeView = (props) => {
 					<div>{bike.city}, {bike.state}</div>
     				
     				{/* TODO: get bike images and add them here with map */}
-					<Carousel>
+					<Carousel className="carousel">
 					  <Carousel.Item>
 					    <img
 					      className="d-block w-100"
@@ -47,10 +48,9 @@ const BikeView = (props) => {
 					    />
 					  </Carousel.Item>
 					</Carousel>
-
-					<p>{bike.bike_details}</p>
     			</Col>
 
+		{/* Reservation form section */}
     			<Col md={{span: 6, offset: 0}}>
 					<Card>
 					  <Card.Body>
@@ -96,6 +96,25 @@ const BikeView = (props) => {
 					    </Form>
 					  </Card.Body>
 					</Card>
+    			</Col>
+    		</Row>
+
+    	{/* Bike details section */}
+    		<Row>
+    			<Col md={{span: 2, offset: 0}}>
+    				<p className="label">Hosted By</p>
+    				<h3>{bike.user_name}</h3>
+    				<p>{bike.email}</p>
+    			</Col>
+    			<Col md={{span: 4, offset: 0}}>
+    				<p className="label">Description</p>
+    				<p>{bike.bike_details}</p>
+    			</Col>
+
+    		{/* Query db for this bikes features */}
+    			<Col md={{span: 6, offset: 0}}>
+    				<p className="label">Features</p>
+    				<p>features</p>
     			</Col>
     		</Row>
     	</Container>
