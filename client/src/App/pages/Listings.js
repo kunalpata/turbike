@@ -18,8 +18,8 @@ const Listings = (props) => {
   const encodedSearch = encodeURIComponent(props.location.state.search);
 
   const getBikesByLocation = async () => {
-    const url = '/api/getBikes';
-    //const url = '/api/getBikes?loc=' + encodedSearch;
+    //const url = '/api/getBikes';
+    const url = '/api/search?loc=' + encodedSearch;
     //const url = '/api/search';
     const data = await fetch(url)
     .catch((err)=>{console.log(err)});
