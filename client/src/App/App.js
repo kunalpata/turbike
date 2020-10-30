@@ -9,6 +9,7 @@ import BikeTable from './pages/BikeTable';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Listings from './pages/Listings';
+import BikeView from './pages/BikeView';
 import MyNavbar from './components/MyNavbar';
 
 
@@ -61,6 +62,7 @@ class App extends Component {
               />
 
               <Route exact path='/listings' component={Listings} />
+              <Route exact path='/bikeView' component={BikeView} />
           </Switch>
       </Router>
       

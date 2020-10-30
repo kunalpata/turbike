@@ -9,7 +9,7 @@ const router = express.Router();
 //add item page
 router.use('/api/add', require('./add.js'));
 
-//bike table page
+//get bikes 
 router.use('/api/getBikes', require('./bikeTable.js'));
 
 //delete item page
@@ -19,7 +19,7 @@ router.use('/api/getBikes', require('./bikeTable.js'));
 //router.use('/update', require('./update.js'));
 
 //display items
-//router.use('/search', require('./search'));
+router.use('/api/search', require('./searchBikes.js'));
 
 //aws file storage
 //router.use('/aws', require('./aws.js'));

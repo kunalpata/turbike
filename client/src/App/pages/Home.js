@@ -1,7 +1,7 @@
 // Home.js
 
 import React, { useState } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import BrowseGrid from '../components/BrowseGrid';
 import Footer from '../components/Footer';
@@ -10,7 +10,6 @@ import './Home.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBicycle } from '@fortawesome/free-solid-svg-icons';
 
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -19,7 +18,7 @@ import Button from 'react-bootstrap/Button';
 
 const Home = (props) => {
   console.log(props);
-  const [search, setSearch] = useState();  // store the search results
+  const [search, setSearch] = useState("");  // store the search results
   const { push } = useHistory();  // for redirecting after getting form data
 
   // On submit redirect to listings with search entry from form

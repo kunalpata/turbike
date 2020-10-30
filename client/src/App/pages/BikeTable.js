@@ -1,6 +1,6 @@
 // BikeTable.js
 
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../App.css';
 import Table from '../components/Table.js';
 
@@ -20,7 +20,7 @@ function BikeTable(){
 		const bikes = await data.json();
 
 		setBikes(bikes);
-		console.log(bikes);
+		//console.log(bikes);
 	};
 
 	

@@ -1,6 +1,6 @@
 // Login.js
 
-import React, { Component , useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import './Login.css';
 import { Redirect } from 'react-router-dom';
 import './Login.css';

@@ -1,6 +1,6 @@
 // Register.js
 
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import '../bootstrap/bootstrap.min.css';
 import './Register.css';
 import InformSpan from '../components/InformSpan.js';
