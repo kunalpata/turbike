@@ -18,9 +18,8 @@ const Listings = (props) => {
   const encodedSearch = encodeURIComponent(props.location.state.search);
 
   const getBikesByLocation = async () => {
-    //const url = '/api/getBikes';
     const url = '/api/search?loc=' + encodedSearch;
-    //const url = '/api/search';
+    
     const data = await fetch(url)
     .catch((err)=>{console.log(err)});
 
@@ -30,12 +29,6 @@ const Listings = (props) => {
       setLocation(bikes.data[0]["city"]); // Set location to first item in query results
     })
     .catch((err)=>{console.log(err)});
-
-    //console.log(data);
-
-    //setBikes(bikes);
-    //setLocation(bikes.data[0]["city"]); // Set location to first item in query results
-    //console.log(bikes);
   };
 
   	return (
@@ -47,14 +40,13 @@ const Listings = (props) => {
             </Col>
           </Row>
 
-          <Row>
-
+          <div className="wrap">
             {/* TODO: Implement map api */}
-            <Col md={{span: 7, offset: 0}}>
+            <Col className="left" md={{span: 7, offset: 0}} sm={{span: 12}}>
               <img className="map" alt="static map" src={require("../images/map.png")} />
             </Col>
 
-            <Col md={{span: 5, offset: 0}}>
+            <Col className="right" md={{span: 5, offset: 0}} sm={{span: 12}}>
               {(bikes.hasOwnProperty("hasError") && !bikes.hasError) ? (
                 <div>
                   <BikeCards bikes={bikes.data}/>
@@ -65,9 +57,8 @@ const Listings = (props) => {
                 </div>
               )}
             </Col>
-          </Row>
+          </div>
         </Container>
-       
       </div>
   	);
 };
