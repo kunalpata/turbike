@@ -1,0 +1,34 @@
+.bike-view-body {
+	margin-top: 100px;
+}
+
+.bike-header {
+	display: inline;
+}
+
+#bike-name {
+	font-size: 1.5em;
+}
+
+#star-img {
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+.carousel {
+	margin-top: 25px;
+}
+
+.reservation-button {
+	background-color: #F29898;
+	border-color: #F29898;
+}
+
+.reservation-button:hover {
+	background-color: #B3B3B3;
+	border-color: #B3B3B3;
+}
+
+.label {
+	color: gray;
+}

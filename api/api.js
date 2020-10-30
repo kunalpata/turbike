@@ -67,6 +67,7 @@ const authHelpers = require("./helpers/authenticateHelpers.js");
 
 // Specify remaining routes
 app.use('/', require('./routes/index.js'));
+
 // Handle reqs that don't match any other routes
 app.get('*', (req, res) => {
 	res.sendFile(path.join(__dirname, '..', '/client/build/index.html'));
