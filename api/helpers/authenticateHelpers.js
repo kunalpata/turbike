@@ -39,10 +39,12 @@ var methods = {
                 const hashedPassword = await bcrypt.hash(userInfo.regPassword,10);
                 let query = `INSERT INTO user (user_name,password,first_name,last_name,email) 
                             VALUES ('${userInfo.regUsername}','${hashedPassword}','${userInfo.regFirstname}','${userInfo.regLastname}','${userInfo.regEmail}')`;
-                mysql.query(query, (err, result) => {
+                mysql.query(query, async (err, result) => {
                     if(err){
                         resolve({err:err});
                     }else{
+                        await this.registerHost(result.insertId, mysql);
+                        await this.registerCustomer(result.insertId, mysql);
                         resolve({isRegister:true,newId:result.insertId});
                     }
                 })
@@ -51,6 +53,53 @@ var methods = {
         });
         return promise;
     },
+
+    registerHost: function (userId, mysql){
+        let promise = new Promise(async (resolve, reject) => {
+            let checkIfExists = await this.checkExists(userId, "user_id", "host", mysql);
+            console.log(checkIfExists);
+            if(checkIfExists.hasOwnProperty('err')){
+                resolve({err:checkIfExists.err});
+            }else{
+                if(checkIfExists.isExist){
+                    resolve({isRegisterHost:true, hostId:checkIfExists.matched[0].id});
+                }else{
+                    mysql.query('INSERT INTO host (user_id) VALUES (?)',[userId], (err, result) => {
+                        if(err){
+                            resolve({err: err});
+                        }else{
+                            resolve({isRegisterHost:true, hostId:result.insertId});
+                        }
+                    });
+                }
+            }         
+        })
+        return promise;
+    },
+
+    registerCustomer: function (userId, mysql){
+        let promise = new Promise(async (resolve, reject) => {
+            let checkIfExists = await this.checkExists(userId, "user_id", "customer", mysql);
+            if(checkIfExists.hasOwnProperty('err')){
+                resolve({err:checkIfExists.err});
+            }else{
+                if(checkIfExists.isExist){
+                    resolve({isRegisterCustomer:true, hostId:checkIfExists.matched[0].id});
+                }else{
+                    mysql.query('INSERT INTO customer (user_id,waiver) VALUES (?,?)', [userId, true], (err, result) => {
+                        if(err){
+                            resolve({err: err});
+                        }else{
+                            resolve({isRegisterCustomer:true, hostId:result.insertId});
+                        }
+                    });
+                }
+            }      
+           
+        })
+        return promise;
+    },
+
 
     checkAuthenticated: function(req, res, next){
         if(req.isAuthenticated()){
