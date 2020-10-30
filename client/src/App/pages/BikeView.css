@@ -14,3 +14,13 @@
 	margin-left: 10px;
 	margin-top: 10px;
 }
+
+.reservation-button {
+	background-color: #F29898;
+	border-color: #F29898;
+}
+
+.reservation-button:hover {
+	background-color: #B3B3B3;
+	border-color: #B3B3B3;
+}
