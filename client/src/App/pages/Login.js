@@ -69,7 +69,7 @@ function Login (props){
 
 							<Card.Body>
 								<Link to={"./"}>
-									<Card.Img variant="top" className="logoImg1" src={require("../images/turbike_logo.png")} />
+									<Card.Img variant="top" className="logoImg1L" src={require("../images/turbike_logo.png")} />
 								</Link>
 								<Card.Title className="topTextL" style={{display:"flex", flexFlow:"column", justifyContent:"center"}}>
 									<div style={{width:"100%",fontSize:"40px",textAlign:"center",marginBottom:"5px" }}><strong>Login</strong></div>
