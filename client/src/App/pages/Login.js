@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import './Login.css';
 import { Redirect } from 'react-router-dom';
-import './Login.css';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -62,23 +61,20 @@ function Login (props){
 
 	return (
 		<div className="Login">
-			<Container>
+			<Container fluid>
 				<Row>
-					
-					<Col md={6}>
-					<div className="boxLayout" style={{marginTop: "15%"}}>
-						<Card style={{ width: '30rem', height: '28rem' }} >
-							<Container>
-								<Link to={"./"} className="linkForLogo">
+					<Col sm={1} xl={2}></Col>
+					<Col xl={4} className="colfullpage mobileL ">
+						<Card className="mobileL" >
+
+							<Card.Body>
+								<Link to={"./"}>
 									<Card.Img variant="top" className="logoImg1" src={require("../images/turbike_logo.png")} />
 								</Link>
-								<Card.Title className="topText" style={{display:"flex", flexWrap:"wrap", justifyContent:"center"}}>
-									<div style={{width:"450px",fontSize:"40px",textAlign:"center" }}>Login</div>
-									<div style={{width:"450px",fontSize:"15px",textAlign:"center",margin:"10px" }}>Welcome back!</div>
+								<Card.Title className="topTextL" style={{display:"flex", flexFlow:"column", justifyContent:"center"}}>
+									<div style={{width:"100%",fontSize:"40px",textAlign:"center",marginBottom:"5px" }}><strong>Login</strong></div>
+									<div style={{width:"100%",fontSize:"15px",textAlign:"center" }}>Welcome back!</div>
 								</Card.Title>
-								
-								<Card.Body className="cardBody">
-									
 									
 									<Form>
 										<Form.Group>
@@ -91,22 +87,22 @@ function Login (props){
 											
 									</Form>
 									
-									<div className="accountSignUp">
-										<div style={{margin : "10px"}}>
-											<Button className = "btn-danger" onClick={login} disabled={!enableButton}>Login</Button>										
+									<div className="accountSignUpL">
+										<div style={{display:"flex", justifyContent: "center",margin : "10px"}}>
+											<Button className = "btn-danger" onClick={login} disabled={!enableButton} style={{minWidth:"200px"}}>Login</Button>										
+										</div >
+										<div style={{display:"flex", flexFlow:"row wrap", justifyContent: "center"}}>
+											<div >{"Don't have an account? "}</div>
+											<div><b><Link to={'./Register'} >Sign Up</Link></b></div>
 										</div>
 										
-										<div>Don't have an account? <b><Link to={'./Register'} className="signUp">Sign Up</Link></b></div>
 									</div>
 									
-								</Card.Body>
-							</Container>
-							
+							</Card.Body>
 						</Card>
-					</div>
 					</Col>
-					<Col md={6}></Col>
 				</Row>
+			
 			</Container>
       			{loginStatus.login? <Redirect to="/" /> : null}
 			

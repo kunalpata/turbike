@@ -6,22 +6,33 @@
     height: 100vh;
 }
 
-/*.boxLayout {*/
-/*    position: relative;*/
-/*    top: 25px;*/
-/*    right: 25px;*/
-/*}*/
 
-
-@media only screen and (min-width: 200px) {
-    .boxLayout {
+@media only screen and (max-width: 1200px) {
+    .mobileL{
+        display:flex;
+        align-content: space-around;
+        flex-flow: column;
+        
+        justify-content: center;
         position: relative;
-        top: 25px;
-        left: 50px;
     }
 }
 
-.Welcome {
+
+.colfullpage{
+    margin-top: 80px;
+    display:flex;
+    align-content: space-around;
+    flex-flow: column;
+        
+    justify-content: center;
+    position: relative;
+    max-width:30rem;
+
+}
+
+
+.WelcomeL {
     width: 120px;
     padding: 2px;
     margin-right: auto;
@@ -30,7 +41,7 @@
     bottom: 40px;
 }
 
-.topText {
+.topTextL {
     width: 320px;
     padding: 2px;
     margin-right: auto;
@@ -38,6 +49,7 @@
     margin-bottom: 0;
     margin-top: 0px;
     display: flex;
+    flex-flow: column wrap;
     justify-content: center;
     font-size: 40px;
     position: relative;
@@ -45,26 +57,27 @@
     bottom: -30px;   
 }
 
-.cardBody {
+.cardBodyL {
     padding: 0;
     margin-top: 0;
 }
 
-.logoImg1 {
+.logoImg1L {
     width: 120px;
     height: 120px;
     padding: 0;
     margin-bottom: 0;
+    display: flex;
 }
 
-.linkForLogo {
+.linkForLogoL {
     width: 12vh;
     height: 8vh;
     padding: 0;
     margin-bottom: 0;
 }
 
-.formBox {
+.formBoxL {
     width: 40vh;
     margin: 0 auto;
     display: flex;
@@ -74,7 +87,7 @@
     bottom: 40px;
 }
 
-.loginButton {
+.loginButtonL {
     width: 20%;
     margin: 0 auto;
     display: flex;
@@ -83,12 +96,15 @@
     bottom: 25px;
 }
 
-.accountSignUp {
+.accountSignUpL {
     width: 50%;
     margin: 0 auto;
     font-size: 12px;
     display: flex;
     justify-content: center;
     position: relative;
+    flex-direction: column;
     bottom: 10px;
+    min-width: 0;
 }
+
