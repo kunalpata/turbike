@@ -24,7 +24,6 @@ function Register (props){
 	const [regLastname, setRegisterLastname] = useState("");
 	const [registerStatus, setRegisterStatus] = useState({});
 	const [checkStatus, setCheckStatus] = useState({username:{},email:{},firstname:{},lastname:{},password:{}});
-	const [CardHeight, setCardHeight] = useState(37);
 	const [enableButton, setEnableButton] = useState(false);
 
 	const register = async () => {
@@ -42,18 +41,14 @@ function Register (props){
 	};
 
 	const checkFields = (fieldObj) => {
-		//set the card height to original value
-		let newCardHeight = 37;
 		let isInputsValid = true;
 		for(let key in fieldObj){
 			for(let subkey in fieldObj[key]){
 				if(fieldObj[key][subkey] === false){
-					newCardHeight += 2;
 					isInputsValid = false;
 				}
 			}
-		}
-		setCardHeight(newCardHeight);
+		}	
 		setEnableButton(isInputsValid);
 		return isInputsValid;
 	}
@@ -164,7 +159,7 @@ function Register (props){
 
 	return (
 		<div className="Register">
-			<Container>	
+			<Container fluid>	
 				{registerStatus.isRegister? <DismissibleAlert 
 												title="Account Created!" 
 												message="Account created successfully! Please login." 
@@ -175,61 +170,64 @@ function Register (props){
 												parentCleanup={()=>{}}
 											/>:null}													
 				<Row>
-					<Col md={6}></Col>
-					<Col md={6}>
-						<div className="boxLayout" style={{marginTop: "15%"}}>
-							<Card style={{ width: '30rem', height: CardHeight+"rem"}} >
-								<Container>
-								<Link to={"./"} className="linkForLogo">
-									<Card.Img variant="top" className="logoImg1" src={require("../images/turbike_logo.png")} />
-								</Link>
-								<Card.Title className="topText" style={{width:"450px",fontSize:"30px"}}>Let's get right into it!</Card.Title>
-								<Card.Body className="cardBody">
-										
-										<Form>
-											<Form.Group>
-												<Form.Control type="text" name = "username" placeholder="Username" onChange={textChangeHandler} />
-												{checkStatus.username.isNotExist===false? (<InformSpan classname="warningText" textMsg = "*Username in use!" />) : null}
-												{checkStatus.username.isValid===false? (<InformSpan classname="warningText" textMsg={checkStatus.username.errMsg}/>): null}
-											</Form.Group>
-											<Form.Group>
-												<Form.Control type="password" name = "password" placeholder="Password" onChange={textChangeHandler} />
-												{checkStatus.password.isValid===false? (<InformSpan classname="warningText" textMsg={checkStatus.password.errMsg}/>) : null}
-											</Form.Group>
-											<Form.Group>
-												<Form.Control type="email" name = "email" placeholder="Email" onChange={textChangeHandler} />
-												{checkStatus.email.isNotExist===false? (<InformSpan classname="warningText" textMsg = "*Email in use!" />) : null}
-												{checkStatus.email.isValid===false? (<InformSpan classname="warningText" textMsg={checkStatus.email.errMsg}/>) : null}
-											</Form.Group>
-											<Form.Group>
-												<Form.Control type="test" name = "firstname" placeholder="First Name" onChange={textChangeHandler} />
-												{checkStatus.firstname.isValid===false? (<InformSpan classname="warningText" textMsg={checkStatus.firstname.errMsg}/>):null}
-											</Form.Group>
-											<Form.Group>
-												<Form.Control type="text" name = "lastname" placeholder="Last Name" onChange={textChangeHandler} />
-												{checkStatus.lastname.isValid===false? (<InformSpan classname="warningText" textMsg={checkStatus.lastname.errMsg}/>):null}
-											</Form.Group>
-										</Form>
-										
-									
-									
-										<div style={{fontSize: "12px", margin:"10px"}}>
-											By selecting <strong>{"Agree & Continue"}</strong> below, you agree to Turbike's Terms of Service, Payment Terms of Service and Privacy Policy
+					<Col sm={2} md={4} lg={6} xl={7}></Col>
+					<Col sm={8} md={8} className="colfullpageR">
+							<Card>
+								
+								<Card.Body>
+									<Link to={"./"}>
+										<Card.Img variant="top" className="logoImgR" src={require("../images/turbike_logo.png")} />
+									</Link>
+									<Card.Title className="topTextR" style={{display:"flex", flexFlow:"column", justifyContent:"center"}}>
+										<div style={{width:"100%",fontSize:"35px",textAlign:"center",marginBottom:"5px"}}>
+											<strong>Let's get right into it!</strong>
 										</div>
-									<div className="accountSignUp">
-										<div style={{margin : "10px"}}>
-										<Button className = "btn-danger" onClick={register} disabled={!enableButton}>{"Agree & Continue"}</Button>
-										
+									</Card.Title>
+												
+									<Form>
+										<Form.Group>
+											<Form.Control type="text" name = "username" placeholder="Username" onChange={textChangeHandler} />
+											{checkStatus.username.isNotExist===false? (<InformSpan classname="warningText" textMsg = "*Username in use!" />) : null}
+											{checkStatus.username.isValid===false? (<InformSpan classname="warningText" textMsg={checkStatus.username.errMsg}/>): null}
+										</Form.Group>
+										<Form.Group>
+											<Form.Control type="password" name = "password" placeholder="Password" onChange={textChangeHandler} />
+											{checkStatus.password.isValid===false? (<InformSpan classname="warningText" textMsg={checkStatus.password.errMsg}/>) : null}
+										</Form.Group>
+										<Form.Group>
+											<Form.Control type="email" name = "email" placeholder="Email" onChange={textChangeHandler} />
+											{checkStatus.email.isNotExist===false? (<InformSpan classname="warningText" textMsg = "*Email in use!" />) : null}
+											{checkStatus.email.isValid===false? (<InformSpan classname="warningText" textMsg={checkStatus.email.errMsg}/>) : null}
+										</Form.Group>
+										<Form.Group>
+											<Form.Control type="test" name = "firstname" placeholder="First Name" onChange={textChangeHandler} />
+											{checkStatus.firstname.isValid===false? (<InformSpan classname="warningText" textMsg={checkStatus.firstname.errMsg}/>):null}
+										</Form.Group>
+										<Form.Group>
+											<Form.Control type="text" name = "lastname" placeholder="Last Name" onChange={textChangeHandler} />
+											{checkStatus.lastname.isValid===false? (<InformSpan classname="warningText" textMsg={checkStatus.lastname.errMsg}/>):null}
+										</Form.Group>
+									</Form>																				
+									
+									<div style={{fontSize: "12px", margin:"10px"}}>
+										By selecting <strong>{"Agree & Continue"}</strong> below, you agree to Turbike's Terms of Service, Payment Terms of Service and Privacy Policy
+									</div>
+
+									<div className="accountSignUpR">
+										<div style={{display:"flex", flexFlow:"row wrap", margin : "10px", justifyContent:"center"}}>
+											<Button className = "btn-danger" onClick={register} disabled={!enableButton} style={{minWidth: "200px"}}>{"Agree & Continue"}</Button>	
 										</div>
 										
-										<div>Already have an account? <b><Link to={'./Login'} className="signUp">Log in</Link></b></div>
+										<div style={{display:"flex", flexFlow:"row wrap", justifyContent: "center"}}>
+											<div>Already have an account?</div>
+											<div><b><Link to={'./Login'}>Log in</Link></b></div> 
+										</div>
 									</div>
 								</Card.Body>
 								
-								</Container>
 							</Card>
-						</div>
 					</Col>
+
 				</Row>
 				
 			</Container>
