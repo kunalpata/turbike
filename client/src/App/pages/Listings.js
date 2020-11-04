@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import BikeCards from '../components/BikeCards';
+import MapContainer from '../components/Map';
 import './Listings.css';
 
 import Container from 'react-bootstrap/Container';
@@ -41,9 +42,16 @@ const Listings = (props) => {
           </Row>
 
           <div className="wrap">
-            {/* TODO: Implement map api */}
             <Col className="left" md={{span: 7, offset: 0}} sm={{span: 12}}>
-              <img className="map" alt="static map" src={require("../images/map.png")} />
+              {(bikes.data && bikes.data[0]) ? (
+                <div>
+                  <MapContainer bikes={bikes.data} lat={bikes.data[0]['latitude']} lng={bikes.data[0]['longitude']} />
+                </div>
+              ) : (
+                <div>
+                  <p>Map is loading...</p>
+                </div>
+              )}
             </Col>
 
             <Col className="right" md={{span: 5, offset: 0}} sm={{span: 12}}>
@@ -53,7 +61,7 @@ const Listings = (props) => {
                 </div>
               ) : (
                 <div>
-                  <p>Sorry, no bikes were found for your search</p>
+                  <p>Bikes are loading...</p>
                 </div>
               )}
             </Col>
