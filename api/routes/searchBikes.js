@@ -9,7 +9,7 @@ require('dotenv').config();
 router.get('/', (req, res) => {
     let loc = '%' + req.query.loc + '%';
 
-    let query = 'SELECT b.id,b.price,b.bike_details,u.user_name,u.email,l.address,l.city,l.state,l.zip' +
+    let query = 'SELECT b.id,b.price,b.bike_details,u.user_name,u.email,l.address,l.city,l.state,l.zip,l.latitude,l.longitude' +
                 ' FROM bike b inner join user u on b.user_id = u.id ' + 
                 'inner join location l on b.location_id = l.id ' +
                 'WHERE l.city LIKE ? or l.state LIKE ? or l.zip LIKE ? ' +
