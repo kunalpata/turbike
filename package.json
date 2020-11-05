@@ -2,5 +2,8 @@
 	"scripts": {
 		"heroku-prebuild": "cd client && npm install && npm run build && cd .. && cd api && npm install",
 		"start": "cd api && npm start"
+	},
+	"dependencies": {
+		"google-maps-react": "^2.0.6"
 	}
 }

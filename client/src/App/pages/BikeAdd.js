@@ -36,23 +36,23 @@ const BikeAdd = (props) => {
                                 </Form.Row>
 
                                 <Form.Row>
+                                    <Form.Group as={Col} controlId="bSize">
+                                        <Form.Label>Bike Size</Form.Label>
+                                        <Form.Control type="text" />
+                                    </Form.Group>
+                                    <Form.Group as={Col} controlId="bPrice">
+                                        <Form.Label>Price</Form.Label>
+                                        <Form.Control type="text" />
+                                    </Form.Group>
+                                </Form.Row>
+
+                                <Form.Row>
                                     <Form.Group as={Col} controlId="bCity">
                                         <Form.Label>City</Form.Label>
                                         <Form.Control type="text" />
                                     </Form.Group>
                                     <Form.Group as={Col} controlId="bState">
                                         <Form.Label>***State</Form.Label>
-                                        <Form.Control type="text" />
-                                    </Form.Group>
-                                </Form.Row>
-
-                                <Form.Row>
-                                    <Form.Group as={Col} controlId="bPrice">
-                                        <Form.Label>Price</Form.Label>
-                                        <Form.Control type="text" />
-                                    </Form.Group>
-                                    <Form.Group as={Col} controlId="bCity">
-                                        <Form.Label>City</Form.Label>
                                         <Form.Control type="text" />
                                     </Form.Group>
                                 </Form.Row>
@@ -70,6 +70,12 @@ const BikeAdd = (props) => {
                                         <Form.Check type="Checkbox" label="Disk Brakes" />
                                         <Form.Check type="Checkbox" label="Rim Brakes" />
                                         <Form.Check type="Checkbox" label="Geared" />
+                                    </Form.Group>
+                                </Form.Row>
+
+                                <Form.Row>
+                                    <Form.Group as={Col} controlId="bCity">
+                                        <Button className="add-img-button">Add images</Button>
                                     </Form.Group>
                                 </Form.Row>
 
