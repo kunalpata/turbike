@@ -39,7 +39,6 @@ const MyNavbar = (props) => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
-          	
           	{
               props.userInfo.isAuthenticated ? 
               (
@@ -54,7 +53,7 @@ const MyNavbar = (props) => {
             }
             {
               !props.userInfo.isAuthenticated ?
-              <Nav.Link as={Link} to="./register">Sign up 
+              <Nav.Link as={Link} to="./register">Sign up
                 <FontAwesomeIcon className="user-icon" icon={faUser} />
               </Nav.Link>
               :

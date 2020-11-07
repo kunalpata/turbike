@@ -36,6 +36,7 @@ const BikeAdd = (props) => {
                                 </Form.Row>
 
                                 <Form.Row>
+
                                     <Form.Group as={Col} controlId="bSize">
                                         <Form.Label>Bike Size</Form.Label>
                                         <Form.Control type="text" />
