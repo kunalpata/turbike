@@ -1,5 +1,9 @@
 /*BikeAdd.css*/
 
+.AddNewBike{
+    margin-top:100px;
+}
+
 .add-form-body {
     margin-top: 100px;
 }
