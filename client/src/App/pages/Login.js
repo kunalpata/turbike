@@ -12,9 +12,11 @@ import Button from 'react-bootstrap/Button';
 import Card from "react-bootstrap/Card";
 import {Link} from "react-router-dom";
 import InformSpan from '../components/InformSpan.js';
+import DismissibleAlert from '../components/DismissibleAlert.js';
 
 function Login (props){
-
+	console.log("login route")
+	console.log(props);
 	const [loginUsername, setLoginUsername] = useState("");
 	const [loginPassword, setLoginPassword] = useState("");
 	const [loginStatus, setLoginStatus] = useState({});
@@ -62,6 +64,15 @@ function Login (props){
 	return (
 		<div className="Login">
 			<Container fluid>
+				{(props.location.state != undefined) && (props.location.state.showAlert === true)? <DismissibleAlert
+													title="Warning"
+													message={props.location.state.warningText}
+													type="danger"
+													redirectLink=""
+													shouldRedirect={false}
+													duration={5000}
+													parentCleanup={()=>{}}
+												/>:null}
 				<Row>
 					<Col sm={1} xl={2}></Col>
 					<Col xl={4} className="colfullpage mobileL ">

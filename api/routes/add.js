@@ -7,7 +7,7 @@ const authHelpers = require('../helpers/authenticateHelpers.js');
 require('dotenv').config();
 
 //Add new bike, user must login to add bike
-router.post('/bike', async (req, res) => {
+router.post('/bike', authHelpers.checkAuthenticated, async (req, res) => {
     console.log(req.body); //body should have {user_id:,streetAddress:,city:,state:,zip:,functional:,price:,penalty:,bike_details:}
     console.log("user",req.user);
     let location_id = await getLocationID({ street: req.body.address,
@@ -19,7 +19,7 @@ router.post('/bike', async (req, res) => {
     
     if(location_id['err'] == undefined){
         let newBike = {
-            user_id:req.body.user_Id,
+            user_id:req.user.id,
             location_id: location_id.location_id,
             functional:1,
             price: req.body.rentPrice,

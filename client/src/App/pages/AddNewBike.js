@@ -9,10 +9,11 @@ import Button from 'react-bootstrap/Button';
 import Card from "react-bootstrap/Card";
 import {Link} from "react-router-dom";
 import InformSpan from '../components/InformSpan.js';
+import DismissibleAlert from '../components/DismissibleAlert.js'
 import './AddNewBike.css'
 
 function AddNewBike(props){
-
+    console.log(props)
     //fix array for states
     const states = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA",
                     "MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN",
@@ -21,6 +22,9 @@ function AddNewBike(props){
     const [categories, setCategories] = useState([]);
     const [features, setFeatures] = useState([]);
     const [bikeInfo, setBikeInfo] = useState({});
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
+    const [alertInfo, setAlertInfo] = useState({});
+    const [disableButton, setDisableButton] = useState(false);
 
     const textChangeHandler = (e) => {
 		let curInput = e.target.value;
@@ -62,30 +66,85 @@ function AddNewBike(props){
 
     }
 
+    const fetchUser = async() => {
+        await fetch('/api/auth/user')
+        .then(res => res.json())
+        .then((res) => {
+            console.log(res);
+            props.passUser({...res});
+            setIsAuthenticated(res.isAuthenticated);
+        })
+    }
+
     const postBike = async () => {
+        setDisableButton(true);
         await fetch('/api/add/bike',{
             method: 'POST',
             headers: { 'Content-Type' : 'application/json'},
             body: JSON.stringify({
                 ...bikeInfo,
-                user_Id: 7  //placeholder
             })
         })
         .then((res) => {return res.json()})
         .then((res) => {
             console.log(res);
+            if(res.isAuthenticated == false){
+                setIsAuthenticated(false);
+            }else if(res.hasOwnProperty('err')){
+                setAlertInfo({hasError:true, status:res});
+            }else{
+                setAlertInfo({isBikeAdded:true, status:res});
+            }
+            
         })
     }
 
+    const closeAlert = () => {
+        setAlertInfo({hasError:false,isBikeAdded:false,status:{}});
+        setDisableButton(false);
+    }
 
     useEffect(() => {
+        fetchUser();
         fetchCategory();
         fetchFeature();
     },[])
 
     return (
 		<div className="AddNewBike">
+
 			<Container style={{marginTop: "150px"}}>
+            {!isAuthenticated?<Redirect 
+                                    to={{
+                                        pathname: '/login',
+                                        state: {
+                                            showAlert: true,
+                                            warningText: "You must login to continue!"
+                                        }
+                                    }}/>:null
+            }
+            {alertInfo.isBikeAdded == true?<DismissibleAlert
+                                                title={alertInfo.status.status}
+                                                message="Bike added successfully!"
+                                                type = "info"
+                                                redirectLink="/"
+                                                shouldRedirect={true}
+                                                duration={5000}
+                                                parentCleanup={()=>{}}
+                                          />: null
+
+            }
+            {alertInfo.hasError == true?<DismissibleAlert
+                                                title="Adding bike error"
+                                                message="Server Error while adding bike, please try again later!"
+                                                type = "danger"
+                                                redirectLink="/"
+                                                shouldRedirect={false}
+                                                duration={3000}
+                                                parentCleanup={closeAlert}
+                                          />: null
+
+            }
                 <h1 style={{textAlign:"center",margin:"20px"}}>Add a Bike</h1>
 				<Row>
                     <Col></Col>
@@ -94,7 +153,7 @@ function AddNewBike(props){
                             <Form.Row>
                                 <Form.Group as={Col} lg={9}>
                                 
-                                    <Form.Label>Title</Form.Label>
+                                    <Form.Label>Bike name</Form.Label>
                                     <Form.Control  type="text" placeholder="Bike Name" name="bikename" onChange={textChangeHandler} />
                                 </Form.Group>
                                 <Form.Group as={Col} lg={3}>    
@@ -165,7 +224,7 @@ function AddNewBike(props){
                                                 
                         </Form>	
                         <Row style={{display:"flex", justifyContent:"center"}}>
-                            <Button className = "btn-danger" onClick={postBike} disabled={false} style={{minWidth:"200px"}}>Add Bike</Button>	
+                            <Button className = "btn-danger" onClick={postBike} disabled={disableButton} style={{minWidth:"200px"}}>Add Bike</Button>	
                         </Row>	
                     </Col>
                     <Col></Col>
