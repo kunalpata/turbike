@@ -10,6 +10,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Listings from './pages/Listings';
 import BikeView from './pages/BikeView';
+import BikeAdd from './pages/BikeAdd';
 import MyNavbar from './components/MyNavbar';
 import AddNewBike from './pages/AddNewBike';
 
@@ -65,6 +66,7 @@ class App extends Component {
 
               <Route exact path='/listings' component={Listings} />
               <Route exact path='/bikeView' component={BikeView} />
+              <Route exact path='/bikeAdd' component={BikeAdd} />
               
           </Switch>
       </Router>

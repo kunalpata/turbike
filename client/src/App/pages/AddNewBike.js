@@ -113,119 +113,128 @@ function AddNewBike(props){
     return (
 		<div className="AddNewBike">
 
-			<Container style={{marginTop: "150px"}}>
-            {!isAuthenticated?<Redirect 
-                                    to={{
-                                        pathname: '/login',
-                                        state: {
-                                            showAlert: true,
-                                            warningText: "You must login to continue!"
-                                        }
-                                    }}/>:null
-            }
-            {alertInfo.isBikeAdded == true?<DismissibleAlert
-                                                title={alertInfo.status.status}
-                                                message="Bike added successfully!"
-                                                type = "info"
-                                                redirectLink="/"
-                                                shouldRedirect={true}
-                                                duration={5000}
-                                                parentCleanup={()=>{}}
-                                          />: null
-
-            }
-            {alertInfo.hasError == true?<DismissibleAlert
-                                                title="Adding bike error"
-                                                message="Server Error while adding bike, please try again later!"
-                                                type = "danger"
-                                                redirectLink="/"
-                                                shouldRedirect={false}
-                                                duration={3000}
-                                                parentCleanup={closeAlert}
-                                          />: null
-
-            }
-                <h1 style={{textAlign:"center",margin:"20px"}}>Add a Bike</h1>
+			<Container style={{marginTop: "100px"}}>
+            
 				<Row>
                     <Col></Col>
                     <Col lg={10}>
-                        <Form>
-                            <Form.Row>
-                                <Form.Group as={Col} lg={9}>
-                                
-                                    <Form.Label>Bike name</Form.Label>
-                                    <Form.Control  type="text" placeholder="Bike Name" name="bikename" onChange={textChangeHandler} />
-                                </Form.Group>
-                                <Form.Group as={Col} lg={3}>    
-                                    <Form.Label>Rent Per Day</Form.Label>
-                                    <Form.Control  type="text" placeholder="Rental Price" name="rentPrice" onChange={textChangeHandler} />
-                            
-                                </Form.Group>
+                        <Card>
+                            <Card.Body>
+                                {!isAuthenticated?<Redirect 
+                                                        to={{
+                                                            pathname: '/login',
+                                                            state: {
+                                                                showAlert: true,
+                                                                warningText: "You must login to continue!"
+                                                            }
+                                                        }}/>:null
+                                }
+                                {alertInfo.isBikeAdded == true?<DismissibleAlert
+                                                                    title={alertInfo.status.status}
+                                                                    message="Bike added successfully!"
+                                                                    type = "info"
+                                                                    redirectLink="/"
+                                                                    shouldRedirect={true}
+                                                                    duration={5000}
+                                                                    parentCleanup={()=>{}}
+                                                            />: null
 
-                            </Form.Row>
+                                }
+                                {alertInfo.hasError == true?<DismissibleAlert
+                                                                    title="Adding bike error"
+                                                                    message="Server Error while adding bike, please try again later!"
+                                                                    type = "danger"
+                                                                    redirectLink="/"
+                                                                    shouldRedirect={false}
+                                                                    duration={3000}
+                                                                    parentCleanup={closeAlert}
+                                                            />: null
 
-                            <Form.Row>
-                                <Form.Group as={Col} lg={6}>
-                                    <Form.Label>Brand</Form.Label>
-                                    <Form.Control type="text" placeholder="Brand" name="bikeBrand" onChange={textChangeHandler} />
-                                </Form.Group>
-                                <Form.Group as={Col} lg={6}>
-                                    <Form.Label>Type</Form.Label>
-                                    <Form.Control as="select" name="category" defaultValue="Choose..." onChange={textChangeHandler}>
-                                        <option>Choose...</option>
-                                        {categories.map((category) =>
-                                            (<option key={category.id}>{category.name}</option>)
-                                        )}
-                                    </Form.Control>
-                                </Form.Group>
-                            </Form.Row>
+                                }
+                    
+                                <Card.Title style={{display:"flex", flexFlow:"column", justifyContent:"center"}}>
+                                    <div style={{width:"100%",fontSize:"40px",textAlign:"center",marginBottom:"5px" }}><strong>Add a bike</strong></div>
+                                </Card.Title>
+                                <Form>
+                                    <Form.Row>
+                                        <Form.Group as={Col} lg={9}>
+                                        
+                                            <Form.Label>Bike name</Form.Label>
+                                            <Form.Control  type="text" placeholder="Bike Name" name="bikename" onChange={textChangeHandler} />
+                                        </Form.Group>
+                                        <Form.Group as={Col} lg={3}>    
+                                            <Form.Label>Rent Per Day</Form.Label>
+                                            <Form.Control  type="text" placeholder="Rental Price" name="rentPrice" onChange={textChangeHandler} />
+                                    
+                                        </Form.Group>
 
-                            <Form.Row>
-                                <Form.Group as={Col} lg={12}>
-                                    <Form.Label>Location</Form.Label>
-                                    <Form.Control type="text" placeholder="Address" name="address" onChange={textChangeHandler} />
-                                </Form.Group>
-                            </Form.Row>
+                                    </Form.Row>
 
-                            <Form.Row>
-                                <Form.Group as={Col}>
-                                    <Form.Control type="text" placeholder="City" name="city" onChange={textChangeHandler} />
-                                </Form.Group>
+                                    <Form.Row>
+                                        <Form.Group as={Col} lg={6}>
+                                            <Form.Label>Brand</Form.Label>
+                                            <Form.Control type="text" placeholder="Brand" name="bikeBrand" onChange={textChangeHandler} />
+                                        </Form.Group>
+                                        <Form.Group as={Col} lg={6}>
+                                            <Form.Label>Type</Form.Label>
+                                            <Form.Control as="select" name="category" defaultValue="Choose..." onChange={textChangeHandler}>
+                                                <option>Choose...</option>
+                                                {categories.map((category) =>
+                                                    (<option key={category.id}>{category.name}</option>)
+                                                )}
+                                            </Form.Control>
+                                        </Form.Group>
+                                    </Form.Row>
 
-                                <Form.Group as={Col}>
-                                    <Form.Control as="select" name="state" defaultValue="Choose..." onChange={textChangeHandler}>
-                                        <option>State</option>
-                                        {states.map((state,index) => 
-                                            (<option key={index}>{state}</option>)
-                                        )}
-                                    </Form.Control>
-                                </Form.Group>
+                                    <Form.Row>
+                                        <Form.Group as={Col} lg={12}>
+                                            <Form.Label>Location</Form.Label>
+                                            <Form.Control type="text" placeholder="Address" name="address" onChange={textChangeHandler} />
+                                        </Form.Group>
+                                    </Form.Row>
 
-                                <Form.Group as={Col}>
-                                    <Form.Control type="text" placeholder="Zip" name="zip" onChange={textChangeHandler} />
-                                </Form.Group>
+                                    <Form.Row>
+                                        <Form.Group as={Col}>
+                                            <Form.Control type="text" placeholder="City" name="city" onChange={textChangeHandler} />
+                                        </Form.Group>
 
-                            </Form.Row>
+                                        <Form.Group as={Col}>
+                                            <Form.Control as="select" name="state" defaultValue="Choose..." onChange={textChangeHandler}>
+                                                <option>State</option>
+                                                {states.map((state,index) => 
+                                                    (<option key={index}>{state}</option>)
+                                                )}
+                                            </Form.Control>
+                                        </Form.Group>
 
-                            <Form.Row>
+                                        <Form.Group as={Col}>
+                                            <Form.Control type="text" placeholder="Zip" name="zip" onChange={textChangeHandler} />
+                                        </Form.Group>
 
-                                <Form.Group as={Col} lg={3}>
-                                    <Form.Label>Features</Form.Label>
-                                    {features.map((feature) => 
-                                        (<Form.Check type="checkbox" name="features" id={feature.id} value={feature.name} label={feature.name} key={feature.id} onClick={textChangeHandler} />)
-                                    )}
-                                </Form.Group>
-                                <Form.Group as={Col} lg={9}>
-                                    <Form.Label>Tell us more about it</Form.Label>
-                                    <Form.Control as="textarea" rows="10" placeholder="Type Here" name="bikeDesc" onChange={textChangeHandler} />
-                                </Form.Group>
+                                    </Form.Row>
 
-                            </Form.Row>
-                                                
-                        </Form>	
-                        <Row style={{display:"flex", justifyContent:"center"}}>
-                            <Button className = "btn-danger" onClick={postBike} disabled={disableButton} style={{minWidth:"200px"}}>Add Bike</Button>	
-                        </Row>	
+                                    <Form.Row>
+
+                                        <Form.Group as={Col} lg={3}>
+                                            <Form.Label>Features</Form.Label>
+                                            {features.map((feature) => 
+                                                (<Form.Check type="checkbox" name="features" id={feature.id} value={feature.name} label={feature.name} key={feature.id} onClick={textChangeHandler} />)
+                                            )}
+                                        </Form.Group>
+                                        <Form.Group as={Col} lg={9}>
+                                            <Form.Label>Tell us more about it</Form.Label>
+                                            <Form.Control as="textarea" rows="10" placeholder="Type Here" name="bikeDesc" onChange={textChangeHandler} />
+                                        </Form.Group>
+
+                                    </Form.Row>
+                                                        
+                                </Form>	
+                                <Row style={{display:"flex", justifyContent:"center"}}>
+                                    <Button className = "btn-danger" onClick={postBike} disabled={disableButton} style={{minWidth:"200px"}}>Add Bike</Button>	
+                                </Row>	
+                            </Card.Body>
+                        </Card>
+                        
                     </Col>
                     <Col></Col>
                     			
