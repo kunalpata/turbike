@@ -11,6 +11,16 @@
     font-size: 40px;
 }
 
+.add-img-button{
+    background-color: #607180;
+    border-color: #607180;
+}
+
+.add-img-button:hover {
+    background-color: #B3B3B3;
+    border-color: #B3B3B3;
+}
+
 /*.bDetails-sec {*/
 /*    height: 200px;*/
 /*    padding: 20px;*/

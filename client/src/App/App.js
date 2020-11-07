@@ -12,6 +12,7 @@ import Listings from './pages/Listings';
 import BikeView from './pages/BikeView';
 import BikeAdd from './pages/BikeAdd';
 import MyNavbar from './components/MyNavbar';
+import AddNewBike from './pages/AddNewBike';
 
 
 
@@ -53,6 +54,7 @@ class App extends Component {
           <MyNavbar userInfo={this.state.user} passUser={this.authenticateInfo}/>
           <Switch>
               <Route exact path='/' render={(props) => <Home {...props} userInfo={this.state.user}/>} />
+              <Route exact path='/addBike' render={(props) => <AddNewBike {...props} passUser={this.authenticateInfo}/>} />
               <Route path='/bikeTable' component={BikeTable} />
               <Route 
                 path='/register' 
@@ -66,6 +68,7 @@ class App extends Component {
               <Route exact path='/listings' component={Listings} />
               <Route exact path='/bikeView' component={BikeView} />
               <Route exact path='/bikeAdd' component={BikeAdd} />
+
           </Switch>
       </Router>
       
