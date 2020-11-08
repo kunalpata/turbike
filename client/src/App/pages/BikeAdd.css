@@ -1,5 +1,9 @@
 /*BikeAdd.css*/
 
+.AddNewBike{
+    margin-top:100px;
+}
+
 .add-form-body {
     margin-top: 100px;
 }
@@ -9,6 +13,16 @@
     padding: 1px;
     margin: 10px auto 30px;
     font-size: 40px;
+}
+
+.add-img-button{
+    background-color: #607180;
+    border-color: #607180;
+}
+
+.add-img-button:hover {
+    background-color: #B3B3B3;
+    border-color: #B3B3B3;
 }
 
 /*.bDetails-sec {*/

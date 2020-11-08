@@ -12,6 +12,9 @@ router.use('/api/add', require('./add.js'));
 //get bikes 
 router.use('/api/getBikes', require('./bikeTable.js'));
 
+//get categories
+router.use('/api/get', require('./utilities.js'));
+
 //delete item page
 //router.use('/delete', require('./delete.js'));
 

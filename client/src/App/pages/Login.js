@@ -1,6 +1,6 @@
 // Login.js
 
-import React, { useState } from 'react';
+import React, { useState, useRef} from 'react';
 import './Login.css';
 import { Redirect } from 'react-router-dom';
 
@@ -12,14 +12,17 @@ import Button from 'react-bootstrap/Button';
 import Card from "react-bootstrap/Card";
 import {Link} from "react-router-dom";
 import InformSpan from '../components/InformSpan.js';
+import DismissibleAlert from '../components/DismissibleAlert.js';
 
 function Login (props){
-
+	console.log("login route")
+	console.log(props);
 	const [loginUsername, setLoginUsername] = useState("");
 	const [loginPassword, setLoginPassword] = useState("");
 	const [loginStatus, setLoginStatus] = useState({});
 	const [enableButton, setEnableButton] = useState(false);
 	const [attemptFailed, setAttemptFailed] = useState(false);
+	const btnRef = useRef(null);
 
 	const login = async () => {
 		await fetch('/api/auth/login',{
@@ -58,10 +61,24 @@ function Login (props){
 		(curInput !== "" && otherInput !== "")?setEnableButton(true):setEnableButton(false);
 	}
 
+	const handleKeypress = (e) => {
+		if (e.charCode === 13){
+			btnRef.current.click();
+		}
+	}
 
 	return (
 		<div className="Login">
 			<Container fluid>
+				{(props.location.state != undefined) && (props.location.state.showAlert === true)? <DismissibleAlert
+													title="Warning"
+													message={props.location.state.warningText}
+													type="danger"
+													redirectLink=""
+													shouldRedirect={false}
+													duration={5000}
+													parentCleanup={()=>{}}
+												/>:null}
 				<Row>
 					<Col sm={1} xl={2}></Col>
 					<Col xl={4} className="colfullpage mobileL ">
@@ -79,17 +96,17 @@ function Login (props){
 									<Form>
 										<Form.Group>
 											{attemptFailed?(<InformSpan classname="warningText" textMsg="Incorrect Username and/or Password!"/>):null}
-											<Form.Control type="text" placeholder="Username" name="username" onChange={textChangeHandler} />
+											<Form.Control type="text" placeholder="Username" name="username" onKeyPress={handleKeypress} onChange={textChangeHandler} />
 										</Form.Group>	
 										<Form.Group>
-											<Form.Control type="password" placeholder="Password" name="password" onChange={textChangeHandler} />
+											<Form.Control type="password" placeholder="Password" name="password" onKeyPress={handleKeypress} onChange={textChangeHandler} />
 										</Form.Group>	
 											
 									</Form>
 									
 									<div className="accountSignUpL">
 										<div style={{display:"flex", justifyContent: "center",margin : "10px"}}>
-											<Button className = "btn-danger" onClick={login} disabled={!enableButton} style={{minWidth:"200px"}}>Login</Button>										
+											<Button className = "btn-danger" onClick={login} ref={btnRef} disabled={!enableButton} style={{minWidth:"200px"}}>Login</Button>										
 										</div >
 										<div style={{display:"flex", flexFlow:"row wrap", justifyContent: "center"}}>
 											<div >{"Don't have an account? "}</div>
