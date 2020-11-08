@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../dbcon').pool;
 const authHelpers = require('../helpers/authenticateHelpers.js');
+const fetch = require('node-fetch');
 
 //add dotenv functionality
 require('dotenv').config();
@@ -119,6 +120,7 @@ function addBikeCategory(relationship){
     return promise;
 }
 
+
 function getCategoryID(catName){
     let promise = new Promise((resolve, reject) => {
         pool.query('SELECT * FROM category WHERE name=?',[catName], (err, result) => {
@@ -163,24 +165,51 @@ function getLocationID(address){  //address is an object: {street:,city:,state:,
 }
 
 function addNewLocation(address){  //add a new location if address is not in location table and return new location_id
-    let promise = new Promise((resolve, reject)=>{
+    let promise = new Promise(async (resolve, reject)=>{
         console.log(address);
-        pool.query('INSERT INTO location (address,city,state,zip,latitude,longitude)' + 
-            'VALUES (?,?,?,?,?,?)',
-            [
-                address.street,
-                address.city,
-                address.state,
-                address.zip,
-                address.lat,
-                address.long
-            ], (err,result)=>{
-                if(err){
-                    resolve({err:err});
-                }else{
-                    resolve({location_id:result.insertId});
-                }
-        });
+        //retrieve lat/long first
+        let locationInfo = await getLatLong(address);
+        
+        if(locationInfo['err'] == undefined){
+            pool.query('INSERT INTO location (address,city,state,zip,latitude,longitude)' + 
+                'VALUES (?,?,?,?,?,?)',
+                [
+                    address.street,
+                    address.city,
+                    address.state,
+                    address.zip,
+                    locationInfo.location.lat,
+                    locationInfo.location.lng
+                ], (err,result)=>{
+                    if(err){
+                        resolve({err:err});
+                    }else{
+                        resolve({location_id:result.insertId});
+                    }
+            });
+        }else{
+            resolve({err:locationInfo['err']});
+        }
+        
+    });
+    return promise;
+}
+
+function getLatLong(address){
+    let promise = new Promise(async (resolve, reject) => {
+        let addressString = address.street + ', ' + address.city + ', ' + address.state;
+        addressString = addressString.replace(/\s/g, '+');
+        console.log(addressString);
+        await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?address=${addressString}&key=${process.env.REACT_APP_GOOGLE}`
+        )
+        .then((data) => {
+            return data.json();
+        })
+        .then((data) => {
+            resolve({location:data.results[0].geometry.location});
+        })
+        .catch((err) => resolve({err:err}));
     });
     return promise;
 }

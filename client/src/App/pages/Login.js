@@ -1,6 +1,6 @@
 // Login.js
 
-import React, { useState } from 'react';
+import React, { useState, useRef} from 'react';
 import './Login.css';
 import { Redirect } from 'react-router-dom';
 
@@ -22,6 +22,7 @@ function Login (props){
 	const [loginStatus, setLoginStatus] = useState({});
 	const [enableButton, setEnableButton] = useState(false);
 	const [attemptFailed, setAttemptFailed] = useState(false);
+	const btnRef = useRef(null);
 
 	const login = async () => {
 		await fetch('/api/auth/login',{
@@ -60,6 +61,11 @@ function Login (props){
 		(curInput !== "" && otherInput !== "")?setEnableButton(true):setEnableButton(false);
 	}
 
+	const handleKeypress = (e) => {
+		if (e.charCode === 13){
+			btnRef.current.click();
+		}
+	}
 
 	return (
 		<div className="Login">
@@ -90,17 +96,17 @@ function Login (props){
 									<Form>
 										<Form.Group>
 											{attemptFailed?(<InformSpan classname="warningText" textMsg="Incorrect Username and/or Password!"/>):null}
-											<Form.Control type="text" placeholder="Username" name="username" onChange={textChangeHandler} />
+											<Form.Control type="text" placeholder="Username" name="username" onKeyPress={handleKeypress} onChange={textChangeHandler} />
 										</Form.Group>	
 										<Form.Group>
-											<Form.Control type="password" placeholder="Password" name="password" onChange={textChangeHandler} />
+											<Form.Control type="password" placeholder="Password" name="password" onKeyPress={handleKeypress} onChange={textChangeHandler} />
 										</Form.Group>	
 											
 									</Form>
 									
 									<div className="accountSignUpL">
 										<div style={{display:"flex", justifyContent: "center",margin : "10px"}}>
-											<Button className = "btn-danger" onClick={login} disabled={!enableButton} style={{minWidth:"200px"}}>Login</Button>										
+											<Button className = "btn-danger" onClick={login} ref={btnRef} disabled={!enableButton} style={{minWidth:"200px"}}>Login</Button>										
 										</div >
 										<div style={{display:"flex", flexFlow:"row wrap", justifyContent: "center"}}>
 											<div >{"Don't have an account? "}</div>
