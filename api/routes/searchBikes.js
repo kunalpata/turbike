@@ -10,29 +10,24 @@ require('dotenv').config();
 router.get('/', (req, res) => {
     // pass user search query to get the coords for it
     getCoords(req.query.loc).then(location => {
-        //console.log(location);
-
-        // query by match to city name, state name, or zip code
-        // let loc = '%' + req.query.loc + '%';
-        // let query = 'SELECT b.id,b.price,b.bike_details,u.user_name,u.email,l.address,l.city,l.state,l.zip,l.latitude,l.longitude' +
-        //             ' FROM bike b inner join user u on b.user_id = u.id ' + 
-        //             'inner join location l on b.location_id = l.id ' +
-        //             'WHERE l.city LIKE ? or l.state LIKE ? or l.zip LIKE ? ' +
-        //             'LIMIT 10;'
-
         // get the searchs lat/lng from the location return
         const lat = location.lat;
         const lng = location.lng;
 
         // query by closest match to coordinates of search
         // formula source: https://stackoverflow.com/questions/11112926
-        let query = 'SELECT b.id,b.price,b.bike_details,u.user_name,u.email,l.address,l.city,l.state,l.zip,l.latitude,l.longitude' +
-                    ', ( 3959 * acos( cos( radians(l.latitude) ) * cos( radians(?) ) *' +
-                    'cos( radians(?) - radians(l.longitude) ) + sin( radians(l.latitude) ) *' +
-                    'sin( radians(?) ) ) )' +
-                    ' AS distance' +
+        let query = 'SELECT b.id,b.price,b.bike_details,b.brand,' +
+                        'u.user_name,u.email,' +
+                        'l.address,l.city,l.state,l.zip,l.latitude,l.longitude,' +
+                        'c.name,' +
+                        //'r.rating_score,r.rating_details' +
+                        ' ( 3959 * acos( cos( radians(l.latitude) ) * cos( radians(?) ) * cos( radians(?) - radians(l.longitude) ) + sin( radians(l.latitude) ) * sin( radians(?) ) ) )' +
+                        ' AS distance' +
                     ' FROM bike b inner join user u on b.user_id = u.id' + 
                     ' inner join location l on b.location_id = l.id ' +
+                    ' inner join bike_category bc on b.id = bc.bike_id ' +
+                    ' inner join category c on bc.category_id = c.id' +
+                    //' inner join rating r on b.id = r.bike_id' +
                     ' ORDER BY distance LIMIT 0, 10;'
 
                     // adding having distance for filtering by distance
@@ -73,8 +68,6 @@ function getCoords(location){
         fetch(url)
         .then(res => res.json())
         .then(json => {
-          //console.log(json);
-          //console.log(json.results[0].geometry.location);
 
           // get and return the coordinates from the response
           resolve(json.results[0].geometry.location)
