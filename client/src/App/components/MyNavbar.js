@@ -40,12 +40,13 @@ const MyNavbar = (props) => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
           	{
-              props.userInfo.isAuthenticated ? 
+              props.userInfo.isAuthenticated ?
               (
-              <NavDropdown title={`Welcome back, ${props.userInfo.user.first_name}`}id="collasible-nav-dropdown">
+
+              <NavDropdown title={`Welcome back, ${props.userInfo.user.first_name}`} id="collapsible-nav-dropdown">
                 <NavDropdown.Item href="./bikeAdd">List your bike</NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="/">My Dashboard</NavDropdown.Item>
+                <NavDropdown.Item href="/dashboard">My Dashboard</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={logout}>Log Out</NavDropdown.Item>
               </NavDropdown>)
