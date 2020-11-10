@@ -1,6 +1,6 @@
 // BikeAdd.js
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import Container from 'react-bootstrap/Container';
@@ -27,11 +27,20 @@ function BikeAdd(props){
     const [isAuthenticated, setIsAuthenticated] = useState(true);
     const [alertInfo, setAlertInfo] = useState({});
     const [disableButton, setDisableButton] = useState(false);
+    const [uploadFiles, setUploadFiles] = useState([]);
+    const fileRef = useRef(null);
+
+    const resetFileValue = (e) => {
+        fileRef.current.value = "";
+    }
 
     const textChangeHandler = (e) => {
 		let curInput = e.target.value;
         let curInputField = e.target.name;
-        
+        if(curInputField === undefined){
+            curInputField = e.target.className;
+        }
+
         let oldBikeInfo = {...bikeInfo};
         switch(curInputField){
             case "features":
@@ -42,6 +51,24 @@ function BikeAdd(props){
                 newFeatures[e.target.id] = e.target.checked?true:false;
                 oldBikeInfo.bikeFeatures = {...newFeatures};
                 break;
+            case "filesUpload":
+                let userfiles = [];
+                //limit files to the first four selected
+                let fileLimit = (e.target.files.length > 4? 4: e.target.files.length);
+                for(let i = 0; i < fileLimit; i++){
+                    e.target.files[i].ranKey = Math.floor(Math.random() * 100000);  //this is to make sure react will rerender the screen for attachment
+                    e.target.files[i].willUpload = true;
+                    userfiles.push(e.target.files[i]);
+                }
+                setUploadFiles(userfiles);
+                break;
+            case "closeImg":
+                e.target.parentElement.style.display = "none";
+                let curFiles = [...uploadFiles];
+                curFiles[e.target.id].willUpload = false;
+                setUploadFiles(curFiles);
+                console.log(curFiles);
+                break;
             default:
                 oldBikeInfo[curInputField] = curInput;
                 break;
@@ -49,7 +76,7 @@ function BikeAdd(props){
         }
         
         setBikeInfo(oldBikeInfo);
-        console.log(e.target.value);
+
 	}
 
     const fetchCategory = async () => {
@@ -229,7 +256,28 @@ function BikeAdd(props){
                                         </Form.Group>
 
                                     </Form.Row>
-                                                        
+
+                                    <Form.Row>
+                                        <Form.Group>
+                                            <Form.File id="exampleFormControlFile1" style={{display:"flex", position:"relative"}}>
+                                                <Form.File.Label style={{color:"blue",textDecoration:"underline blue", cursor:"pointer"}}>Add pictures of your bike (4 max)</Form.File.Label>
+                                                <Form.File.Input style={{opacity:0, position:"absolute", zIndex:-1}} onChange={textChangeHandler} ref={fileRef} onClick={resetFileValue} name="filesUpload" multiple/>
+                                            </Form.File>
+                                            <div style={{display:"flex",flexFlow:"row wrap"}}>
+                                                {uploadFiles.length > 0 ? 
+                                                    uploadFiles.map((file,index) => (
+                                                        <div key={"container"+file.ranKey} id={"img"+file.ranKey} style={{display:"flex", position: "relative"}}>
+                                                            <img className="img-wrap" key={"img"+file.ranKey} style={{objectFit:"contain",width:"160px",height:"90px",background:"gray",order:1,margin:"5px"}}
+                                                            src={URL.createObjectURL(file)}/>
+                                                            <div key={file.ranKey} id={index} onClick={textChangeHandler} className="closeImg">x</div>
+                                                        </div>
+                                                    )):null     
+                                                }   
+                                            </div>
+
+                                        </Form.Group>
+                                    </Form.Row>
+
                                 </Form>	
                                 <Row style={{display:"flex", justifyContent:"center"}}>
                                     <Button className = "btn-danger" onClick={postBike} disabled={disableButton} style={{minWidth:"200px"}}>Add Bike</Button>	

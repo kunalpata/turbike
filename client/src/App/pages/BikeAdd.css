@@ -25,6 +25,30 @@
     border-color: #B3B3B3;
 }
 
+.img-wrap {
+    position: relative;
+    display: inline-block;
+    border-radius: 10px ;
+    font-size: 0;
+  }
+
+.closeImg {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    z-index: 100;
+    background-color: transparent;
+    padding: 5px 2px 2px;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    cursor: pointer;
+    opacity: .4;
+    text-align: center;
+    font-size: 22px;
+    line-height: 10px;
+    border-radius: 50%;
+  }
+
 /*.bDetails-sec {*/
 /*    height: 200px;*/
 /*    padding: 20px;*/
