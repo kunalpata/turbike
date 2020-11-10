@@ -6,8 +6,8 @@ const pool = require('../dbcon').pool;
 //add dotenv functionality
 require('dotenv').config();
 
-//get all bikes information
-router.get('/', (req, res) => {
+//get bikes by location information
+router.get('/location', (req, res) => {
     // pass user search query to get the coords for it
     getCoords(req.query.loc).then(location => {
         // get the searchs lat/lng from the location return
@@ -53,6 +53,36 @@ router.get('/', (req, res) => {
         });
     });
 });
+
+// get bike features
+router.get('/features', (req, res) => {
+    const bike_id = req.query.id;
+
+    // get features for bike with passed in id
+    let query = 'SELECT f.name,f.pic_filename' +
+                ' FROM feature f inner join bike_feature bf on f.id = bf.feature_id' +
+                ' WHERE bf.bike_id = ?;'
+
+    pool.query(query, [bike_id], (err, result)=>{
+        if(err){
+            console.log(err);
+            res.send({data:[],err:err,hasError:1});
+            
+        }else{
+            let items = [];
+            for (let i = 0; i < result.length; i++){
+                let item = {
+                    ...result[i],
+                }
+                items.push(item);
+            }
+            //console.log(items)
+            res.send(JSON.stringify({data:items,err:"",hasError:0}));
+        }
+    });
+});
+
+
 
 /*
 ** This function takes in the location that was entered in the search bar by

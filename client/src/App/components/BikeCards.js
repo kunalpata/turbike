@@ -29,9 +29,9 @@ const BikeCards = ({bikes}) => {
 						<Card.Text>
 							<span className="card-info">
 								<td>
-								<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>   
-							{/* TODO: Add rating as bike.rating_score - need bikes to start with default rating */}
+									<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>   
 								</td>
+							{/* TODO: Add rating as bike.rating_score - need bikes to start with default rating */}
 								<span>4.5</span>
 								<span id="category" className="card-info">{bike.name} Bike</span>
 								<span className="float-right">${bike.price}/hour</span>
