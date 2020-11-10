@@ -54,6 +54,7 @@ class App extends Component {
           <MyNavbar userInfo={this.state.user} passUser={this.authenticateInfo}/>
           <Switch>
               <Route exact path='/' render={(props) => <Home {...props} userInfo={this.state.user}/>} />
+              <Route exact path='/bikeAdd' render={(props) => <BikeAdd {...props} passUser={this.authenticateInfo}/>} />
               <Route path='/bikeTable' component={BikeTable} />
               <Route 
                 path='/register' 
@@ -66,6 +67,7 @@ class App extends Component {
 
               <Route exact path='/listings' component={Listings} />
               <Route exact path='/bikeView' component={BikeView} />
+
               <Route exact path='/bikeAdd' component={BikeAdd} />
               <Route exact path='/dashboard' component={UserDashboard}/>
 
@@ -78,11 +80,3 @@ class App extends Component {
 }
 
 export default App;
-
-{/*<Switch>
-          <Route exact path='/' component={Home} />
-          <Route path='/bikeTable' component={BikeTable} />
-          <Route path='/register' component={Register} />
-          <Route path='/login' component={Login} />
-          <Route exact path='/listings' component={Listings} />
-</Switch>*/}

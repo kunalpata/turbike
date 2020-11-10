@@ -42,6 +42,7 @@ const MyNavbar = (props) => {
           	{
               props.userInfo.isAuthenticated ?
               (
+
               <NavDropdown title={`Welcome back, ${props.userInfo.user.first_name}`} id="collapsible-nav-dropdown">
                 <NavDropdown.Item href="./bikeAdd">List your bike</NavDropdown.Item>
                 <NavDropdown.Divider />
