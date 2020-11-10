@@ -35,7 +35,7 @@ export class MapContainer extends Component {
 		return (
 			<Map
 				google={this.props.google}
-				zoom={12}
+				zoom={10}
 				initialCenter={
 					{
 						lat: parseFloat(this.props.lat),
@@ -51,7 +51,7 @@ export class MapContainer extends Component {
 							lat: bike.latitude,
 							lng: bike.longitude
 						}}
-						name="Bike Brand"
+						name={bike.brand}
 					/>
 				))}
 				<InfoWindow
@@ -61,7 +61,6 @@ export class MapContainer extends Component {
 				>
 					<div>
 						<p>{this.state.selectedPlace.name}</p>
-						<p>{this.state.selectedPlace.price}</p>
 					</div>
 				</InfoWindow>
 			</Map>
