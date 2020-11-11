@@ -11,7 +11,8 @@ import Button from 'react-bootstrap/Button';
 import Card from "react-bootstrap/Card";
 import {Link} from "react-router-dom";
 import InformSpan from '../components/InformSpan.js';
-import DismissibleAlert from '../components/DismissibleAlert.js'
+import DismissibleAlert from '../components/DismissibleAlert.js';
+import CenteredModal from '../components/VerticalCenteredModal.js';
 import './BikeAdd.css'
 
 function BikeAdd(props){
@@ -29,6 +30,11 @@ function BikeAdd(props){
     const [disableButton, setDisableButton] = useState(false);
     const [uploadFiles, setUploadFiles] = useState([]);
     const fileRef = useRef(null);
+
+    //modal control
+    const [modalShow, setModalShow] = useState(false);
+    const [modalText, setModalText] = useState("Adding Bike...");
+
 
     const resetFileValue = (e) => {
         fileRef.current.value = "";
@@ -107,6 +113,7 @@ function BikeAdd(props){
 
     const postBike = async () => {
         setDisableButton(true);
+        setModalShow(true);     //modal show
         await fetch('/api/add/bike',{
             method: 'POST',
             headers: { 'Content-Type' : 'application/json'},
@@ -118,11 +125,14 @@ function BikeAdd(props){
         .then((res) => {
             console.log(res);
             if(res.isAuthenticated == false){
-                setIsAuthenticated(false);
+                //setIsAuthenticated(false);
+                props.passUser({...res});
+                closeModal("You are not logged in! Please login!",true, "/login",2000,res);
             }else if(res.hasOwnProperty('err')){
                 setAlertInfo({hasError:true, status:res});
-            }else{
-                setAlertInfo({isBikeAdded:true, status:res});
+                closeModal("Posting Error! Please try again later!",false, "",5000,res);
+            }else{              
+                closeModal("Your bike has been added successfully!",true, '/',5000,res);
             }
             
         })
@@ -133,6 +143,24 @@ function BikeAdd(props){
         setDisableButton(false);
     }
 
+    const closeModal = (msg,shouldRedirect, redirectTo, secondToClose, res) => {
+        setModalText(msg);
+
+        setTimeout(()=>{
+            setModalShow(false);
+            if(shouldRedirect){
+                if(redirectTo === '/login'){
+                    setIsAuthenticated(false);
+                }else if(redirectTo === '/'){
+                    setAlertInfo({isBikeAdded:true, status:res});
+                }          
+            }else{
+                closeAlert();
+            }  
+        },secondToClose);
+                                                        
+    }
+
     useEffect(() => {
         fetchUser();
         fetchCategory();
@@ -141,7 +169,6 @@ function BikeAdd(props){
 
     return (
 		<div className="AddNewBike">
-
 			<Container style={{marginTop: "100px"}}>
             
 				<Row>
@@ -158,7 +185,7 @@ function BikeAdd(props){
                                                             }
                                                         }}/>:null
                                 }
-                                {alertInfo.isBikeAdded == true?<DismissibleAlert
+                                {/*alertInfo.isBikeAdded == true?<DismissibleAlert
                                                                     title={alertInfo.status.status}
                                                                     message="Bike added successfully!"
                                                                     type = "info"
@@ -168,8 +195,10 @@ function BikeAdd(props){
                                                                     parentCleanup={()=>{}}
                                                             />: null
 
+                                */
+                                 alertInfo.isBikeAdded == true?<Redirect to='/'/> : null
                                 }
-                                {alertInfo.hasError == true?<DismissibleAlert
+                                {false == true?<DismissibleAlert
                                                                     title="Adding bike error"
                                                                     message="Server Error while adding bike, please try again later!"
                                                                     type = "danger"
@@ -259,7 +288,7 @@ function BikeAdd(props){
 
                                     <Form.Row>
                                         <Form.Group>
-                                            <Form.File id="exampleFormControlFile1" style={{display:"flex", position:"relative"}}>
+                                            <Form.File id="FormFile1" style={{display:"flex", position:"relative"}}>
                                                 <Form.File.Label style={{color:"blue",textDecoration:"underline blue", cursor:"pointer"}}>Add pictures of your bike (4 max)</Form.File.Label>
                                                 <Form.File.Input style={{opacity:0, position:"absolute", zIndex:-1}} onChange={textChangeHandler} ref={fileRef} onClick={resetFileValue} name="filesUpload" multiple/>
                                             </Form.File>
@@ -292,7 +321,13 @@ function BikeAdd(props){
 				</Row>
 			</Container>
       			
-			
+			<>
+                <CenteredModal
+                    show={modalShow}
+                    onHide={() => setModalShow(false)}
+                    warningtext = {modalText}
+                />
+            </>
 		</div>
 	);
 
