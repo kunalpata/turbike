@@ -28,7 +28,7 @@ router.post('/upload', (req, res) => {
                 }
             }),
             fileFilter:imageFilter
-        }).array('aws_multiple_images');//.array('aws_multiple_images');
+        }).array('aws_multiple_images');
 
         uploadS3(req, res, function(err){
             console.log(req.files);
