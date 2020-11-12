@@ -11,7 +11,7 @@
 }
 
 #star-img {
-	margin-left: 10px;
+	/*margin-left: 10px;*/
 	margin-top: 10px;
 }
 
@@ -31,4 +31,15 @@
 
 .label {
 	color: gray;
+}
+
+.feature {
+	margin-bottom: 10px;
+	float: left;
+	width: 50%;
+}
+
+.feature-name {
+	display: inline;
+	margin-left: 10px;
 }

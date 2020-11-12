@@ -209,6 +209,7 @@ function BikeAdd(props){
     },[])
 
     return (
+
 		<div className="AddNewBike">
 			<Container style={{marginTop: "100px"}}>
             
@@ -372,8 +373,10 @@ function BikeAdd(props){
                 />
             </>
 		</div>
+
 	);
 
 }
+
 
 export default BikeAdd

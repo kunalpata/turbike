@@ -20,22 +20,22 @@ const BikeCards = ({bikes}) => {
 					<Card.Img variant="top" src={require("../images/road_bike.jpg")} />
 					<Card.Body>
 
-						{/* TODO: Add brand/name attribute to bike table */}
-						<Card.Title id="card-title" className="card-info">Bike Name</Card.Title>
+						<Card.Title id="card-title" className="card-info">{bike.brand}</Card.Title>
 						<span className="float-right">
 
 							{/* TODO: Make heart clickable - saves to favorites - must be logged in */}
 							<img alt="clear heart" src={require("../images/clear_heart_200.png")} height="20vh" width="20vh"/>
 						</span>
 						<Card.Text>
-
-							{/* TODO: Add rating and category attributes to bike table */}
 							<span className="card-info">
-								<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>   
-								4.5
+								<td>
+									<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>   
+								</td>
+							{/* TODO: Add rating as bike.rating_score - need bikes to start with default rating */}
+								<span>4.5</span>
+								<span id="category" className="card-info">{bike.name} Bike</span>
+								<span className="float-right">${bike.price}/hour</span>
 							</span>
-							<span id="category" className="card-info">Road Bike</span>
-							<span className="float-right">${bike.price}/hour</span>
 						</Card.Text>
 					</Card.Body>
 				</Card> 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import './BikeView.css';
 
 import Container from 'react-bootstrap/Container';
@@ -11,24 +11,46 @@ import Form from 'react-bootstrap/Form';
 
 
 const BikeView = (props) => {
+	useEffect(() => {
+		getFeaturesForBike();
+	}, []);
 
 	const bike = props.location.state.bike;
+	const [features, setFeatures] = useState({});
+	const encodedID = encodeURIComponent(bike.id);
+
+	const getFeaturesForBike = async () => {
+		const url = '/api/search/features?id=' + encodedID;
+
+		const data = await fetch(url)
+		.catch((err) => { console.log(err) });
+
+		const features = await data.json()
+		.then((features) => {
+			setFeatures(features);
+			console.log(features);
+		})
+		.catch((err) => {console.log(err) });
+	};
 
     return(
     	<Container className="bike-view-body">
     		<Row>
     	{/* Bike carousel section */}
     			<Col md={{span: 6, offset: 0}}>
-					<div id="bike-name" className="bike-header">Bike Name</div>
+    				<div>
+						<span id="bike-name" className="bike-header">{bike.brand}</span>
+						<div className="float-right">
+							<img alt="clear heart" src={require("../images/clear_heart_200.png")} height="20vh" width="20vh"/>
+						</div>
+					</div>
 					<div className="bike-header">
+						<td>
 						<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>
-						4.5   
+						</td>
+						<span className="bike-header">4.5</span>   
+						<span id="category" className="bike-header">{bike.name} Bike</span>
 					</div>
-					<div id="category" className="bike-header">Road Bike</div>
-					<div className="float-right">
-						<img alt="clear heart" src={require("../images/clear_heart_200.png")} height="20vh" width="20vh"/>
-					</div>
-
 					<div>{bike.city}, {bike.state}</div>
     				
     				{/* TODO: get bike images and add them here with map */}
@@ -111,10 +133,22 @@ const BikeView = (props) => {
     				<p>{bike.bike_details}</p>
     			</Col>
 
-    		{/* Query db for this bikes features */}
     			<Col md={{span: 6, offset: 0}}>
     				<p className="label">Features</p>
-    				<p>features</p>
+    				{(features.data && features.data[0]) ? (
+	                <div>
+	                	{features.data.map( (feature, i) => (
+	                		<div className="feature">
+								<img alt={feature.name} src={require("../images/chevron_200.png")} height="15vh" width="15vh"/>
+								<p className="feature-name">{feature.name}</p>
+	                		</div>
+	                	))}
+	                </div>
+	              ) : (
+	                <div>
+	                  <p>There are no features for this bike</p>
+	                </div>
+	              )}
     			</Col>
     		</Row>
     	</Container>
