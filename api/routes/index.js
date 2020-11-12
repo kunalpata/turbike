@@ -25,7 +25,7 @@ router.use('/api/get', require('./utilities.js'));
 router.use('/api/search', require('./searchBikes.js'));
 
 //aws file storage
-//router.use('/aws', require('./aws.js'));
+router.use('/api/aws', require('./aws.js'));
 
 //input validation
 router.use('/api/check', require('./inputValidate.js'));

@@ -62,9 +62,10 @@ function BikeAdd(props){
                 //limit files to the first four selected
                 let fileLimit = (e.target.files.length > 4? 4: e.target.files.length);
                 for(let i = 0; i < fileLimit; i++){
-                    e.target.files[i].ranKey = Math.floor(Math.random() * 100000);  //this is to make sure react will rerender the screen for attachment
-                    e.target.files[i].willUpload = true;
-                    userfiles.push(e.target.files[i]);
+                    let curFile = e.target.files[i];
+                    curFile.ranKey = Math.floor(Math.random() * 100000);  //this is to make sure react will rerender the screen for attachment
+                    curFile.willUpload = true;
+                    userfiles.push(curFile);
                 }
                 setUploadFiles(userfiles);
                 break;
@@ -73,7 +74,7 @@ function BikeAdd(props){
                 let curFiles = [...uploadFiles];
                 curFiles[e.target.id].willUpload = false;
                 setUploadFiles(curFiles);
-                console.log(curFiles);
+                //console.log(curFiles);
                 break;
             default:
                 oldBikeInfo[curInputField] = curInput;
@@ -111,6 +112,46 @@ function BikeAdd(props){
         })
     }
 
+    const uploadAttachment = async (listingId) => {
+        //update status
+        setModalText("Saving images...");
+        //create form data
+        let formData = new FormData();
+        formData.append('listId', listingId);
+        let fileCt = 0;
+        for(let i = 0; i < uploadFiles.length; i++){
+            if(uploadFiles[i].willUpload){
+                formData.append('aws_multiple_images', uploadFiles[i]);
+                fileCt++;
+            }
+        }
+        formData.append('newFileCt', fileCt);
+        //for(let item of formData.entries()){
+            //console.log(item[0], item[1]);
+        //}
+
+        //fetch backend to upload
+        await fetch('/api/aws/upload',{
+            method: 'POST',
+            body: formData
+        })
+        .then((res) => {
+            return res.json();
+        })
+        .then((res) => {
+            //console.log(res);
+            if(res.err === undefined){
+                closeModal("Your bike has been added successfully!", true, '/', 5000, res);
+            }else{
+                console.log(res.err);
+                closeModal("Bike added but image upload failed!", true, '/', 5000, res);
+            }
+        })
+        .catch((err) => {
+            closeModal("Image upload err: " + err, true, '/', 5000, err);
+        });
+    }
+
     const postBike = async () => {
         setDisableButton(true);
         setModalShow(true);     //modal show
@@ -122,17 +163,17 @@ function BikeAdd(props){
             })
         })
         .then((res) => {return res.json()})
-        .then((res) => {
-            console.log(res);
+        .then(async (res) => {
+            //console.log(res);
             if(res.isAuthenticated == false){
-                //setIsAuthenticated(false);
                 props.passUser({...res});
                 closeModal("You are not logged in! Please login!",true, "/login",2000,res);
             }else if(res.hasOwnProperty('err')){
                 setAlertInfo({hasError:true, status:res});
                 closeModal("Posting Error! Please try again later!",false, "",5000,res);
-            }else{              
-                closeModal("Your bike has been added successfully!",true, '/',5000,res);
+            }else{ 
+                //upload images
+                await uploadAttachment(res.bikeId);
             }
             
         })
@@ -289,8 +330,10 @@ function BikeAdd(props){
                                     <Form.Row>
                                         <Form.Group>
                                             <Form.File id="FormFile1" style={{display:"flex", position:"relative"}}>
+                                                <form encType="multipart/form-data" method="post" name="fileinfo">
                                                 <Form.File.Label style={{color:"blue",textDecoration:"underline blue", cursor:"pointer"}}>Add pictures of your bike (4 max)</Form.File.Label>
-                                                <Form.File.Input style={{opacity:0, position:"absolute", zIndex:-1}} onChange={textChangeHandler} ref={fileRef} onClick={resetFileValue} name="filesUpload" multiple/>
+                                                <Form.File.Input accept="image/*" style={{opacity:0, position:"absolute", zIndex:-1}} onChange={textChangeHandler} ref={fileRef} onClick={resetFileValue} name="filesUpload" multiple/>
+                                                </form>
                                             </Form.File>
                                             <div style={{display:"flex",flexFlow:"row wrap"}}>
                                                 {uploadFiles.length > 0 ? 
