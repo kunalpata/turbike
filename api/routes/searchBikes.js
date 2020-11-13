@@ -28,10 +28,9 @@ router.get('/location', (req, res) => {
                     ' inner join bike_category bc on b.id = bc.bike_id ' +
                     ' inner join category c on bc.category_id = c.id' +
                     //' inner join rating r on b.id = r.bike_id' +
-                    ' ORDER BY distance LIMIT 0, 10;'
-
+                    //' ORDER BY distance LIMIT 0, 10' +
                     // adding having distance for filtering by distance
-                    //' HAVING distance < 25 ORDER BY distance LIMIT 0, 10;'
+                    ' HAVING distance < 50 ORDER BY distance LIMIT 0, 10;'
 
         //pool.query(query, [loc, loc, loc], (err, result)=>{
         pool.query(query, [lat, lng, lat], (err, result)=>{
