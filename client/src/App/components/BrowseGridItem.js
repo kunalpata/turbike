@@ -9,7 +9,10 @@ const BrowseGridItem = (props) => {
 	return (
 		<Link to={{
             pathname: "./listings",
-            state: {search: props.search}
+            state: {
+            	search: props.search,
+            	category: props.category
+            }
         }}>
             <img className="browse-img" alt={props.text} src={require("../images/" + props.file)} />
             <p className="browse-text">{props.text}</p>

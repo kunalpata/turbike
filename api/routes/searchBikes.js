@@ -54,6 +54,49 @@ router.get('/location', (req, res) => {
     });
 });
 
+
+// get bikes by category
+router.get('/category', (req, res) => {
+    const category = req.query.cat;
+
+    // get bikes in this category
+    let query = 'SELECT b.id,b.price,b.bike_details,b.brand,' +
+                    'u.user_name,u.email,' +
+                    'l.address,l.city,l.state,l.zip,l.latitude,l.longitude,' +
+                    'c.name' +
+                    //'r.rating_score,r.rating_details' +
+                    //' ( 3959 * acos( cos( radians(l.latitude) ) * cos( radians(?) ) * cos( radians(?) - radians(l.longitude) ) + sin( radians(l.latitude) ) * sin( radians(?) ) ) )' +
+                    //' AS distance' +
+                ' FROM bike b inner join user u on b.user_id = u.id' + 
+                ' inner join location l on b.location_id = l.id' +
+                ' inner join bike_category bc on b.id = bc.bike_id' +
+                ' inner join category c on bc.category_id = c.id' +
+                //' inner join rating r on b.id = r.bike_id' +
+                //' ORDER BY distance LIMIT 0, 10;'
+                ' WHERE c.name = ?;'
+                // adding having distance for filtering by distance
+                //' HAVING distance < 25 ORDER BY distance LIMIT 0, 10;'
+
+    pool.query(query, [category], (err, result)=>{
+        if(err){
+            console.log(err);
+            res.send({data:[],err:err,hasError:1});
+            
+        }else{
+            let items = [];
+            for (let i = 0; i < result.length; i++){
+                let item = {
+                    ...result[i],
+                }
+                items.push(item);
+            }
+            //console.log(items)
+            res.send(JSON.stringify({data:items,err:"",hasError:0}));
+        }
+    });
+});
+
+
 // get bike features
 router.get('/features', (req, res) => {
     const bike_id = req.query.id;

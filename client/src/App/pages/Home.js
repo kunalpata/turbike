@@ -19,6 +19,7 @@ import Button from 'react-bootstrap/Button';
 const Home = (props) => {
   console.log(props);
   const [search, setSearch] = useState("");  // store the search results
+  const [category, setCategory] = useState("");
   const { push } = useHistory();  // for redirecting after getting form data
 
   // On submit redirect to listings with search entry from form
@@ -26,7 +27,10 @@ const Home = (props) => {
     event.preventDefault();
     push({
       pathname: './listings',
-      state: {search: search}
+      state: {
+        search: search,
+        category: category
+      }
     })
   }
 

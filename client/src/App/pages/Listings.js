@@ -11,15 +11,22 @@ import Col from 'react-bootstrap/Col';
 
 const Listings = (props) => {
   useEffect(() => {
-    getBikesByLocation();
+    getBikes();
   }, []);
 
   const [bikes, setBikes] = useState({});
   const [location, setLocation] = useState("");
   const encodedSearch = encodeURIComponent(props.location.state.search);
+  const encodedCategory = encodeURIComponent(props.location.state.category);
 
-  const getBikesByLocation = async () => {
-    const url = '/api/search/location?loc=' + encodedSearch;
+  const getBikes = async () => {
+    // Build the url depending on if user is searching or browsing
+    let url = "";
+    if (encodedSearch !== ""){
+      url = '/api/search/location?loc=' + encodedSearch;
+    } else if (encodedCategory !== ""){
+      url = '/api/search/category?cat=' + encodedCategory;
+    }
     
     const data = await fetch(url)
     .catch((err)=>{console.log(err)});
