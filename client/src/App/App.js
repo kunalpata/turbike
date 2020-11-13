@@ -69,9 +69,9 @@ class App extends Component {
               <Route exact path='/bikeView' component={BikeView} />
 
               <Route exact path='/bikeAdd' component={BikeAdd} />
-              <Route exact path='/dashboard' component={UserDashboard}/>
+              <Route exact path='/dashboard' render={(props) => <UserDashboard {...props} userInfo={this.state.user} />}/>
 
-
+              {/*{console.log(this.state.user)}*/}
           </Switch>
       </Router>
       

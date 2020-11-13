@@ -15,8 +15,6 @@ import Card from "react-bootstrap/Card";
 
 const UserDashboard = (props) => {
 
-
-
     return (
         <Container className="dashboard-body">
             <Row>
@@ -28,6 +26,7 @@ const UserDashboard = (props) => {
                     <Card>
                         <Card.Body>
                             <Card.Img variant="top" src={require("../images/turbike_logo.png")} />
+                            <Card.Title>Welcome, {props.userInfo.user !== undefined?props.userInfo.user.first_name + " " + props.userInfo.user.last_name:null}</Card.Title>
                             <Card.Title as={Link} to="/">Personal Information</Card.Title>
                             <Card.Text>Enter and edit your information for ways to contact you</Card.Text>
                         </Card.Body>
