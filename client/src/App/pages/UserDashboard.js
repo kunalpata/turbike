@@ -27,7 +27,7 @@ const UserDashboard = (props) => {
                         <Card.Body>
                             <Card.Img variant="top" src={require("../images/turbike_logo.png")} />
                             <Card.Title>Welcome, {props.userInfo.user !== undefined?props.userInfo.user.first_name + " " + props.userInfo.user.last_name:null}</Card.Title>
-                            <Card.Title as={Link} to="/">Personal Information</Card.Title>
+                            <Card.Title as={Link} to="/userInfo">Personal Information</Card.Title>
                             <Card.Text>Enter and edit your information for ways to contact you</Card.Text>
                         </Card.Body>
                     </Card>
