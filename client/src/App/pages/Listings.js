@@ -1,9 +1,9 @@
 // Listings.js
 
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import BikeCards from '../components/BikeCards';
 import MapContainer from '../components/Map';
-import DismissibleAlert from '../components/DismissibleAlert';
 import './Listings.css';
 
 import Container from 'react-bootstrap/Container';
@@ -21,9 +21,14 @@ const Listings = (props) => {
   const encodedCategory = encodeURIComponent(props.location.state.category);
   const encodedLatitude = encodeURIComponent(props.location.state.latitude);
   const encodedLongitude = encodeURIComponent(props.location.state.longitude);
+  const { push } = useHistory();
 
+  /*
+  ** Uses search or location information aquired from Home.js to get bikes from
+  ** the backend. If bikes are found, they are set in the state. If not, the user
+  ** is redirected back to Home.
+  */
   const getBikes = async () => {
-
     // Build the url depending on if user is searching or browsing
     let url = "";
     if (encodedSearch !== ""){
@@ -39,13 +44,19 @@ const Listings = (props) => {
 
     const bikes = await data.json()
     .then((bikes)=>{
+      // check if no bikes found
+      if (bikes.data.length == 0){
+        // send back home and dispaly message
+        push({
+          pathname: './',
+          state: {noBikes: true}
+        })
+      }
+
+      // bikes were found
       setBikes(bikes);
       if (bikes.data.length != 0){
         setLocation(bikes.data[0]["city"]); // Set location to first item in query results
-      }
-
-      if (bikes.data.length == 0){
-
       }
     })
     .catch((err)=>{console.log(err)});
@@ -53,17 +64,6 @@ const Listings = (props) => {
 
   	return (
   		<div className="listing-body">
-      {(bikes.data && bikes.data.length) == 0 ?
-        <DismissibleAlert 
-          title="No Results"
-          message="Sorry, there are no bikes that match your search. You will be redirected to the Turbike home page to try again."
-          type="info"
-          redirectLink="/"
-          shouldRedirect={true}
-          duration={5000}
-          parentCleanup={()=>{}}
-          />:null
-      }
   			<Container>
           <Row>
             <Col className="info-bar">
