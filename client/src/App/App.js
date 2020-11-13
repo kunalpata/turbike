@@ -9,6 +9,7 @@ import BikeTable from './pages/BikeTable';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import UserDashboard from './pages/UserDashboard';
+import UserAccountInfo from "./pages/UserAccountInfo";
 import Listings from './pages/Listings';
 import BikeView from './pages/BikeView';
 import BikeAdd from './pages/BikeAdd';
@@ -70,6 +71,7 @@ class App extends Component {
 
               <Route exact path='/bikeAdd' component={BikeAdd} />
               <Route exact path='/dashboard' render={(props) => <UserDashboard {...props} userInfo={this.state.user} />}/>
+              <Route exact='/userinfo' render={(props) => <UserAccountInfo {...props} userInfo={this.state.user} />}/>
 
               {/*{console.log(this.state.user)}*/}
           </Switch>
