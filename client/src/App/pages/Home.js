@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { usePosition } from 'use-position';
 
 import BrowseGrid from '../components/BrowseGrid';
 import Footer from '../components/Footer';
@@ -21,6 +22,7 @@ const Home = (props) => {
   const [search, setSearch] = useState("");  // store the search results
   const [category, setCategory] = useState("");
   const { push } = useHistory();  // for redirecting after getting form data
+  const { latitude, longitude, error} = usePosition();  // for searching with current location
 
   // On submit redirect to listings with search entry from form
   const handleSubmit = (event) => {
@@ -29,7 +31,9 @@ const Home = (props) => {
       pathname: './listings',
       state: {
         search: search,
-        category: category
+        category: category,
+        latitude: latitude,
+        longitude: longitude
       }
     })
   }
@@ -75,7 +79,7 @@ const Home = (props) => {
         <hr/>
 
         {/* Browse by category */}
-        <BrowseGrid />
+        <BrowseGrid latitude={latitude} longitude={longitude} error={error}/>
 
         <Footer/>
       </Container-fluid>

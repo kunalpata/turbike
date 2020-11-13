@@ -13,29 +13,71 @@ const BrowseGrid = (props) => {
 		<div>
 			<Row>
 	          <Col>
-	            <h1 className="browse-title">Browse by category</h1>
+	            <h1 className="browse-title">Browse by Category Near You</h1>
 	          </Col>
 	        </Row>
 	        <Row>
 	          <Col>
-	            <BrowseGridItem file="road_bike.jpg" text="Road Bikes" category="Road" search="" />
+	            <BrowseGridItem 
+	            	file="road_bike.jpg" 
+	            	text="Road Bikes" 
+	            	category="Road" 
+	            	latitude={props.latitude}
+	            	longitude={props.longitude}
+	            	error={props.error}
+	            	search="" />
 	          </Col>
 	          <Col>
-	            <BrowseGridItem file="electric_bike.jpg" text="Electric Bike" category="Electric" search="" />
+	            <BrowseGridItem 
+	            	file="electric_bike.jpg" 
+	            	text="Electric Bike" 
+	            	category="Electric" 
+	            	latitude={props.latitude}
+	            	longitude={props.longitude}
+	            	error={props.error}
+	            	search="" />
 	          </Col>
 	          <Col>
-	            <BrowseGridItem file="mountain_bike.jpg" text="Mountain Bike" category="Mountain" search="" />
+	            <BrowseGridItem 
+	            	file="mountain_bike.jpg" 
+	            	text="Mountain Bike" 
+	            	category="Mountain" 
+	            	latitude={props.latitude}
+	            	longitude={props.longitude}
+	            	error={props.error}
+	            	search="" />
 	          </Col>
 	        </Row>
 	        <Row>
 	          <Col>
-	            <BrowseGridItem file="hybrid_bike.jpg" text="Hybrid Bike" category="Hybrid" search="" />
+	            <BrowseGridItem 
+	            	file="hybrid_bike.jpg" 
+	            	text="Hybrid Bike" 
+	            	category="Hybrid" 
+	            	latitude={props.latitude}
+	            	longitude={props.longitude}
+	            	error={props.error}
+	            	search="" />
 	          </Col>
 	          <Col>
-	            <BrowseGridItem file="comfort_bike.jpg" text="Comfort Bike" category="Comfort" search="" />
+	            <BrowseGridItem 
+	            	file="comfort_bike.jpg" 
+	            	text="Comfort Bike" 
+	            	category="Comfort" 
+	            	latitude={props.latitude}
+	            	longitude={props.longitude}
+	            	error={props.error}
+	            	search="" />
 	          </Col>
 	          <Col>
-	            <BrowseGridItem file="kids_bike.jpg" text="Kids Bike" category="Kids" search=""/>
+	            <BrowseGridItem 
+	            	file="kids_bike.jpg" 
+	            	text="Kids Bike" 
+	            	category="Kids" 
+	            	latitude={props.latitude}
+	            	longitude={props.longitude}
+	            	error={props.error}
+	            	search=""/>
 	          </Col>
 	        </Row>
         </div>
