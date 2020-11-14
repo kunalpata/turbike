@@ -58,7 +58,7 @@ router.get('/location', (req, res) => {
 router.get('/category', (req, res) => {
     const category = req.query.cat;
     const lat = req.query.lat;
-    const lng = req.query.long;
+    const lng = req.query.lng;
 
     // get bikes in this category that are the closest to users current location
     let query = 'SELECT b.id,b.price,b.bike_details,b.brand,' +
