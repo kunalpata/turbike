@@ -127,6 +127,33 @@ router.get('/features', (req, res) => {
 });
 
 
+// get bike images
+router.get('/images', (req, res) => {
+    const bike_id = req.query.id;
+
+    // get features for bike with passed in id
+    let query = 'SELECT name,url' +
+                ' FROM image' +
+                ' WHERE bike_id = ?;'
+
+    pool.query(query, [bike_id], (err, result)=>{
+        if(err){
+            console.log(err);
+            res.send({data:[],err:err,hasError:1});
+            
+        }else{
+            let items = [];
+            for (let i = 0; i < result.length; i++){
+                let item = {
+                    ...result[i],
+                }
+                items.push(item);
+            }
+            //console.log(items)
+            res.send(JSON.stringify({data:items,err:"",hasError:0}));
+        }
+    });
+});
 
 /*
 ** This function takes in the location that was entered in the search bar by
