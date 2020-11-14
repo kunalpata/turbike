@@ -34,6 +34,10 @@ const BikeView = (props) => {
 		.catch((err) => {console.log(err) });
 	};
 
+	/*
+	** Takes in the list of features for this bike and adds the image to represent
+	** its icon.
+	*/
 	function setFeatureIcons(features) {
 		features.map((feature) => {
 			switch(feature.name){
