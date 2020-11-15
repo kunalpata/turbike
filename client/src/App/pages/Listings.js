@@ -1,6 +1,7 @@
 // Listings.js
 
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import BikeCards from '../components/BikeCards';
 import MapContainer from '../components/Map';
 import './Listings.css';
@@ -11,23 +12,52 @@ import Col from 'react-bootstrap/Col';
 
 const Listings = (props) => {
   useEffect(() => {
-    getBikesByLocation();
+    getBikes();
   }, []);
 
   const [bikes, setBikes] = useState({});
   const [location, setLocation] = useState("");
   const encodedSearch = encodeURIComponent(props.location.state.search);
+  const encodedCategory = encodeURIComponent(props.location.state.category);
+  const encodedLatitude = encodeURIComponent(props.location.state.latitude);
+  const encodedLongitude = encodeURIComponent(props.location.state.longitude);
+  const { push } = useHistory();
 
-  const getBikesByLocation = async () => {
-    const url = '/api/search/location?loc=' + encodedSearch;
+  /*
+  ** Uses search or location information aquired from Home.js to get bikes from
+  ** the backend. If bikes are found, they are set in the state. If not, the user
+  ** is redirected back to Home.
+  */
+  const getBikes = async () => {
+    // Build the url depending on if user is searching or browsing
+    let url = "";
+    if (encodedSearch !== ""){
+      url = '/api/search/location?loc=' + encodedSearch;
+    } else if (encodedCategory !== ""){
+      url = '/api/search/category?cat=' + encodedCategory +
+            '&lat=' + encodedLatitude + '&lng=' + encodedLongitude;
+    }
     
+    // Get and set the bike data
     const data = await fetch(url)
     .catch((err)=>{console.log(err)});
 
     const bikes = await data.json()
     .then((bikes)=>{
+      // check if no bikes found
+      if (bikes.data.length == 0){
+        // send back home and dispaly message
+        push({
+          pathname: './',
+          state: {noBikes: true}
+        })
+      }
+
+      // bikes were found
       setBikes(bikes);
-      setLocation(bikes.data[0]["city"]); // Set location to first item in query results
+      if (bikes.data.length != 0){
+        setLocation(bikes.data[0]["city"]); // Set location to first item in query results
+      }
     })
     .catch((err)=>{console.log(err)});
   };

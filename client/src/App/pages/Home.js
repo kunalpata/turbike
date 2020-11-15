@@ -2,9 +2,11 @@
 
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { usePosition } from 'use-position';
 
 import BrowseGrid from '../components/BrowseGrid';
 import Footer from '../components/Footer';
+import DismissibleAlert from '../components/DismissibleAlert';
 import './Home.css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,22 +19,40 @@ import Button from 'react-bootstrap/Button';
 
 
 const Home = (props) => {
-  console.log(props);
   const [search, setSearch] = useState("");  // store the search results
+  const [category, setCategory] = useState("");
   const { push } = useHistory();  // for redirecting after getting form data
+  const { latitude, longitude, error} = usePosition();  // for searching with current location
+  const noBikes = props.location.state ? true : false; // gets set if user is redirected back home for no search results
 
   // On submit redirect to listings with search entry from form
   const handleSubmit = (event) => {
     event.preventDefault();
     push({
       pathname: './listings',
-      state: {search: search}
+      state: {
+        search: search,
+        category: category,
+        latitude: latitude,
+        longitude: longitude
+      }
     })
   }
 
   return (
     <div>
-      
+      {/* Displays message if user is sent back due to no search results */}
+      {noBikes ?
+        <DismissibleAlert 
+          title="No Results"
+          message="Sorry, there are no bikes that match your search. Please try again."
+          type="warning"
+          redirectLink="/"
+          shouldRedirect={false}
+          duration={5000}
+          parentCleanup={()=>{}}
+          />:null
+      }
       <Container-fluid>
         {/* Search box section */}
         <Row className="top-home">
@@ -71,7 +91,7 @@ const Home = (props) => {
         <hr/>
 
         {/* Browse by category */}
-        <BrowseGrid />
+        <BrowseGrid latitude={latitude} longitude={longitude} error={error}/>
 
         <Footer/>
       </Container-fluid>
