@@ -13,6 +13,7 @@ import Listings from './pages/Listings';
 import BikeView from './pages/BikeView';
 import BikeAdd from './pages/BikeAdd';
 import MyNavbar from './components/MyNavbar';
+import AdvancedSearch from './pages/AdvancedSearch';
 
 
 
@@ -70,6 +71,7 @@ class App extends Component {
 
               <Route exact path='/bikeAdd' component={BikeAdd} />
               <Route exact path='/dashboard' component={UserDashboard}/>
+              <Route exact path='/advancedSearch' component={AdvancedSearch}/>
 
 
           </Switch>

@@ -281,10 +281,10 @@ function BikeAdd(props){
                                     <Form.Row>
                                         <Form.Group>
                                             <Form.File id="FormFile1" style={{display:"flex", position:"relative"}}>
-                                                <form encType="multipart/form-data" method="post" name="fileinfo">
+                                                
                                                 <Form.File.Label style={{color:"blue",textDecoration:"underline blue", cursor:"pointer"}}>Add pictures of your bike (4 max)</Form.File.Label>
                                                 <Form.File.Input accept="image/*" style={{opacity:0, position:"absolute", zIndex:-1}} onChange={textChangeHandler} ref={fileRef} onClick={resetFileValue} name="filesUpload" multiple/>
-                                                </form>
+                                                
                                             </Form.File>
                                             <div style={{display:"flex",flexFlow:"row wrap"}}>
                                                 {uploadFiles.length > 0 ? 

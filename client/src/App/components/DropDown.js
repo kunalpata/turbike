@@ -27,6 +27,19 @@ const DropDown = (props) => {
         }));
     }
 
+    const fetchCity = async ()=>{
+        await fetch('/api/get/cities')
+        .then((res) => {return res.json()})
+        .then((res) => {
+            console.log(res);
+            setOptions(res.data.map((item, index) => {
+                return {id:index,name:item.city};
+            }))
+            //setOptions(res.data)
+        })
+        .catch((err) => {console.log(err)});
+    }
+
     const textChangeHandler = (e) => {
         props.sendSelected(e.target.name,e.target.value);
     }
@@ -39,7 +52,11 @@ const DropDown = (props) => {
             case "state":
                 fetchState();
                 break;
+            case "city":
+                fetchCity();
+                break;
             default:
+                setOptions(props.customEntries);
                 break;
         }
     }
@@ -50,7 +67,7 @@ const DropDown = (props) => {
 
     return (
         
-            <Form.Control as="select" name={props.name} defaultValue="Choose..." onChange={textChangeHandler}>
+            <Form.Control size={props.size} as="select" name={props.name} defaultValue="Choose..." onChange={textChangeHandler}>
                 <option>Choose...</option>
                 {options.map((option) =>
                      (<option key={option.id}>{option.name}</option>)   
