@@ -4,6 +4,7 @@ import './BikeView.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Figure from 'react-bootstrap/Figure';
 import Carousel from 'react-bootstrap/Carousel';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
@@ -79,23 +80,43 @@ const BikeView = (props) => {
 					</div>
 					<div>{bike.city}, {bike.state}</div>
     				
-    				{/* TODO: get bike images and add them here with map */}
-					<Carousel className="carousel">
-					  <Carousel.Item>
-					    <img
-					      className="d-block w-100"
-					      src={require("../images/road_bike.jpg")}
-					      alt="First slide"
-					    />
-					  </Carousel.Item>
-					  <Carousel.Item>
-					    <img
-					      className="d-block w-100"
-					      src={require("../images/road_bike.jpg")}
-					      alt="Second slide"
-					    />
-					  </Carousel.Item>
-					</Carousel>
+    				{!bike.images ?
+    					<Figure>
+							<Figure.Image alt="no images available" width="100%" src={require("../images/cancel_bike_200.png")} />
+							<Figure.Caption className="text-center">no images available</Figure.Caption>
+						</Figure>
+    				: bike.images.length === 1 ?
+    					<Figure className="carousel">
+							<Figure.Image height="200px" width="200px" src={bike.images[0].url} />
+						</Figure>
+    					:
+ //   					<Carousel className="carousel">
+ //   					bike.images.map((img, i) => {
+ //   						<Carousel.Item key={i}>
+ //   							<img
+ //   								className="d-block w-100"
+ //   								src={img.url}
+ //   							/>
+ //   						</Carousel.Item>
+ //   					})
+ //   					</Carousel>
+						<Carousel className="carousel">
+						  <Carousel.Item>
+						    <img
+						      className="d-block w-100"
+						      src={require("../images/road_bike.jpg")}
+						      alt="First slide"
+						    />
+						  </Carousel.Item>
+						  <Carousel.Item>
+						    <img
+						      className="d-block w-100"
+						      src={require("../images/road_bike.jpg")}
+						      alt="Second slide"
+						    />
+						  </Carousel.Item>
+						</Carousel>
+					}
     			</Col>
 
 		{/* Reservation form section */}
