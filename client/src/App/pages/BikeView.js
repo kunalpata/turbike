@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
+import MyCarousel from '../components/MyCarousel';
 import './BikeView.css';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Figure from 'react-bootstrap/Figure';
-import Carousel from 'react-bootstrap/Carousel';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -81,42 +81,20 @@ const BikeView = (props) => {
 					<div>{bike.city}, {bike.state}</div>
     				
     				{!bike.images ?
+    				// no imgs = no image available image
     					<Figure>
 							<Figure.Image alt="no images available" width="100%" src={require("../images/cancel_bike_200.png")} />
 							<Figure.Caption className="text-center">no images available</Figure.Caption>
 						</Figure>
     				: bike.images.length === 1 ?
+    				// 1 img gets single image
     					<Figure className="carousel">
 							<Figure.Image height="200px" width="200px" src={bike.images[0].url} />
 						</Figure>
     					:
- //   					<Carousel className="carousel">
- //   					bike.images.map((img, i) => {
- //   						<Carousel.Item key={i}>
- //   							<img
- //   								className="d-block w-100"
- //   								src={img.url}
- //   							/>
- //   						</Carousel.Item>
- //   					})
- //   					</Carousel>
-						<Carousel className="carousel">
-						  <Carousel.Item>
-						    <img
-						      className="d-block w-100"
-						      src={require("../images/road_bike.jpg")}
-						      alt="First slide"
-						    />
-						  </Carousel.Item>
-						  <Carousel.Item>
-						    <img
-						      className="d-block w-100"
-						      src={require("../images/road_bike.jpg")}
-						      alt="Second slide"
-						    />
-						  </Carousel.Item>
-						</Carousel>
-					}
+    				// 2+ imgs goes to carousel
+    					<MyCarousel images={bike.images}/>
+    				}
     			</Col>
 
 		{/* Reservation form section */}
