@@ -27,11 +27,37 @@ const BikeView = (props) => {
 
 		const features = await data.json()
 		.then((features) => {
+			setFeatureIcons(features.data);
+			console.log(features.data);
 			setFeatures(features);
-			console.log(features);
 		})
 		.catch((err) => {console.log(err) });
 	};
+
+	/*
+	** Takes in the list of features for this bike and adds the image to represent
+	** its icon.
+	*/
+	function setFeatureIcons(features) {
+		features.map((feature) => {
+			switch(feature.name){
+				case "Kick Stand":
+					feature.icon =  require("../images/kick_stand_200.png");
+					break;
+				case "Water Bottle Holder":
+					feature.icon =  require("../images/water_bottle_200.png");
+					break;
+				case "Disk Brakes":
+					feature.icon =  require("../images/disk_brakes_200.png");
+					break;
+				case "Pouch Included":
+					feature.icon =  require("../images/pouch_200.png");
+					break;
+				default:
+					feature.icon = require("../images/chevron_200.png");
+			}
+		});
+	}
 
     return(
     	<Container className="bike-view-body">
@@ -139,7 +165,7 @@ const BikeView = (props) => {
 	                <div>
 	                	{features.data.map( (feature, i) => (
 	                		<div className="feature">
-								<img alt={feature.name} src={require("../images/chevron_200.png")} height="15vh" width="15vh"/>
+								<img alt={feature.name} src={feature.icon} height="15vh" width="15vh"/>
 								<p className="feature-name">{feature.name}</p>
 	                		</div>
 	                	))}

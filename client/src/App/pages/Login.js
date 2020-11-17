@@ -33,7 +33,6 @@ function Login (props){
 		})
 		.then((res) => { return res.json()})
 		.then((res) => { 
-							console.log(res);
 							setLoginStatus(res);
 							props.passUser({isAuthenticated:res.login,user:res.user});
 							if(!res.login){
