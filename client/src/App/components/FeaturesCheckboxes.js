@@ -14,7 +14,14 @@ const FeaturesCheckboxes = (props) => {
     const fetchFeature = async () => {
         await fetch('/api/get/features')
 		.then((res) => {return res.json()})
-		.then((res) => {console.log(res); setFeatures(res.data)})
+		.then((res) => {
+            console.log(res);
+            if(props.extraOptions){
+                res.data.push({id:-1,name:"any"});
+                res.data.push({id:-2,name:"none"});
+            }
+            setFeatures(res.data)
+        })
 		.catch((err) => {console.log(err)});
 
     }

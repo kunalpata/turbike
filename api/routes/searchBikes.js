@@ -83,6 +83,28 @@ router.get('/features', (req, res) => {
 });
 
 
+router.post('/advanced', (req, res) => {
+    /*search obj
+    {
+        category("Choose..." as all categories),
+        features{featureKey:T/F, -1:any, -2:none},
+        location{
+            city ("Choose..." as any city),
+            miles ("Choose..." as all miles),
+            mode ("any" as no location option selected),
+            zip ("any" as all zip code)
+        }},
+        matchMode("Choose..." will be not exact match, (Exact Match/Contains)),
+        maxPrice: (negative should be zero, not going to check, leave for frontend to check)
+        minPrice: "99999999" equals no highest
+        searchTerms:
+    */
+    
+    //build up the query
+
+    res.send(req.body);
+})
+
 
 /*
 ** This function takes in the location that was entered in the search bar by

@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form';
 
 
 const DropDown = (props) => {
-    console.log(props);
+    //console.log(props);
 
     //props has label, name, sendSelected (function)
 

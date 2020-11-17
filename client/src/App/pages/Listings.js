@@ -11,7 +11,13 @@ import Col from 'react-bootstrap/Col';
 
 const Listings = (props) => {
   useEffect(() => {
-    getBikesByLocation();
+    if(props.location.state.advancedSearch !== undefined){
+      //console.log(props.location.state.advancedSearch);
+      advancedGetBikes();
+    }else{
+      getBikesByLocation();
+    }
+    
   }, []);
 
   const [bikes, setBikes] = useState({});
@@ -26,13 +32,32 @@ const Listings = (props) => {
 
     const bikes = await data.json()
     .then((bikes)=>{
+      console.log(bikes);
       setBikes(bikes);
       setLocation(bikes.data[0]["city"]); // Set location to first item in query results
     })
     .catch((err)=>{console.log(err)});
   };
 
-  	return (
+  const advancedGetBikes = async() => {
+    await fetch('/api/search/advanced',{
+			method: 'POST',
+			headers: { 'Content-Type' : 'application/json' },
+			body: JSON.stringify(props.location.state.advancedSearch)
+			
+    })
+    .then((res) => res.json())
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  }
+
+  
+  
+  return (
   		<div className="listing-body">
   			<Container>
           <Row>
@@ -68,7 +93,7 @@ const Listings = (props) => {
           </div>
         </Container>
       </div>
-  	);
+  );
 };
 
 export default Listings;
