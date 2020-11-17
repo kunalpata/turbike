@@ -74,7 +74,7 @@ const BikeView = (props) => {
 						<td>
 						<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>
 						</td>
-						<span className="bike-header">4.5</span>   
+						<span className="bike-header">{bike.rating ? bike.rating : " -"}</span>   
 						<span id="category" className="bike-header">{bike.name} Bike</span>
 					</div>
 					<div>{bike.city}, {bike.state}</div>
