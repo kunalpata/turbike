@@ -1,0 +1,9 @@
+
+@media (min-width: 576px) {
+	.textRight {
+		text-align: end !important;
+    }
+    .textMarginLeft{
+        margin-left: 10px;
+    }
+}

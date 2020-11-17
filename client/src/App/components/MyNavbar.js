@@ -39,6 +39,7 @@ const MyNavbar = (props) => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
+            <Nav.Link as={Link} to="./advancedSearch">Advanced Search</Nav.Link>
           	{
               props.userInfo.isAuthenticated ?
               (
