@@ -43,8 +43,10 @@ router.get('/location', (req, res) => {
                         ...result[i],
                     }
 
-                    // add rating to bike obj
+                    // add rating and images to bike obj
                     item.rating = await searchHelpers.calcBikeAvgRating(item.id, pool);
+                    item.images = await searchHelpers.getBikeImages(item.id, pool);
+                    
                     items.push(item);
                 }
 
@@ -107,35 +109,6 @@ router.get('/features', (req, res) => {
     let query = 'SELECT f.name,f.pic_filename' +
                 ' FROM feature f inner join bike_feature bf on f.id = bf.feature_id' +
                 ' WHERE bf.bike_id = ?;'
-
-    pool.query(query, [bike_id], (err, result)=>{
-        if(err){
-            console.log(err);
-            res.send({data:[],err:err,hasError:1});
-            
-        }else{
-            let items = [];
-            for (let i = 0; i < result.length; i++){
-                let item = {
-                    ...result[i],
-                }
-                items.push(item);
-            }
-            //console.log(items)
-            res.send(JSON.stringify({data:items,err:"",hasError:0}));
-        }
-    });
-});
-
-
-// get bike images
-router.get('/images', (req, res) => {
-    const bike_id = req.query.id;
-
-    // get features for bike with passed in id
-    let query = 'SELECT name,url' +
-                ' FROM image' +
-                ' WHERE bike_id = ?;'
 
     pool.query(query, [bike_id], (err, result)=>{
         if(err){

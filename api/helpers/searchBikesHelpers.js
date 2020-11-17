@@ -38,7 +38,7 @@ let methods = {
 	                    ' WHERE bike_id = ?;'
 
 	        mysql.query(query, [bike_id], (err, result) => {
-	            if(err){
+	            if(err) {
 	                console.log(err);
 	                resolve(0);
 	                
@@ -57,6 +57,39 @@ let methods = {
 	        });
 	    });
 	    return promise;
+	},
+
+
+	/*
+	** Takes in a bike id, returns all the images for the bike.
+	*/
+	getBikeImages: function(bike_id, mysql){
+		let promise = new Promise( (resolve, reject) => {
+			// get images for bike with passed in id
+		    let query = 'SELECT url' +
+		                ' FROM image' +
+		                ' WHERE bike_id = ?;'
+
+		    mysql.query(query, [bike_id], (err, result) => {
+		        if(err) {
+		            console.log(err);
+		            resolve({});
+		            
+		        } else {
+		        	if (result.length === 0) resolve(null);
+
+		            let items = [];
+		            for (let i = 0; i < result.length; i++){
+		                let item = {
+		                    ...result[i],
+		                }
+		                items.push(item);
+		            }
+		            resolve(items);
+		        }
+		    });
+		});
+		return promise;
 	}
 };
 
