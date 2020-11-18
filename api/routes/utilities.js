@@ -8,7 +8,7 @@ require('dotenv').config();
 //get all categories
 router.get('/categories', async (req, res) => {
     
-    let categories = await getFromTable('category', '*', '1', '1');
+    let categories = await getFromTable('category', '*', '1', '1', true);
     res.send(JSON.stringify(categories));
 
 });
@@ -16,15 +16,25 @@ router.get('/categories', async (req, res) => {
 //get all features
 router.get('/features', async (req, res) => {
     
-    let features = await getFromTable('feature', '*', '1', '1');
+    let features = await getFromTable('feature', '*', '1', '1', true);
     res.send(JSON.stringify(features));
 
 });
 
+//get all cities
+router.get('/cities', async (req, res) => {
+    
+    let locations = await getFromTable('location', 'city', '1', '1', true);
+    res.send(JSON.stringify(locations));
 
-function getFromTable(tableName, columns, targetColumn, targetValue){
+});
+
+
+function getFromTable(tableName, columns, targetColumn, targetValue, distinct){
     let promise = new Promise((resolve, reject) => {
-        let query = `SELECT ${columns} FROM ${tableName} WHERE '${targetColumn}' = '${targetValue}'`;
+        let query = distinct? "SELECT DISTINCT":"SELECT";
+
+        query = `${query} ${columns} FROM ${tableName} WHERE '${targetColumn}' = '${targetValue}'`;
         pool.query(query, (err, result) => {
             if(err){
                 resolve({data:[],err:err,hasError:1});

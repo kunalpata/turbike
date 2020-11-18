@@ -14,6 +14,7 @@ import Listings from './pages/Listings';
 import BikeView from './pages/BikeView';
 import BikeAdd from './pages/BikeAdd';
 import MyNavbar from './components/MyNavbar';
+import AdvancedSearch from './pages/AdvancedSearch';
 
 
 
@@ -70,8 +71,11 @@ class App extends Component {
               <Route exact path='/bikeView' component={BikeView} />
 
               <Route exact path='/bikeAdd' component={BikeAdd} />
+              <Route exact path='/advancedSearch' component={AdvancedSearch}/>
+
               <Route exact path='/dashboard' render={(props) => <UserDashboard {...props} userInfo={this.state.user} />}/>
               <Route exact='/userinfo' render={(props) => <UserAccountInfo {...props} userInfo={this.state.user} />}/>
+
 
               {/*{console.log(this.state.user)}*/}
           </Switch>
