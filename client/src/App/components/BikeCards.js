@@ -33,13 +33,13 @@ const BikeCards = ({bikes}) => {
 								</td>
 							{/* TODO: Add rating as bike.rating_score - need bikes to start with default rating */}
 								<span>4.5</span>
-								<span id="category" className="card-info">{bike.name} Bike</span>
+								<span id="category" className="card-info">{bike.bikeName} Bike</span>
 								<span className="float-right">${bike.price}/hour</span>
 							</span>
 						</Card.Text>
 					</Card.Body>
 				</Card> 
-			</Link>  		
+			</Link>
     	))}
     	</div>
 
