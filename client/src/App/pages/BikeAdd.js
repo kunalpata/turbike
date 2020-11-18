@@ -13,17 +13,13 @@ import {Link} from "react-router-dom";
 import InformSpan from '../components/InformSpan.js';
 import DismissibleAlert from '../components/DismissibleAlert.js';
 import CenteredModal from '../components/VerticalCenteredModal.js';
+import CustomDropDown from '../components/DropDown.js';
+import FeaturesCheckboxes from '../components/FeaturesCheckboxes.js';
 import './BikeAdd.css'
 
 function BikeAdd(props){
     console.log(props)
-    //fix array for states
-    const states = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA",
-                    "MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN",
-                    "TX","UT","VT","VA","WA","WV","WI","WY"];
 
-    const [categories, setCategories] = useState([]);
-    const [features, setFeatures] = useState([]);
     const [bikeInfo, setBikeInfo] = useState({});
     const [isAuthenticated, setIsAuthenticated] = useState(true);
     const [alertInfo, setAlertInfo] = useState({});
@@ -49,14 +45,6 @@ function BikeAdd(props){
 
         let oldBikeInfo = {...bikeInfo};
         switch(curInputField){
-            case "features":
-                if(!oldBikeInfo.hasOwnProperty("bikeFeatures")){
-                    oldBikeInfo.bikeFeatures = {};
-                }
-                let newFeatures = {...oldBikeInfo.bikeFeatures};
-                newFeatures[e.target.id] = e.target.checked?true:false;
-                oldBikeInfo.bikeFeatures = {...newFeatures};
-                break;
             case "filesUpload":
                 let userfiles = [];
                 //limit files to the first four selected
@@ -74,7 +62,6 @@ function BikeAdd(props){
                 let curFiles = [...uploadFiles];
                 curFiles[e.target.id].willUpload = false;
                 setUploadFiles(curFiles);
-                //console.log(curFiles);
                 break;
             default:
                 oldBikeInfo[curInputField] = curInput;
@@ -86,20 +73,18 @@ function BikeAdd(props){
 
 	}
 
-    const fetchCategory = async () => {
-        await fetch('/api/get/categories')
-		.then((res) => {return res.json()})
-		.then((res) => {console.log(res); setCategories(res.data)})
-		.catch((err) => {console.log(err)});
-
+    const dropDownSelected = (name, value) => {
+        let oldBikeInfo = {...bikeInfo};
+        oldBikeInfo[name] = value;
+        setBikeInfo(oldBikeInfo);
     }
 
-    const fetchFeature = async () => {
-        await fetch('/api/get/features')
-		.then((res) => {return res.json()})
-		.then((res) => {console.log(res); setFeatures(res.data)})
-		.catch((err) => {console.log(err)});
-
+    const updateFeatures = (selectedFeatures) => {
+        let oldBikeInfo = {...bikeInfo};
+        let newFeatures = {...selectedFeatures};
+        oldBikeInfo.bikeFeatures = newFeatures;
+        console.log(oldBikeInfo);
+        setBikeInfo(oldBikeInfo);
     }
 
     const fetchUser = async() => {
@@ -204,8 +189,6 @@ function BikeAdd(props){
 
     useEffect(() => {
         fetchUser();
-        fetchCategory();
-        fetchFeature();
     },[])
 
     return (
@@ -227,30 +210,7 @@ function BikeAdd(props){
                                                             }
                                                         }}/>:null
                                 }
-                                {/*alertInfo.isBikeAdded == true?<DismissibleAlert
-                                                                    title={alertInfo.status.status}
-                                                                    message="Bike added successfully!"
-                                                                    type = "info"
-                                                                    redirectLink="/"
-                                                                    shouldRedirect={true}
-                                                                    duration={5000}
-                                                                    parentCleanup={()=>{}}
-                                                            />: null
-
-                                */
-                                 alertInfo.isBikeAdded == true?<Redirect to='/'/> : null
-                                }
-                                {false == true?<DismissibleAlert
-                                                                    title="Adding bike error"
-                                                                    message="Server Error while adding bike, please try again later!"
-                                                                    type = "danger"
-                                                                    redirectLink="/"
-                                                                    shouldRedirect={false}
-                                                                    duration={3000}
-                                                                    parentCleanup={closeAlert}
-                                                            />: null
-
-                                }
+                                {alertInfo.isBikeAdded == true?<Redirect to='/'/> : null}
                     
                                 <Card.Title style={{display:"flex", flexFlow:"column", justifyContent:"center"}}>
                                     <div style={{width:"100%",fontSize:"40px",textAlign:"center",marginBottom:"5px" }}><strong>Add a bike</strong></div>
@@ -277,12 +237,7 @@ function BikeAdd(props){
                                         </Form.Group>
                                         <Form.Group as={Col} lg={6}>
                                             <Form.Label>Type</Form.Label>
-                                            <Form.Control as="select" name="category" defaultValue="Choose..." onChange={textChangeHandler}>
-                                                <option>Choose...</option>
-                                                {categories.map((category) =>
-                                                    (<option key={category.id}>{category.name}</option>)
-                                                )}
-                                            </Form.Control>
+                                            <CustomDropDown label="" name="category" sendSelected={dropDownSelected}/>                                            
                                         </Form.Group>
                                     </Form.Row>
 
@@ -299,12 +254,8 @@ function BikeAdd(props){
                                         </Form.Group>
 
                                         <Form.Group as={Col}>
-                                            <Form.Control as="select" name="state" defaultValue="Choose..." onChange={textChangeHandler}>
-                                                <option>State</option>
-                                                {states.map((state,index) => 
-                                                    (<option key={index}>{state}</option>)
-                                                )}
-                                            </Form.Control>
+                                            <CustomDropDown label="" name="state" sendSelected={dropDownSelected}/>
+
                                         </Form.Group>
 
                                         <Form.Group as={Col}>
@@ -317,9 +268,8 @@ function BikeAdd(props){
 
                                         <Form.Group as={Col} lg={3}>
                                             <Form.Label>Features</Form.Label>
-                                            {features.map((feature) => 
-                                                (<Form.Check type="checkbox" name="features" id={feature.id} value={feature.name} label={feature.name} key={feature.id} onClick={textChangeHandler} />)
-                                            )}
+                                            <FeaturesCheckboxes getUpdatedFeatures={updateFeatures} />
+    
                                         </Form.Group>
                                         <Form.Group as={Col} lg={9}>
                                             <Form.Label>Tell us more about it</Form.Label>
@@ -331,10 +281,10 @@ function BikeAdd(props){
                                     <Form.Row>
                                         <Form.Group>
                                             <Form.File id="FormFile1" style={{display:"flex", position:"relative"}}>
-                                                <form encType="multipart/form-data" method="post" name="fileinfo">
+                                                
                                                 <Form.File.Label style={{color:"blue",textDecoration:"underline blue", cursor:"pointer"}}>Add pictures of your bike (4 max)</Form.File.Label>
                                                 <Form.File.Input accept="image/*" style={{opacity:0, position:"absolute", zIndex:-1}} onChange={textChangeHandler} ref={fileRef} onClick={resetFileValue} name="filesUpload" multiple/>
-                                                </form>
+                                                
                                             </Form.File>
                                             <div style={{display:"flex",flexFlow:"row wrap"}}>
                                                 {uploadFiles.length > 0 ? 
