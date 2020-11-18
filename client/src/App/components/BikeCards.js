@@ -40,7 +40,7 @@ const BikeCards = ({bikes}) => {
 							{/* TODO: Add rating as bike.rating_score - need bikes to start with default rating */}
 								
 								<span>{bike.rating ? bike.rating : " -"}</span>
-                <span id="category" className="card-info">{bike.bikeName} Bike</span>
+                						<span id="category" className="card-info">{bike.bikeName} Bike</span>
 								<span className="float-right">${bike.price}/hour</span>
 							</span>
 						</Card.Text>
