@@ -58,7 +58,9 @@ const BikeView = (props) => {
 				startTime: startTime,
 				endDate: endDate,
 				endTime: endTime,
-				location: location
+				location: location,
+				total: total,
+				bike: bike
 			}
 		})
 	}
@@ -85,19 +87,20 @@ const BikeView = (props) => {
     	{/* Bike carousel section */}
     			<Col md={{span: 6, offset: 0}}>
     				<div>
-						<span id="bike-name" className="bike-header">{bike.brand}</span>
+						<span id="bike-name" className="bike-header">{bike.bikeName}</span>
+						<span id="category" className="bike-header">{bike.brand} - {bike.name} Bike</span>
 						<div className="float-right">
 							<img alt="clear heart" src={require("../images/clear_heart_200.png")} height="20vh" width="20vh"/>
 						</div>
 					</div>
+					<div>{bike.city}, {bike.state}</div>
 					<div className="bike-header">
 						<td>
 						<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>
 						</td>
 						<span className="bike-header">{bike.rating ? bike.rating : " -"}</span>   
-						<span id="category" className="bike-header">{bike.name} Bike</span>
+						<span id="category" className="bike-header">{bike.ratingLabel}</span>
 					</div>
-					<div>{bike.city}, {bike.state}</div>
     				
     				{!bike.images ?
     				// no imgs = no image available image
@@ -126,7 +129,7 @@ const BikeView = (props) => {
 					    	<Form.Row>
 								<Form.Group as={Col} controlId="sDate">
 								    <Form.Label>Start of Trip</Form.Label>
-								    <Form.Control type="date" min={today} name="startDate" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+								    <Form.Control required type="date" min={today} name="startDate" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
 								</Form.Group>
 								<Form.Group as={Col} controlId="sTime">
 									<Form.Label>Start Time</Form.Label>
@@ -137,7 +140,7 @@ const BikeView = (props) => {
 							<Form.Row>
 								<Form.Group as={Col} controlId="eDate">
 								    <Form.Label>End of Trip</Form.Label>
-								    <Form.Control type="date" min={startDate} name="endDate" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+								    <Form.Control required type="date" min={startDate} name="endDate" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
 								</Form.Group>
 								<Form.Group as={Col} controlId="eTime">
 									<Form.Label>End Time</Form.Label>
@@ -178,7 +181,7 @@ const BikeView = (props) => {
     				{(features.data && features.data[0]) ? (
 	                <div>
 	                	{features.data.map( (feature, i) => (
-	                		<div className="feature">
+	                		<div className="feature" key={i}>
 								<img alt={feature.name} src={feature.icon} height="15vh" width="15vh"/>
 								<p className="feature-name">{feature.name}</p>
 	                		</div>
