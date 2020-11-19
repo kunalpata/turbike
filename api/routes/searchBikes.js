@@ -92,6 +92,7 @@ router.get('/category', (req, res) => {
                 }
 
                 item.rating = await searchHelpers.calcBikeAvgRating(item.id, pool);
+                item.images = await searchHelpers.getBikeImages(item.id, pool);
                 items.push(item);
             }
             //console.log(items)
@@ -260,7 +261,7 @@ router.post('/advanced', async (req, res) => {
     //construct the final query
     let finalQuery = baseQueryColumns + distanceQuery + baseQueryColumnEnd + baseQueryJoins + whereClause + queryEnd1 + havingClause + queryEnd2;
     
-    pool.query(finalQuery, (err, result) => {
+    pool.query(finalQuery, async (err, result) => {
         if(err){
             console.log(err);
             res.send({data:[],err:err,hasError:1});
@@ -270,6 +271,9 @@ router.post('/advanced', async (req, res) => {
                 let item = {
                     ...result[i],
                 }
+
+                item.rating = await searchHelpers.calcBikeAvgRating(item.id, pool);
+                item.images = await searchHelpers.getBikeImages(item.id, pool);
                 items.push(item);
             }
             res.send(JSON.stringify({data:items,err:"",hasError:0}));
