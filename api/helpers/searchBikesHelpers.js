@@ -21,7 +21,7 @@ let methods = {
 	          // get and return the coordinates from the response
 	          resolve(json.results[0].geometry.location)
 	        })
-	        .catch(err => console.log(err));
+	        .catch(err => resolve({err:err}));
 	    });
 	},
 
