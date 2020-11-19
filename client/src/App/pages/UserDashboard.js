@@ -37,7 +37,7 @@ const UserDashboard = (props) => {
                     <Card>
                         <Card.Body>
                             <Card.Img variant="top" src={require("../images/turbike_logo.png")} />
-                            <Card.Title as={Link} to="/">List of Bikes</Card.Title>
+                            <Card.Title as={Link} to="/userBikes">List of Bikes</Card.Title>
                             <Card.Text>See your bikes listed</Card.Text>
                         </Card.Body>
                     </Card>
