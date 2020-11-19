@@ -36,14 +36,17 @@ const BikeCards = ({bikes}) => {
 								<td>
 									<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>   
 								</td>
+
+							{/* TODO: Add rating as bike.rating_score - need bikes to start with default rating */}
+								
 								<span>{bike.rating ? bike.rating : " -"}</span>
-								<span id="category" className="card-info">{bike.name} Bike</span>
+                						<span id="category" className="card-info">{bike.bikeName} Bike</span>
 								<span className="float-right">${bike.price}/hour</span>
 							</span>
 						</Card.Text>
 					</Card.Body>
 				</Card> 
-			</Link>  		
+			</Link>
     	))}
     	</div>
 

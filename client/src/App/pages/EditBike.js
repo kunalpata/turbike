@@ -12,7 +12,7 @@ import Card from "react-bootstrap/Card";
 import {Link} from "react-router-dom";
 import InformSpan from '../components/InformSpan.js';
 import DismissibleAlert from '../components/DismissibleAlert.js'
-import './BikeAdd.css'
+import './EditBike.css'
 
 function EditBike(props){
     console.log(props)

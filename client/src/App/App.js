@@ -10,9 +10,11 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import UserDashboard from './pages/UserDashboard';
 import UserAccountInfo from "./pages/UserAccountInfo";
+import UserBikeList from "./pages/UserBikeList";
 import Listings from './pages/Listings';
 import BikeView from './pages/BikeView';
 import BikeAdd from './pages/BikeAdd';
+import EditBike from "./pages/EditBike";
 import MyNavbar from './components/MyNavbar';
 import AdvancedSearch from './pages/AdvancedSearch';
 
@@ -71,10 +73,12 @@ class App extends Component {
               <Route exact path='/bikeView' component={BikeView} />
 
               <Route exact path='/bikeAdd' component={BikeAdd} />
+              <Route exact path='/editBike' render={(props) => <EditBike {...props} passUser={this.authenticateInfo}/>}  />
               <Route exact path='/advancedSearch' component={AdvancedSearch}/>
 
               <Route exact path='/dashboard' render={(props) => <UserDashboard {...props} userInfo={this.state.user} />}/>
-              <Route exact='/userinfo' render={(props) => <UserAccountInfo {...props} userInfo={this.state.user} />}/>
+              <Route exact path='/userInfo' render={(props) => <UserAccountInfo {...props} userInfo={this.state.user} />}/>
+              <Route exact path='/userBikes' render={(props) => <UserBikeList {...props} userInfo={this.state.user} authUser={this.state.isAuthenticated} />} />
 
 
               {/*{console.log(this.state.user)}*/}
