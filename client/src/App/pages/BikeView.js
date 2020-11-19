@@ -26,6 +26,7 @@ const BikeView = (props) => {
 	let today = formatDate(new Date()); // used to prevent date selection before today
 	const { push } = useHistory();  // used to route to reservation upon form submit
 	const [total, setTotal] = useState("Enter start and end dates for an estimate");
+	const [numDays, setNumDays] = useState(0);
 	const [startDate, setStartDate] = useState(today);
 	const [startTime, setStartTime] = useState("10:00");
 	const [endDate, setEndDate] = useState("");
@@ -60,6 +61,7 @@ const BikeView = (props) => {
 				endTime: endTime,
 				location: location,
 				total: total,
+				numDays: numDays,
 				bike: bike
 			}
 		})
@@ -78,6 +80,7 @@ const BikeView = (props) => {
 		const secondDate = new Date(endDate.replace('-', ','));
 	
 		const diffDays = Math.round(Math.abs((firstDate - secondDate) / oneDay)); 
+		setNumDays(diffDays);
 		setTotal(diffDays*bike.price);
 	}
 
@@ -88,7 +91,7 @@ const BikeView = (props) => {
     			<Col md={{span: 6, offset: 0}}>
     				<div>
 						<span id="bike-name" className="bike-header">{bike.bikeName}</span>
-						<span id="category" className="bike-header">{bike.brand} - {bike.name} Bike</span>
+						<span className={"bike-header", "sub-title"}>{bike.brand} - {bike.name} Bike</span>
 						<div className="float-right">
 							<img alt="clear heart" src={require("../images/clear_heart_200.png")} height="20vh" width="20vh"/>
 						</div>
@@ -99,7 +102,7 @@ const BikeView = (props) => {
 						<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>
 						</td>
 						<span className="bike-header">{bike.rating ? bike.rating : " -"}</span>   
-						<span id="category" className="bike-header">{bike.ratingLabel}</span>
+						<span className={"bike-header", "sub-title"}>{bike.ratingLabel}</span>
 					</div>
     				
     				{!bike.images ?
