@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from 'react-router-dom';
 import MyCarousel from '../components/MyCarousel';
 import './BikeView.css';
 
@@ -18,7 +19,9 @@ const BikeView = (props) => {
 
 	const bike = props.location.state.bike;
 	const [features, setFeatures] = useState({});
+	const { push } = useHistory();
 	const encodedID = encodeURIComponent(bike.id);
+	let today = formatDate(new Date());
 
 	const getFeaturesForBike = async () => {
 		const url = '/api/search/features?id=' + encodedID;
@@ -35,29 +38,14 @@ const BikeView = (props) => {
 		.catch((err) => {console.log(err) });
 	};
 
-	/*
-	** Takes in the list of features for this bike and adds the image to represent
-	** its icon.
-	*/
-	function setFeatureIcons(features) {
-		features.map((feature) => {
-			switch(feature.name){
-				case "Kick Stand":
-					feature.icon =  require("../images/kick_stand_200.png");
-					break;
-				case "Water Bottle Holder":
-					feature.icon =  require("../images/water_bottle_200.png");
-					break;
-				case "Disk Brakes":
-					feature.icon =  require("../images/disk_brakes_200.png");
-					break;
-				case "Pouch Included":
-					feature.icon =  require("../images/pouch_200.png");
-					break;
-				default:
-					feature.icon = require("../images/chevron_200.png");
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		push({
+			pathname: './reservation',
+			state: {
+				test: "test good"
 			}
-		});
+		})
 	}
 
     return(
@@ -103,41 +91,37 @@ const BikeView = (props) => {
 					  <Card.Body>
 					    <Card.Title>${bike.price}/hour</Card.Title>
 					    <Card.Subtitle className="mb-2 text-muted">Est. Total: $</Card.Subtitle>
-					    <Form>
+					    <Form onSubmit={handleSubmit}>
 					    	<Form.Row>
 								<Form.Group as={Col} controlId="sDate">
-								    <Form.Label>Start Date</Form.Label>
-								    <Form.Control type="text" />
+								    <Form.Label>Start of Trip</Form.Label>
+								    <Form.Control type="date" min={today} />
 								</Form.Group>
 								<Form.Group as={Col} controlId="sTime">
 									<Form.Label>Start Time</Form.Label>
-								    <Form.Control type="text" />
+								    <Form.Control disabled="disabeled" type="time" value="10:00" />
 								</Form.Group>
 							</Form.Row>
 
 							<Form.Row>
 								<Form.Group as={Col} controlId="eDate">
-								    <Form.Label>End Date</Form.Label>
-								    <Form.Control type="text" />
+								    <Form.Label>End of Trip</Form.Label>
+								    <Form.Control type="date" />
 								</Form.Group>
 								<Form.Group as={Col} controlId="eTime">
 									<Form.Label>End Time</Form.Label>
-								    <Form.Control type="text" />
+								    <Form.Control disabled="disabeled" type="time" value="10:00" />
 								</Form.Group>
 							</Form.Row>
 
 							<Form.Row>
 								<Form.Group as={Col} controlId="sLoc">
-								    <Form.Label>Pick Up Location</Form.Label>
-								    <Form.Control type="text" />
-								</Form.Group>
-								<Form.Group as={Col} controlId="eLoc">
-									<Form.Label>Return Location</Form.Label>
-								    <Form.Control type="text" />
+								    <Form.Label>Pick Up & Return Location</Form.Label>
+								    <Form.Control disabled="disabeled" type="text" value={bike.city+', '+bike.state} />
 								</Form.Group>
 							</Form.Row>
 							  
-							<Button className="reservation-button" block>
+							<Button type="submit" className="reservation-button" block>
 							    Continue
 							</Button>
 					    </Form>
@@ -178,6 +162,44 @@ const BikeView = (props) => {
     		</Row>
     	</Container>
     );
+
+ /* -------  Helpers  -------- */
+	/* Takes in the list of features for this bike and adds the image to represent
+	** its icon. */
+	function setFeatureIcons(features) {
+		features.map((feature) => {
+			switch(feature.name){
+				case "Kick Stand":
+					feature.icon =  require("../images/kick_stand_200.png");
+					break;
+				case "Water Bottle Holder":
+					feature.icon =  require("../images/water_bottle_200.png");
+					break;
+				case "Disk Brakes":
+					feature.icon =  require("../images/disk_brakes_200.png");
+					break;
+				case "Pouch Included":
+					feature.icon =  require("../images/pouch_200.png");
+					break;
+				default:
+					feature.icon = require("../images/chevron_200.png");
+			}
+		});
+	}
+
+	/* Takes in a Date object and converts it to format yyyy-mm-dd*/
+    function formatDate(date){
+    	let month = '' + (date.getMonth() + 1),
+        	day = '' + date.getDate(),
+        	year = date.getFullYear();
+
+    	if (month.length < 2) 
+        	month = '0' + month;
+    	if (day.length < 2) 
+        	day = '0' + day;
+
+    	return [year, month, day].join('-');
+    }
 };
 
 export default BikeView;

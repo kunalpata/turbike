@@ -13,6 +13,7 @@ import UserAccountInfo from "./pages/UserAccountInfo";
 import UserBikeList from "./pages/UserBikeList";
 import Listings from './pages/Listings';
 import BikeView from './pages/BikeView';
+import Reservation from './pages/Reservation';
 import BikeAdd from './pages/BikeAdd';
 import EditBike from "./pages/EditBike";
 import MyNavbar from './components/MyNavbar';
@@ -71,6 +72,7 @@ class App extends Component {
 
               <Route exact path='/listings' component={Listings} />
               <Route exact path='/bikeView' component={BikeView} />
+              <Route exact path='/reservation' component={Reservation} />
 
               <Route exact path='/bikeAdd' component={BikeAdd} />
               <Route exact path='/editBike' render={(props) => <EditBike {...props} passUser={this.authenticateInfo}/>}  />
