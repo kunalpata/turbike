@@ -17,12 +17,23 @@ const BikeView = (props) => {
 		getFeaturesForBike();
 	}, []);
 
+	// bike info
 	const bike = props.location.state.bike;
 	const [features, setFeatures] = useState({});
-	const { push } = useHistory();
 	const encodedID = encodeURIComponent(bike.id);
-	let today = formatDate(new Date());
 
+	// form info
+	let today = formatDate(new Date()); // used to prevent date selection before today
+	const { push } = useHistory();  // used to route to reservation upon form submit
+	const [total, setTotal] = useState("Enter start and end dates for an estimate");
+	const [startDate, setStartDate] = useState(today);
+	const [startTime, setStartTime] = useState("10:00");
+	const [endDate, setEndDate] = useState("");
+	const [endTime, setEndTime] = useState("10:00");
+	const [location, setLocation] = useState(bike.city+', '+bike.state);
+
+
+	// on page load, queries for bike-features
 	const getFeaturesForBike = async () => {
 		const url = '/api/search/features?id=' + encodedID;
 
@@ -32,20 +43,40 @@ const BikeView = (props) => {
 		const features = await data.json()
 		.then((features) => {
 			setFeatureIcons(features.data);
-			console.log(features.data);
 			setFeatures(features);
 		})
 		.catch((err) => {console.log(err) });
 	};
 
+	// on form submit, gets the form values to pass to reservation
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		push({
 			pathname: './reservation',
 			state: {
-				test: "test good"
+				startDate: startDate,
+				startTime: startTime,
+				endDate: endDate,
+				endTime: endTime,
+				location: location
 			}
 		})
+	}
+
+	// calls calcPrice after a date state has changed
+	useEffect(() => {
+		calcPriceTotal();
+	}, [startDate, endDate])
+	
+	// gets the total days from form date range, then calcs and sets total price
+	const calcPriceTotal = () => {
+		// source: https://stackoverflow.com/questions/2627473
+		const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+		const firstDate = new Date(startDate.replace('-', ','));
+		const secondDate = new Date(endDate.replace('-', ','));
+	
+		const diffDays = Math.round(Math.abs((firstDate - secondDate) / oneDay)); 
+		setTotal(diffDays*bike.price);
 	}
 
     return(
@@ -89,35 +120,35 @@ const BikeView = (props) => {
     			<Col md={{span: 6, offset: 0}}>
 					<Card>
 					  <Card.Body>
-					    <Card.Title>${bike.price}/hour</Card.Title>
-					    <Card.Subtitle className="mb-2 text-muted">Est. Total: $</Card.Subtitle>
+					    <Card.Title>${bike.price}/Day</Card.Title>
+					    <Card.Subtitle className="mb-2 text-muted">Est. Total: {total ? '$'+total : 'enter start and end date for an estimate'}</Card.Subtitle>
 					    <Form onSubmit={handleSubmit}>
 					    	<Form.Row>
 								<Form.Group as={Col} controlId="sDate">
 								    <Form.Label>Start of Trip</Form.Label>
-								    <Form.Control type="date" min={today} />
+								    <Form.Control type="date" min={today} name="startDate" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
 								</Form.Group>
 								<Form.Group as={Col} controlId="sTime">
 									<Form.Label>Start Time</Form.Label>
-								    <Form.Control disabled="disabeled" type="time" value="10:00" />
+								    <Form.Control disabled="disabeled" type="time" value={startTime} name="startTime" />
 								</Form.Group>
 							</Form.Row>
 
 							<Form.Row>
 								<Form.Group as={Col} controlId="eDate">
 								    <Form.Label>End of Trip</Form.Label>
-								    <Form.Control type="date" />
+								    <Form.Control type="date" min={startDate} name="endDate" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
 								</Form.Group>
 								<Form.Group as={Col} controlId="eTime">
 									<Form.Label>End Time</Form.Label>
-								    <Form.Control disabled="disabeled" type="time" value="10:00" />
+								    <Form.Control disabled="disabeled" type="time" value="10:00" name="endTime" />
 								</Form.Group>
 							</Form.Row>
 
 							<Form.Row>
 								<Form.Group as={Col} controlId="sLoc">
 								    <Form.Label>Pick Up & Return Location</Form.Label>
-								    <Form.Control disabled="disabeled" type="text" value={bike.city+', '+bike.state} />
+								    <Form.Control disabled="disabeled" type="text" value={location} name="location" />
 								</Form.Group>
 							</Form.Row>
 							  

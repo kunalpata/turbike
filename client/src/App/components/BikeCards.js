@@ -41,7 +41,7 @@ const BikeCards = ({bikes}) => {
 								
 								<span>{bike.rating ? bike.rating : " -"}</span>
                 						<span id="category" className="card-info">{bike.bikeName} Bike</span>
-								<span className="float-right">${bike.price}/hour</span>
+								<span className="float-right">${bike.price}/Day</span>
 							</span>
 						</Card.Text>
 					</Card.Body>
