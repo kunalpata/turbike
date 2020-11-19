@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import '../bootstrap/bootstrap.min.css';
 import Form from 'react-bootstrap/Form';
 
@@ -10,6 +10,8 @@ const FeaturesCheckboxes = (props) => {
 
     const [features, setFeatures] = useState([]);
     const [selectedFeatures, setSelectedFeatures] = useState({});  //feature id from db : true/false
+    const [hasAny, setHasAny] = useState(false);
+    const anyRef = useRef(null);
 
     const fetchFeature = async () => {
         await fetch('/api/get/features')
@@ -17,8 +19,9 @@ const FeaturesCheckboxes = (props) => {
 		.then((res) => {
             console.log(res);
             if(props.extraOptions){
-                res.data.push({id:-1,name:"any"});
-                res.data.push({id:-2,name:"none"});
+                //res.data.push({id:-1,name:"any"});
+                //res.data.push({id:-2,name:"none"});
+                setHasAny(true);
             }
             setFeatures(res.data)
         })
@@ -30,11 +33,15 @@ const FeaturesCheckboxes = (props) => {
         let oldFeatures = {...selectedFeatures};
         oldFeatures[e.target.id] = e.target.checked?true:false;
         props.getUpdatedFeatures(oldFeatures);
-        setSelectedFeatures(oldFeatures)
+        setSelectedFeatures(oldFeatures);
     }
 
     useEffect(()=>{
-        fetchFeature();
+        async function fetchData(){
+            await fetchFeature();
+            anyRef.current.click();
+        }
+        fetchData();
     },[]);
 
     return(
@@ -42,6 +49,9 @@ const FeaturesCheckboxes = (props) => {
             {features.map((feature) => 
                 (<Form.Check type="checkbox" name="features" id={feature.id} value={feature.name} label={feature.name} key={feature.id} onClick={updateSelectedFeatures} />)
             )}
+            {
+                hasAny?<Form.Check type="checkbox" name="features" id={-1} value="any" label="any" key="-1" ref={anyRef} onClick={updateSelectedFeatures}/>:null
+            }
         </>
     )
 

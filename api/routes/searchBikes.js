@@ -127,7 +127,7 @@ router.get('/features', (req, res) => {
 });
 
 
-router.post('/advanced', (req, res) => {
+router.post('/advanced', async (req, res) => {
     /*search obj
     {
         category("Choose..." as all categories),
@@ -139,14 +139,141 @@ router.post('/advanced', (req, res) => {
             zip ("any" as all zip code)
         }},
         matchMode("Choose..." will be not exact match, (Exact Match/Contains)),
-        maxPrice: (negative should be zero, not going to check, leave for frontend to check)
-        minPrice: "99999999" equals no highest
+        minPrice: (negative should be zero, not going to check, leave for frontend to check)
+        maxPrice: "99999999" equals no highest
         searchTerms:
     */
     
     //build up the query
 
-    res.send(req.body);
+    let {category, features, location, matchMode, maxPrice, minPrice, searchTerms} = req.body;
+
+    let whereConstrains = [];
+    let havingConstrains = [];
+
+    //base query without filters to select all bikes combining category and features, but group by bike.id
+    let baseQueryColumns = 'SELECT b.id, b.price, b.bike_details, b.brand, b.bikeName,' +
+                    'u.user_name, u.email,' +
+                    'l.address, l.city, l.state, l.zip, l.latitude, l.longitude,';
+    
+    let baseQueryColumnEnd = ' t.feature_id, t2.category_id, t2.name, count(*) as matched_feature_count, t.total_feature_count FROM bike b '
+    let baseQueryJoins = ' inner join user u on b.user_id = u.id' +
+                         ' inner join location l on l.id = b.location_id' +
+                         ' left join (SELECT bf.feature_id, bf.bike_id, f.name, t3.total_feature_count FROM bike_feature bf ' + 
+                                'inner join feature f on bf.feature_id = f.id ' +
+                                'inner join (SELECT bf2.bike_id, count(*) as total_feature_count FROM bike_feature bf2 group by bf2.bike_id) '+
+                                'as t3 on t3.bike_id = bf.bike_id) as t on t.bike_id = b.id' +
+                         ' left join (SELECT bc.category_id, bc.bike_id, c.name from bike_category bc inner join category c on c.id = bc.category_id) as t2 on t2.bike_id = b.id'
+    let queryEnd1 = ' group by b.id';
+    let queryEnd2 = ' order by b.id';
+    let whereClause = "";
+    let havingClause = "";
+
+    //get lat/long
+    let distanceQuery = "";
+    if(location.mode == "radius" && location.zip != "any"){
+        let zipGeocode = await getCoords(location.zip);
+        console.log(zipGeocode);
+        if(zipGeocode.err !== undefined){
+            res.send({data:[],err:"zipcode error",hasError:1});
+            return;
+        }
+        distanceQuery = ` ST_DISTANCE_SPHERE(POINT(${zipGeocode.lng},${zipGeocode.lat}),POINT(l.longitude,l.latitude)) * .000621371192 as distance,`;
+        havingConstrains.push(` distance < ${location.miles}`);
+        queryEnd2 = ' order by b.id,distance';
+        
+    }else if(req.body.location.mode == "city" && req.body.location.city != "Choose..."){
+        whereConstrains.push(` l.city = '${req.body.location.city}'`);
+    }
+    
+    //get feature constrain
+    if(features["-1"] === true){
+        //if(features["-2"] === true){
+          //  whereConstrains.push( ' t.feature_id is null');
+        //}
+    }else{
+        let temp = "";
+        let featureCt = 0;
+        for(let featureKey in features){
+            if(features[featureKey]){
+                if(featureCt === 0){
+                    temp = ` (t.feature_id = ${featureKey}`;
+                }else{
+                    temp = ` ${temp} or t.feature_id = ${featureKey}`;
+                }
+                featureCt++;
+            }         
+        }
+        temp = temp + ")";
+        if(featureCt > 0){
+            whereConstrains.push(temp);
+            havingConstrains.push(` matched_feature_count = total_feature_count and matched_feature_count = ${featureCt}`);
+        }else{
+            whereConstrains.push(' t.feature_id is null');
+        }    
+    }
+
+    //set category constrain
+    if(category !== "Choose..."){
+        whereConstrains.push(` t2.name = '${category}'`);
+    }
+
+    //set prices
+    whereConstrains.push(` b.price >= ${minPrice}`);
+    if(maxPrice < 99999999){
+        whereConstrains.push( ` b.price <= ${maxPrice}`);
+    }
+
+    //set search term (bikeName or brand)
+    searchTerms = searchTerms.replace(/^\s+/,'');
+	searchTerms = searchTerms.replace(/\s+$/,'');
+    if(searchTerms !== ""){
+        let connector = "like";
+        let sign = "%";
+        if(matchMode === "Exact Match"){
+            connector = "=";
+            sign = "";
+        }
+        whereConstrains.push(` (b.bikeName ${connector} '${sign}${searchTerms}${sign}' or b.brand ${connector} '${sign}${searchTerms}${sign}')`);
+    }
+
+    //construct where and having clauses
+    for(let i = 0; i < whereConstrains.length; i++){
+        if(i == 0){
+            whereClause = ` where${whereConstrains[i]}`;
+        }else{
+            whereClause = whereClause + " and" + whereConstrains[i];
+        }
+    }
+
+    for(let i = 0; i < havingConstrains.length; i++){
+        if(i == 0){
+            havingClause = ` having${havingConstrains[i]}`;
+        }else{
+            havingClause = havingClause + " and" + havingConstrains[i];
+        }
+    }
+
+    //construct the final query
+    let finalQuery = baseQueryColumns + distanceQuery + baseQueryColumnEnd + baseQueryJoins + whereClause + queryEnd1 + havingClause + queryEnd2;
+    
+    pool.query(finalQuery, (err, result) => {
+        if(err){
+            console.log(err);
+            res.send({data:[],err:err,hasError:1});
+        }else{
+            let items = [];
+            for(let i = 0; i < result.length; i++){
+                let item = {
+                    ...result[i],
+                }
+                items.push(item);
+            }
+            res.send(JSON.stringify({data:items,err:"",hasError:0}));
+        }
+    })
+
+    //res.send(JSON.stringify(finalQuery));
 })
 
 // get bike images
@@ -191,11 +318,10 @@ function getCoords(location){
         fetch(url)
         .then(res => res.json())
         .then(json => {
-
           // get and return the coordinates from the response
           resolve(json.results[0].geometry.location)
         })
-        .catch(err => console.log(err));
+        .catch(err => resolve({err:err}));
     });
 }
 

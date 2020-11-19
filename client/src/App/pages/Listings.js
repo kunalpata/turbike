@@ -76,8 +76,18 @@ const Listings = (props) => {
 			
     })
     .then((res) => res.json())
-    .then((res) => {
-      console.log(res);
+    .then((bikes) => {
+      console.log(bikes);
+      if(bikes.data.length == 0){
+        push({
+          pathname: './',
+          state: {noBikes: true}
+        })
+      }
+      setBikes(bikes);
+      if(bikes.data.length != 0){
+        setLocation(bikes.data[0]["city"]);
+      }
     })
     .catch((err) => {
       console.log(err);

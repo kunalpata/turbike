@@ -116,7 +116,7 @@ const AdvancedSearch = (props) => {
                                     <Form.Row>
                                         <Form.Group as={Col} sm={8}>
                                             <Form.Label>Search Terms</Form.Label>
-                                            <Form.Control type="text" placeholder="Search Title" name="searchTerms" onChange={textChangeHandler}/>
+                                            <Form.Control type="text" placeholder="Search Bike name or Brand" name="searchTerms" onChange={textChangeHandler}/>
                                         </Form.Group>
                                         <Form.Group as={Col} sm={4}>
                                             <Form.Label>Match mode</Form.Label>
@@ -170,7 +170,7 @@ const AdvancedSearch = (props) => {
                                                     <Col xs={8} lg={6}>
                                                         <div style={{display:"flex", flexFlow:"row"}}>
                                                             
-                                                            <DropDown size="sm" label="radius" name="searchMile" customEntries={[{id:1,name:"15"},{id:2,name:"25"},{id:3,name:"50"},{id:4,name:"100"}]} sendSelected={dropDownSelected}/>   
+                                                            <DropDown size="sm" label="radius" name="searchMile" customEntries={[{id:1,name:"5"},{id:2,name:"10"},{id:3,name:"20"},{id:4,name:"50"},{id:5,name:"100"},{id:6,name:"200"}]} sendSelected={dropDownSelected}/>   
                                                             <span style={{marginLeft:"5px", marginRight:"5px", minWidth:"60px"}}>miles of</span>
                                                             <Form.Control size="sm" type="text" placeholder="" name="searchZip" placeholder="Zip" onChange={textChangeHandler}/>
                                                         </div>
