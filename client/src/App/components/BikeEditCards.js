@@ -10,10 +10,7 @@ const BikeEditCards = ({bikes}) => {
     return(
         <div>
             {bikes.map( (bike, i) => (
-                <Link key={i} to={{
-                    pathname: "./editBike",
-                    state: {bike: bike}
-                }} style={{ textDecoration: 'none' }}>
+                <div key={i} style={{ textDecoration: 'none' }}>
                     <Card className="card">
 
                         {/* TODO: Get images from bike-image table */}
@@ -26,20 +23,23 @@ const BikeEditCards = ({bikes}) => {
 						</span>
                             <Card.Text>
 							<span className="card-info">
-								<td>
-									<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>
-								</td>
-                                {/* TODO: Add rating as bike.rating_score - need bikes to start with default rating */}
-                                <span>4.5</span>
-								<span id="category" className="card-info">{bike.bikeName}</span>
+								{/*<td>*/}
+                                {/*	<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>*/}
+                                {/*</td>*/}
+                                {/*/!* TODO: Add rating as bike.rating_score - need bikes to start with default rating *!/*/}
+                                {/*<span>4.5</span>*/}
+                                <span id="category" className="card-info">{bike.bikeName}</span>
 								<span className="float-right">${bike.price}/hour</span>
                                 <br/>
-                                <span className="float-right">Edit</span>
+                                <Link to={{
+                                    pathname: "./editBike",
+                                    state: {bike: bike}
+                                }} className="float-right">Edit</Link>
 							</span>
                             </Card.Text>
                         </Card.Body>
                     </Card>
-                </Link>
+                </div>
             ))}
         </div>
 
