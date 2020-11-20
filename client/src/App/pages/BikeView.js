@@ -127,7 +127,7 @@ const BikeView = (props) => {
 					<Card>
 					  <Card.Body>
 					    <Card.Title>${bike.price}/Day</Card.Title>
-					    <Card.Subtitle className="mb-2 text-muted">Est. Total: {total ? '$'+total : 'enter start and end date for an estimate'}</Card.Subtitle>
+					    <Card.Subtitle className="mb-2 text-muted">Est. Total: {total ? '$'+total+' + taxes & fees' : 'enter start and end date for an estimate'}</Card.Subtitle>
 					    <Form onSubmit={handleSubmit}>
 					    	<Form.Row>
 								<Form.Group as={Col} controlId="sDate">
