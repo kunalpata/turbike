@@ -1,0 +1,87 @@
+/*Reservation.css*/
+
+.reservation-body-area {
+	margin-top: 150px;
+}
+
+.main-title {
+	font-size: 2em;
+	margin-bottom: 20px;
+}
+
+.section-title {
+	font-size: 1.5em;
+	margin-bottom: 15px;
+}
+
+.user-info {
+	border: solid 1px gray;
+	border-radius: 5px;
+	padding: 3px;
+	margin: 0 10px 10px 10px;
+}
+
+.info-block {
+	margin-bottom: 20px;
+}
+
+.continue-note {
+	margin-top: 30px;
+}
+
+.continue-button {
+	background-color: #F29898;
+	border-color: #F29898;
+	margin: 10px 0;
+}
+
+.continue-button:hover {
+	background-color: #838383;
+	border-color: #838383;
+}
+
+.go-back-button {
+	background-color: #B3B3B3;
+	border-color: #B3B3B3;
+	margin-left: 10px;
+}
+
+.go-back-button:hover {
+	background-color: #838383;
+	border-color: #838383;
+}
+
+.card-form {
+	margin: 10px;
+}
+
+.billing-area {
+	border: solid 1px gray;
+	border-radius: 10px;
+	padding: 20px;
+}
+
+.billing-heading {
+	font-size: 1.5em;
+}
+
+.inline {
+	display: inline;
+}
+
+.sub-title {
+	margin-left: 10px;
+	color: gray;
+}
+
+.billing-dates {
+	border: solid 1px gray;
+	border-radius: 5px;
+	padding: 10px;
+	margin: 20px 0 20px 0;
+}
+
+.inline-icon-alignment {
+	display: table-cell;
+    vertical-align: middle;
+}
