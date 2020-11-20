@@ -15,7 +15,16 @@ import FeaturesCheckboxes from '../components/FeaturesCheckboxes'
 
 const AdvancedSearch = (props) => {
 
-    const [advancedSearch, setAdvancedSearch] = useState({});
+    const [advancedSearch, setAdvancedSearch] = useState({
+        searchTerms:"",
+        matchMode:"Contains",
+        minPrice:"0",
+        maxPrice:"99999999",
+        category:"Choose...",
+        features:{},
+        location:{mode:"any", miles:"any",zip:"any",city:"Choose..."}
+    });
+
     const {push} = useHistory();
 
     const handleSubmit = (e) => {
@@ -26,24 +35,70 @@ const AdvancedSearch = (props) => {
     }
 
     const textChangeHandler = (e) => {
-        console.log(e.target.name, e.target.checked)
+        let curName = e.target.name;
+        let curValue = e.target.value;
+        console.log(e.target.name, e.target.id)
+        let curSearchObj = {...advancedSearch};
+        switch(curName){
+            case "lowPrice":
+                curSearchObj.minPrice = inputTest(/^\d{1,9}\.?\d{0,2}$/,curValue)?curValue:"0";
+                curSearchObj.minPrice = (Number(curSearchObj.maxPrice) < Number(curSearchObj.minPrice))?"0":curSearchObj.minPrice;
+                break;
+            case "highPrice":
+                curSearchObj.maxPrice = inputTest(/^\d{1,9}\.?\d{0,2}$/,curValue)?curValue:"99999999";
+                curSearchObj.maxPrice = (Number(curSearchObj.minPrice) > Number(curSearchObj.maxPrice))?"99999999":curSearchObj.maxPrice;
+                break;
+            case "searchZip":
+                curSearchObj.location.zip = inputTest(/^\d{5}$/,curValue)?curValue:"any";
+                break;
+            case "radioLocation":
+                switch(e.target.id){
+                    case "radiusZip":
+                        curSearchObj.location.mode = "radius";
+                        break;
+                    case "city":
+                        curSearchObj.location.mode = "city";
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            default:
+                curSearchObj[curName] = curValue;
+        }
+        console.log(curSearchObj);
+        setAdvancedSearch(curSearchObj);
     }
 
     const dropDownSelected = (name, value) => {
-        console.log(name, value);
+        //console.log(name, value);
+        let curSearchObj = {...advancedSearch};
+        switch(name){
+            case "searchMile":
+                curSearchObj.location.miles = value;
+                break;
+            case "city":
+                curSearchObj.location.city = value;
+                break;
+            default:
+                curSearchObj[name]=value;
+        }
+        console.log(curSearchObj);
+        setAdvancedSearch(curSearchObj);
     }
 
     const updateFeatures = (featureObj) => {
         console.log(featureObj);
+        let curSearchObj = {...advancedSearch};
+        curSearchObj.features = {...featureObj};
+        setAdvancedSearch(curSearchObj);
     }
 
-    const performSearch = () => {
-        console.log("search click!")
+
+    function inputTest(regexPattern, targetInput){
+        const regex = RegExp(regexPattern);
+        return regex.test(targetInput);
     }
-
-    useEffect(() => {
-
-    },[]);
 
 
     return(
@@ -59,11 +114,11 @@ const AdvancedSearch = (props) => {
                                 </Card.Title>
                                 <Form>
                                     <Form.Row>
-                                        <Form.Group as={Col} lg={8}>
-                                            <Form.Label>Enter Search Terms</Form.Label>
-                                            <Form.Control type="text" placeholder="keywords" name="searchTerms" onChange={textChangeHandler}/>
+                                        <Form.Group as={Col} sm={8}>
+                                            <Form.Label>Search Terms</Form.Label>
+                                            <Form.Control type="text" placeholder="Search Bike name or Brand" name="searchTerms" onChange={textChangeHandler}/>
                                         </Form.Group>
-                                        <Form.Group as={Col} lg={4}>
+                                        <Form.Group as={Col} sm={4}>
                                             <Form.Label>Match mode</Form.Label>
                                             <DropDown label="Match mode" name="matchMode" customEntries={[{id:1,name:"Exact Match"},{id:2,name:"Contains"}]} sendSelected={dropDownSelected}/>
                                         </Form.Group>
@@ -94,7 +149,7 @@ const AdvancedSearch = (props) => {
                                     <Form.Row>
                                         <Form.Group as={Col} md={4}>
                                             <Form.Label>Has Feature(s)</Form.Label>
-                                            <FeaturesCheckboxes getUpdatedFeatures={updateFeatures}/>                              
+                                            <FeaturesCheckboxes extraOptions={true} getUpdatedFeatures={updateFeatures}/>                              
                                         </Form.Group>
                                         <Form.Group as={Col} md={8}>
                                             <Form.Label>Location</Form.Label>
@@ -115,9 +170,9 @@ const AdvancedSearch = (props) => {
                                                     <Col xs={8} lg={6}>
                                                         <div style={{display:"flex", flexFlow:"row"}}>
                                                             
-                                                            <DropDown size="sm" label="radius" name="searchMile" customEntries={[{id:1,name:"15"},{id:2,name:"25"},{id:3,name:"50"},{id:4,name:"100"}]} sendSelected={dropDownSelected}/>   
+                                                            <DropDown size="sm" label="radius" name="searchMile" customEntries={[{id:1,name:"5"},{id:2,name:"10"},{id:3,name:"20"},{id:4,name:"50"},{id:5,name:"100"},{id:6,name:"200"}]} sendSelected={dropDownSelected}/>   
                                                             <span style={{marginLeft:"5px", marginRight:"5px", minWidth:"60px"}}>miles of</span>
-                                                            <Form.Control size="sm" type="text" placeholder="" name="searchZip" placeholder="Zip" onChange={textChangeHandler}/>
+                                                            <Form.Control size="sm" type="text" name="searchZip" placeholder="Zip" onChange={textChangeHandler}/>
                                                         </div>
                                                     </Col>
                                                     
@@ -146,7 +201,7 @@ const AdvancedSearch = (props) => {
                                     </Form.Row>
                                     <hr/>
                                     <Row style={{display:"flex", justifyContent:"center"}}>
-                                        <Button className = "btn-danger" onClick={performSearch} style={{minWidth:"200px"}}>Find bike</Button>	
+                                        <Button className = "btn-danger" onClick={handleSubmit} style={{minWidth:"200px"}}>Find bike</Button>	
                                     </Row>	
                                 </Form>                               
                             </Card.Body>

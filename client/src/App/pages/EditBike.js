@@ -16,6 +16,8 @@ import './EditBike.css'
 
 function EditBike(props){
     console.log(props)
+    const bike = props.location.state.bike;
+    console.log(bike);
     //fix array for states
     const states = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA",
         "MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN",
@@ -106,6 +108,11 @@ function EditBike(props){
         setDisableButton(false);
     }
 
+    function home(e) {
+        e.preventDefault();
+        window.location = '/userBikes';
+    }
+
     useEffect(() => {
         fetchUser();
         fetchCategory();
@@ -134,7 +141,7 @@ function EditBike(props){
                                 }
                                 {alertInfo.isBikeAdded == true?<DismissibleAlert
                                     title={alertInfo.status.status}
-                                    message="Bike added successfully!"
+                                    message="Bike edited successfully!"
                                     type = "info"
                                     redirectLink="/"
                                     shouldRedirect={true}
@@ -156,18 +163,18 @@ function EditBike(props){
                                 }
 
                                 <Card.Title style={{display:"flex", flexFlow:"column", justifyContent:"center"}}>
-                                    <div style={{width:"100%",fontSize:"40px",textAlign:"center",marginBottom:"5px" }}><strong>Edit bike</strong></div>
+                                    <div style={{width:"100%",fontSize:"40px",textAlign:"center",marginBottom:"5px" }}><strong>Edit Bike</strong></div>
                                 </Card.Title>
                                 <Form>
                                     <Form.Row>
                                         <Form.Group as={Col} lg={9}>
 
                                             <Form.Label>Bike name</Form.Label>
-                                            <Form.Control  type="text" placeholder="Bike Name" name="bikename" onChange={textChangeHandler} />
+                                            <Form.Control  type="text" placeholder={bike.bikeName} name="bikename" onChange={textChangeHandler} />
                                         </Form.Group>
                                         <Form.Group as={Col} lg={3}>
                                             <Form.Label>Rent Per Day</Form.Label>
-                                            <Form.Control  type="text" placeholder="Rental Price" name="rentPrice" onChange={textChangeHandler} />
+                                            <Form.Control  type="text" placeholder={bike.price} name="rentPrice" onChange={textChangeHandler} />
 
                                         </Form.Group>
 
@@ -176,7 +183,7 @@ function EditBike(props){
                                     <Form.Row>
                                         <Form.Group as={Col} lg={6}>
                                             <Form.Label>Brand</Form.Label>
-                                            <Form.Control type="text" placeholder="Brand" name="bikeBrand" onChange={textChangeHandler} />
+                                            <Form.Control type="text" placeholder={bike.brand} name="bikeBrand" onChange={textChangeHandler} />
                                         </Form.Group>
                                         <Form.Group as={Col} lg={6}>
                                             <Form.Label>Type</Form.Label>
@@ -192,17 +199,17 @@ function EditBike(props){
                                     <Form.Row>
                                         <Form.Group as={Col} lg={12}>
                                             <Form.Label>Location</Form.Label>
-                                            <Form.Control type="text" placeholder="Address" name="address" onChange={textChangeHandler} />
+                                            <Form.Control type="text" placeholder={bike.address} name="address" onChange={textChangeHandler} />
                                         </Form.Group>
                                     </Form.Row>
 
                                     <Form.Row>
                                         <Form.Group as={Col}>
-                                            <Form.Control type="text" placeholder="City" name="city" onChange={textChangeHandler} />
+                                            <Form.Control type="text" placeholder={bike.city} name="city" onChange={textChangeHandler} />
                                         </Form.Group>
 
                                         <Form.Group as={Col}>
-                                            <Form.Control as="select" name="state" defaultValue="Choose..." onChange={textChangeHandler}>
+                                            <Form.Control as="select" name="state" defaultValue={bike.state} onChange={textChangeHandler}>
                                                 <option>State</option>
                                                 {states.map((state,index) =>
                                                     (<option key={index}>{state}</option>)
@@ -211,7 +218,7 @@ function EditBike(props){
                                         </Form.Group>
 
                                         <Form.Group as={Col}>
-                                            <Form.Control type="text" placeholder="Zip" name="zip" onChange={textChangeHandler} />
+                                            <Form.Control type="text" placeholder={bike.zip} name="zip" onChange={textChangeHandler} />
                                         </Form.Group>
 
                                     </Form.Row>
@@ -226,14 +233,17 @@ function EditBike(props){
                                         </Form.Group>
                                         <Form.Group as={Col} lg={9}>
                                             <Form.Label>Tell us more about it</Form.Label>
-                                            <Form.Control as="textarea" rows="10" placeholder="Type Here" name="bikeDesc" onChange={textChangeHandler} />
+                                            <Form.Control as="textarea" rows="10" placeholder={bike.bike_details} name="bikeDesc" onChange={textChangeHandler} />
                                         </Form.Group>
 
                                     </Form.Row>
 
                                 </Form>
                                 <Row style={{display:"flex", justifyContent:"center"}}>
-                                    <Button className = "btn-danger" onClick={postBike} disabled={disableButton} style={{minWidth:"200px"}}>Add Bike</Button>
+                                    <Button className = "btn-danger" onClick={postBike} disabled={disableButton} style={{minWidth:"200px", marginBottom:"10px"}}>Edit Bike</Button>
+                                </Row>
+                                <Row style={{display:"flex", justifyContent:"center"}}>
+                                    <Button className = "btn-secondary" onClick={home} disabled={disableButton} style={{minWidth:"200px"}}>Cancel</Button>
                                 </Row>
                             </Card.Body>
                         </Card>

@@ -273,7 +273,7 @@ function BikeAdd(props){
                                         </Form.Group>
                                         <Form.Group as={Col} lg={9}>
                                             <Form.Label>Tell us more about it</Form.Label>
-                                            <Form.Control as="textarea" rows="10" placeholder="Type Here" name="bikeDesc" onChange={textChangeHandler} />
+                                            <Form.Control as="textarea" rows="5" placeholder="Type Here" name="bikeDesc" onChange={textChangeHandler} />
                                         </Form.Group>
 
                                     </Form.Row>

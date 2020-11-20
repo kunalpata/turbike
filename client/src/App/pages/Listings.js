@@ -12,8 +12,13 @@ import Col from 'react-bootstrap/Col';
 
 const Listings = (props) => {
   useEffect(() => {
-    getBikes();
-  }, []);
+    if(props.location.state.advancedSearch !== undefined){
+      //console.log(props.location.state.advancedSearch);
+      advancedGetBikes();
+    }else{
+      getBikes();
+    }
+  },[]);
 
   const [bikes, setBikes] = useState({});
   const [location, setLocation] = useState("");
@@ -44,6 +49,7 @@ const Listings = (props) => {
 
     const bikes = await data.json()
     .then((bikes)=>{
+      console.log(bikes);
       // check if no bikes found
       if (bikes.data.length == 0){
         // send back home and dispaly message
@@ -63,7 +69,35 @@ const Listings = (props) => {
     .catch((err)=>{console.log(err)});
   };
 
-  	return (
+  const advancedGetBikes = async() => {
+    await fetch('/api/search/advanced',{
+			method: 'POST',
+			headers: { 'Content-Type' : 'application/json' },
+			body: JSON.stringify(props.location.state.advancedSearch)
+			
+    })
+    .then((res) => res.json())
+    .then((bikes) => {
+      console.log(bikes);
+      if(bikes.data.length == 0){
+        push({
+          pathname: './',
+          state: {noBikes: true}
+        })
+      }
+      setBikes(bikes);
+      if(bikes.data.length != 0){
+        setLocation(bikes.data[0]["city"]);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  }
+
+  
+  
+  return (
   		<div className="listing-body">
   			<Container>
           <Row>
@@ -99,7 +133,7 @@ const Listings = (props) => {
           </div>
         </Container>
       </div>
-  	);
+  );
 };
 
 /* Takes in the bikes, loops over then to set the rating label for each bike */
