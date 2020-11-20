@@ -17,7 +17,7 @@ router.get('/location', (req, res) => {
 
         // query by closest match to coordinates of search
         // formula source: https://stackoverflow.com/questions/11112926
-        let query = 'SELECT b.id,b.price,b.bike_details,b.bikeName,b.brand,' +
+        let query = 'SELECT b.id,b.price,b.bike_details,b.bikeName,b.brand,b.penalty' +
                         'u.user_name,u.email,' +
                         'l.address,l.city,l.state,l.zip,l.latitude,l.longitude,' +
                         'c.name,' +
@@ -65,7 +65,7 @@ router.get('/category', (req, res) => {
     const lng = req.query.lng;
 
     // get bikes in this category that are the closest to users current location
-    let query = 'SELECT b.id,b.price,b.bike_details,b.bikeName,b.brand,' +
+    let query = 'SELECT b.id,b.price,b.bike_details,b.bikeName,b.brand,b.penalty' +
                     'u.user_name,u.email,' +
                     'l.address,l.city,l.state,l.zip,l.latitude,l.longitude,' +
                     'c.name' +
@@ -156,7 +156,7 @@ router.post('/advanced', async (req, res) => {
     let havingConstrains = [];
 
     //base query without filters to select all bikes combining category and features, but group by bike.id
-    let baseQueryColumns = 'SELECT b.id, b.price, b.bike_details, b.brand, b.bikeName,' +
+    let baseQueryColumns = 'SELECT b.id, b.price, b.bike_details, b.brand, b.bikeName,b.penalty' +
                     'u.user_name, u.email,' +
                     'l.address, l.city, l.state, l.zip, l.latitude, l.longitude,';
     

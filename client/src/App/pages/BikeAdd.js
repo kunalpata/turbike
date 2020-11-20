@@ -226,12 +226,11 @@ function BikeAdd(props){
 
     return (
 
-		<div className="AddNewBike">
-			<Container style={{marginTop: "100px"}}>
-            
-				<Row>
+		<div>
+			<Container-fluid>           
+				<Row className="AddNewBike">
                     <Col></Col>
-                    <Col lg={10}>
+                    <Col lg={8} style={{marginTop: "100px",maxWidth:"800px"}}>
                         <Card>
                             <Card.Body>
                                 {!isAuthenticated?<Redirect 
@@ -348,7 +347,7 @@ function BikeAdd(props){
                     			
 					
 				</Row>
-			</Container>
+			</Container-fluid>
       			
 			<>
                 <CenteredModal
