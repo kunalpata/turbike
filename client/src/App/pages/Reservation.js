@@ -169,7 +169,7 @@ const LineItem = (props) => {
 	);
 };
 
-/**/
+/* Step 1: confirm user info */
 const ContractStepOne = (props) => {
 	return(
 		<div>
@@ -191,7 +191,7 @@ const ContractStepOne = (props) => {
 	);
 };
 
-/**/
+/* Step 2: enter fake payement info */
 const ContractStepTwo = (props) => {
 	return(
 		<div>
@@ -232,7 +232,7 @@ const ContractStepTwo = (props) => {
 	);
 };
 
-/**/
+/* Step 3: review and confirm */
 const ContractStepThree = (props) => {
 	return(
 		<div>
@@ -265,7 +265,7 @@ const ContractStepThree = (props) => {
 	);
 };
 
-/**/
+/* Confirmation page */
 const Confirmation = (props) => {
 	return(
 		<div>
