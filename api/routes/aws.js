@@ -48,20 +48,24 @@ router.post('/upload', (req, res) => {
             
                 console.log(req.body.listId);
                 console.log(req.body.newFileCt);
+                console.log(req.body.primaryImg);
 
                 //build the img locations and send back
                 let entryArr = [];
                 let context = {};
                 context.images = [];
                 for(let i = 0; i < req.files.length; i++){
-                    let tmp = req.files[i].location.split('/');
-                    entryArr.push([req.body.listId,tmp[tmp.length-1],req.files[i].location]);
+                    entryArr.push([req.body.listId,
+                                   req.files[i].key,
+                                   req.files[i].location,
+                                   req.files[i].originalname == req.body.primaryImg?1:0
+                                  ]);
                     context.images.push({location: req.files[i].location});
                 }
 
                 //add to database  
                 let value = [entryArr];
-                pool.query('INSERT INTO image (bike_id,name,url) VALUES ?;',value, function (err, result){
+                pool.query('INSERT INTO image (bike_id,name,url,isPrimary) VALUES ?;',value, function (err, result){
                     if(err){
                         context.err = err;
                         context.uploadStatus = "Failed to upload attachment(s)!"

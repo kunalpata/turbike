@@ -49,8 +49,15 @@
     border-radius: 50%;
   }
 
-/*.bDetails-sec {*/
-/*    height: 200px;*/
-/*    padding: 20px;*/
-/*    padding-bottom: 150px;*/
-/*}*/
+.markFavorite {
+    position: absolute;
+    top: 0px;
+    right: 140px;
+    z-index: 100;
+    background-color: transparent;
+    padding: 0px 2px 2px;
+    cursor: pointer;
+    opacity: .8;
+    font-size: 22px;
+}
+
