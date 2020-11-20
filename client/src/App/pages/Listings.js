@@ -61,6 +61,7 @@ const Listings = (props) => {
 
       // bikes were found
       setBikes(bikes);
+      setRatingLabel(bikes);
       if (bikes.data.length != 0){
         setLocation(bikes.data[0]["city"]); // Set location to first item in query results
       }
@@ -134,5 +135,28 @@ const Listings = (props) => {
       </div>
   );
 };
+
+/* Takes in the bikes, loops over then to set the rating label for each bike */
+function setRatingLabel(bikes) {
+  bikes.data.map((bike) => {
+    let rating = bike.rating;
+    
+    if (rating === 0) {
+      bike.ratingLabel = "not yet rated";
+    } else if (rating > 0 && rating < 1) {
+      bike.ratingLabel = "Bad";
+    } else if (rating >= 1 && rating < 2) {
+      bike.ratingLabel = "Fair";
+    } else if (rating >= 2 && rating < 3) {
+      bike.ratingLabel = "Good";
+    } else if (rating >= 3 && rating < 4) {
+      bike.ratingLabel = "Very Good";
+    } else if (rating >= 4 && rating <= 5) {
+      bike.ratingLabel = "Excellent";
+    } else {
+      bike.ratingLabel = "not yet rated";
+    }
+  })
+}
 
 export default Listings;

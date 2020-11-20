@@ -172,7 +172,7 @@ const AdvancedSearch = (props) => {
                                                             
                                                             <DropDown size="sm" label="radius" name="searchMile" customEntries={[{id:1,name:"5"},{id:2,name:"10"},{id:3,name:"20"},{id:4,name:"50"},{id:5,name:"100"},{id:6,name:"200"}]} sendSelected={dropDownSelected}/>   
                                                             <span style={{marginLeft:"5px", marginRight:"5px", minWidth:"60px"}}>miles of</span>
-                                                            <Form.Control size="sm" type="text" placeholder="" name="searchZip" placeholder="Zip" onChange={textChangeHandler}/>
+                                                            <Form.Control size="sm" type="text" name="searchZip" placeholder="Zip" onChange={textChangeHandler}/>
                                                         </div>
                                                     </Col>
                                                     
