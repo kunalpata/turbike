@@ -39,7 +39,10 @@ const FeaturesCheckboxes = (props) => {
     useEffect(()=>{
         async function fetchData(){
             await fetchFeature();
-            anyRef.current.click();
+            if(props.extraOptions){
+                anyRef.current.click();
+            }
+            
         }
         fetchData();
     },[]);
