@@ -238,7 +238,8 @@ function BikeAdd(props){
                                                             pathname: '/login',
                                                             state: {
                                                                 showAlert: true,
-                                                                warningText: "You must login to continue!"
+                                                                warningText: "You must login to continue!",
+                                                                from: props.location
                                                             }
                                                         }}/>:null
                                 }
