@@ -13,6 +13,7 @@ import DismissibleAlert from './DismissibleAlert.js';
 const MyNavbar = (props) => {
   console.log(props);
   //const {user} = props.userInfo;
+  let location = props.location || {pathname:'/',state:{}};
   const [isLoggingOut, setLoggingOut] = useState(false);
   const logout = async () => {
 		await fetch('/api/auth/logout')
@@ -51,11 +52,24 @@ const MyNavbar = (props) => {
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={logout}>Log Out</NavDropdown.Item>
               </NavDropdown>)
-              : <Nav.Link as={Link} to="./login">Log In</Nav.Link>
+              : <Nav.Link as={Link} to={{
+                                          pathname: '/login',
+                                          state: {
+                                              from: location.pathname,
+                                              ...location.state
+                                              
+                                          }
+                                       }}>Log In</Nav.Link>
             }
             {
               !props.userInfo.isAuthenticated ?
-              <Nav.Link as={Link} to="./register">Sign up
+              <Nav.Link as={Link} to={{
+                                        pathname: '/register',
+                                        state: {
+                                            from: location.pathname,
+                                            ...location.state
+                                        }
+                                      }}>Sign up
                 <FontAwesomeIcon className="user-icon" icon={faUser} />
               </Nav.Link>
               :
