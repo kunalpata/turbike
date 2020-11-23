@@ -91,7 +91,8 @@ const Reservation = (props) => {
 		    						<Link to={{
                                                 pathname: '/login',
                                                 state: {
-															from: props.location,
+															from: props.location.pathname,
+															...props.location.state
                                                         }
                                               }}><Button>Log In</Button></Link>
 		    					</div>

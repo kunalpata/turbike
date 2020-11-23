@@ -46,7 +46,12 @@ function DismissibleAlert(props){
                 </Row>
                 :null} 
                 
-                {redir?<Redirect to={props.redirectLink}/>:null} 
+                {redir?<Redirect to={{
+                                          pathname: props.redirectLink,
+                                          state: {
+                                              ...props.payload
+                                          }
+                                       }}/>:null} 
             </div>     
 
         );

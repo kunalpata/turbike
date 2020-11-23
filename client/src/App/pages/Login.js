@@ -110,7 +110,13 @@ function Login (props){
 										</div >
 										<div style={{display:"flex", flexFlow:"row wrap", justifyContent: "center"}}>
 											<div >{"Don't have an account? "}</div>
-											<div><b><Link to={'./Register'} >Sign Up</Link></b></div>
+											<div><b><Link to={{
+																pathname: '/register',
+																state: {
+																	from: props.location.state.from,
+																	...props.location.state
+																}
+															  }} >Sign Up</Link></b></div>
 										</div>
 										
 									</div>
@@ -121,7 +127,7 @@ function Login (props){
 				</Row>
 			
 			</Container>
-      			{loginStatus.login? history.push(props.location.state.from.pathname,props.location.state.from.state) : null}
+      			{loginStatus.login? history.push(props.location.state.from,props.location.state) : null}
 			
 		</div>
 	);

@@ -19,11 +19,12 @@ import Button from 'react-bootstrap/Button';
 
 
 const Home = (props) => {
+  console.log(props);
   const [search, setSearch] = useState("");  // store the search results
   const [category, setCategory] = useState("");
   const { push } = useHistory();  // for redirecting after getting form data
   const { latitude, longitude, error} = usePosition();  // for searching with current location
-  const noBikes = props.location.state ? true : false; // gets set if user is redirected back home for no search results
+  const noBikes = (props.location.state && props.location.state.noBikes)? true : false; // gets set if user is redirected back home for no search results
 
   // On submit redirect to listings with search entry from form
   const handleSubmit = (event) => {
