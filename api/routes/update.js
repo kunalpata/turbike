@@ -9,9 +9,10 @@ require('dotenv').config();
 
 
 router.put('/bike/:id', authHelpers.checkAuthenticated,async (req, res) => {
-    // console.log(req.body);
-    // console.log(req.body.address);
-    // console.log(req.params.id);
+    console.log(req.body);
+    console.log(req.body.category);
+    console.log(req.body.bikeFeatures);
+    console.log(req.params.id);
 
     // For location get its id first, object comes in as addr, city, state, zip, this updates independently
     let curLocID = await getLocationID({
@@ -64,12 +65,19 @@ router.put('/bike/:id', authHelpers.checkAuthenticated,async (req, res) => {
                                 if (err) {
                                     console.log(err);
                                 }else {
-                                    console.log(result)
+                                    console.log(result);
+                                    if (req.body.category != undefined) {
+                                        let catID = await getCategoryID(req.body.category);
+                                        // console.log(catID.catId);
+                                        await updateBikeCatTable(req.params.id, catID.catId);
+                                    }
                                 }
                 }
             )
         }
     });
+
+
 });
 
 function getLocationID(address, bikeID) {
@@ -211,6 +219,36 @@ function checkSameRentalPrice(bike_id) {
     // console.log("PROMISE VALUE");
     // console.log(promise);
     return promise;
+}
+
+function getCategoryID(catName){
+    let promise = new Promise((resolve, reject) => {
+        pool.query('SELECT * FROM category WHERE name=?',[catName], (err, result) => {
+            if(err){
+                resolve({err:err});
+            }else{
+                if(result.length == 0){
+                    resolve({err:"no such category"});
+                }else{
+                    resolve({catId:result[0].id});
+                }
+            }
+        });
+    });
+    return promise;
+}
+
+function updateBikeCatTable(bikeID, catID) {
+    let promise = new Promise((resolve, reject) => {
+        pool.query('UPDATE bike_category SET category_id=? WHERE bike_id=?', [catID, bikeID], (err, result) => {
+            if (err) {
+                // resolve({err:err});
+                console.log(err);
+            } else {
+                console.log(result)
+            }
+        })
+    })
 }
 
 module.exports = router;
