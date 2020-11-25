@@ -9,10 +9,9 @@ require('dotenv').config();
 
 
 router.put('/bike/:id', authHelpers.checkAuthenticated,async (req, res) => {
-    console.log("RECEIVING NEW BIKE INFO");
-    console.log(req.body);
-    console.log(req.body.address);
-    console.log(req.params.id);
+    // console.log(req.body);
+    // console.log(req.body.address);
+    // console.log(req.params.id);
 
     // For location get its id first, object comes in as addr, city, state, zip, this updates independently
     let curLocID = await getLocationID({
@@ -25,7 +24,6 @@ router.put('/bike/:id', authHelpers.checkAuthenticated,async (req, res) => {
     }, req.params.id);
 
 
-
     let currentPrice;
     if (req.body.rentPrice == undefined) {
         currentPrice = await checkSameRentalPrice(req.params.id);
@@ -33,12 +31,9 @@ router.put('/bike/:id', authHelpers.checkAuthenticated,async (req, res) => {
         currentPrice = req.body.rentPrice;
     }
 
-    // console.log("CURRENT PRICE");
-    // console.log(currentPrice);
 
     // Set the properties to the current fields of the bike obj passed in, ok if some properties are null
     // TODO: Get category and feature ids
-    // TODO: maybe take out location_id?
     let newBike = {
         location_id: curLocID,
         functional:1,
@@ -49,13 +44,11 @@ router.put('/bike/:id', authHelpers.checkAuthenticated,async (req, res) => {
         bikeBrand: req.body.bikeBrand
     };
 
-    pool.query("SELECT * FROM bike WHERE id=?", [req.params.id], function (err, result) {
+    pool.query("SELECT * FROM bike WHERE id=?", [req.params.id], async function (err, result) {
         if (err) {
             console.log(err);
         }
         if (result.length == 1) {
-            console.log("CURRENT RESULTS FROM DB")
-            console.log(result);
             var curVals = result[0];
             pool.query("UPDATE bike SET location_id=?, functional=?, price=?, penalty=?, bike_details=?, bikeName=?, brand=? WHERE id=?",
                 [
@@ -67,7 +60,7 @@ router.put('/bike/:id', authHelpers.checkAuthenticated,async (req, res) => {
                     newBike.bikeName || curVals.bikeName,
                     newBike.bikeBrand || curVals.brand,
                     req.params.id
-                    ], function (err, result) {
+                    ], async function (err, result) {
                                 if (err) {
                                     console.log(err);
                                 }else {
@@ -77,9 +70,6 @@ router.put('/bike/:id', authHelpers.checkAuthenticated,async (req, res) => {
             )
         }
     });
-
-    console.log("NEW BIKES INFORMATION");
-    console.log(newBike);
 });
 
 function getLocationID(address, bikeID) {
@@ -91,8 +81,6 @@ function getLocationID(address, bikeID) {
                 resolve({err:err});
             }else {
                 if (result.length == 1) {
-                    console.log("INSIDE LOCATION BIKE QUERY");
-                    console.log(result[0].location_id);
                     let locID = result[0].location_id;
                     await updateLocation(address, locID);
                     resolve(locID);
@@ -108,10 +96,8 @@ function getLocationID(address, bikeID) {
 }
 
 function updateLocation(address, locID) {
-    // TODO: Check if any properties are undefined
-    console.log("INSIDE UPDATE LOCATION FUNCTION");
-    console.log(address);
-    console.log(locID);
+    // console.log(address);
+    // console.log(locID);
 
     let promise = new Promise(async (resolve, reject)=> {
 
@@ -120,7 +106,7 @@ function updateLocation(address, locID) {
                 console.log(err);
             }
             if (result.length == 1) {
-                var curVals = result[0];
+                let curVals = result[0];
                 pool.query('UPDATE location SET address=?, city = ?, state = ?, zip = ? WHERE id=?',
                     [address.street || curVals.address,
                         address.city || curVals.city,
@@ -132,6 +118,7 @@ function updateLocation(address, locID) {
                             // resolve({err:err});
                             console.log(err);
                         }else {
+                            await getUpdatedLocation(address, locID);
                             console.log(result)
                         }
                     })
@@ -139,6 +126,69 @@ function updateLocation(address, locID) {
         });
 
     });
+}
+
+// Update table with new values
+function updateQuery(address, curVals, locID, latLongInfo) {
+    let promise = new Promise(async (resolve, reject)=> {
+        pool.query('UPDATE location SET address=?, city = ?, state = ?, zip = ?, latitude = ?, longitude = ? WHERE id=?',
+            [address.street || curVals.address,
+                address.city || curVals.city,
+                address.state || curVals.state,
+                address.zip || curVals.zip,
+                address.latitude || latLongInfo.location.lat,
+                address.longitude || latLongInfo.location.lng,
+                locID],
+             (err, result) => {
+                if (err) {
+                    // resolve({err:err});
+                    console.log(err);
+                } else {
+                    console.log(result)
+                }
+            })
+    })
+}
+
+// Gets most recent location vals
+function getUpdatedLocation(address, locID) {
+
+    let promise = new Promise(async (resolve, reject)=> {
+
+        pool.query("SELECT * FROM location WHERE id=?", [locID], async (err, result) => {
+            if (err) {
+                resolve({err:err});
+            }else {
+                if (result.length == 1) {
+                    let curVals = result[0];
+                    let latLongInfo = await getLatLong(curVals);
+                    await updateQuery(address, curVals, locID, latLongInfo);
+                    resolve(curVals);
+                }
+            }
+        });
+    });
+    return promise;
+}
+
+
+function getLatLong(address){
+    let promise = new Promise(async (resolve, reject) => {
+        let addressString = address.address + ', ' + address.city + ', ' + address.state;
+        addressString = addressString.replace(/\s/g, '+');
+        console.log("\n\n9) " + addressString);
+        await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?address=${addressString}&key=${process.env.REACT_APP_GOOGLE}`
+        )
+            .then((data) => {
+                return data.json();
+            })
+            .then((data) => {
+                resolve({location:data.results[0].geometry.location});
+            })
+            .catch((err) => resolve({err:err}));
+    });
+    return promise;
 }
 
 // Checks if the rental price is the same so penalty doesn't go null in table
