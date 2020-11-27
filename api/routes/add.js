@@ -62,6 +62,35 @@ router.post('/bike', authHelpers.checkAuthenticated, async (req, res) => {
 });
 
 
+//add rating
+router.post('/rating', authHelpers.checkAuthenticated, async (req, res) => {
+    //build the query
+    let columns = "("
+    let targetId = "";
+    if(req.body.bike_id !== undefined){
+        columns = columns + "bike_id, ";
+        targetId = req.body.bike_id;
+    }else if(req.body.host_id !== undefined){
+        columns = columns + "host_id, ";
+        targetId = req.body.host_id;
+    }else{
+        columns = columns + "customer_id, ";
+        targetId = req.body.customer_id;
+    }
+
+    columns = columns + "rating_score, rating_details, rated_by_id, contract_id)";
+    pool.query('INSERT INTO rating ' + columns + ' VALUES (?,?,?,?,?)',
+                [targetId, req.body.rating_score, req.body.rating_details, req.body.rated_by_id, req.body.contract_id],
+                (err, result) => {
+                    if(err){
+                        res.send({err:err});
+                    }else{
+                        res.send({status:"success", insertId:result.insertId});
+                    }
+                });
+});
+
+
 //helper function
 async function addBikeFeatures(selectedFeatures, bikeId){
     let promise = new Promise(async (resolve, reject) => {
