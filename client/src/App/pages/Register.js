@@ -165,6 +165,7 @@ function Register (props){
 												message="Account created successfully! Please login." 
 												type = "info"
 												redirectLink="/login" 
+												payload={props.location.state}
 												shouldRedirect={true}
 												duration={5000}
 												parentCleanup={()=>{}}
@@ -220,7 +221,12 @@ function Register (props){
 										
 										<div style={{display:"flex", flexFlow:"row wrap", justifyContent: "center"}}>
 											<div>Already have an account?</div>
-											<div><b><Link to={'./Login'}>Log in</Link></b></div> 
+											<div><b><Link to={{
+																pathname: '/login',
+																state: {
+																	...props.location.state
+																}
+															  }}>Log in</Link></b></div> 
 										</div>
 									</div>
 								</Card.Body>

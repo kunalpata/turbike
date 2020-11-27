@@ -1,7 +1,11 @@
 /*BikeAdd.css*/
 
 .AddNewBike{
-    margin-top:100px;
+   background-image: url('../images/add_bike2.jpg');
+   background-position: center;
+   background-repeat: no-repeat;
+   background-size: cover;
+   height: 100vh;
 }
 
 .add-form-body {
@@ -49,8 +53,15 @@
     border-radius: 50%;
   }
 
-/*.bDetails-sec {*/
-/*    height: 200px;*/
-/*    padding: 20px;*/
-/*    padding-bottom: 150px;*/
-/*}*/
+.markFavorite {
+    position: absolute;
+    top: 0px;
+    right: 140px;
+    z-index: 100;
+    background-color: transparent;
+    padding: 0px 2px 2px;
+    cursor: pointer;
+    opacity: .8;
+    font-size: 22px;
+}
+

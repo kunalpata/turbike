@@ -88,7 +88,13 @@ const Reservation = (props) => {
 	    				{ !props.userInfo.isAuthenticated ?
 		    					<div>
 		    						<div>You must log in to continue</div>
-		    						<Link to='./login'><Button>Log In</Button></Link>
+		    						<Link to={{
+                                                pathname: '/login',
+                                                state: {
+															from: props.location.pathname,
+															...props.location.state
+                                                        }
+                                              }}><Button>Log In</Button></Link>
 		    					</div>
 		    				: stepOne ? 
 		    					<ContractStepOne handleGoToTwo={handleGoToTwo} user={props.userInfo.user}/>

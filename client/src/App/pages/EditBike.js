@@ -1,6 +1,6 @@
 // EditBike.js
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import Container from 'react-bootstrap/Container';
@@ -11,38 +11,69 @@ import Button from 'react-bootstrap/Button';
 import Card from "react-bootstrap/Card";
 import {Link} from "react-router-dom";
 import InformSpan from '../components/InformSpan.js';
-import DismissibleAlert from '../components/DismissibleAlert.js'
-import './EditBike.css'
+import DismissibleAlert from '../components/DismissibleAlert.js';
+import CenteredModal from '../components/VerticalCenteredModal.js';
+import CustomDropDown from '../components/DropDown.js';
+import FeaturesCheckboxes from '../components/FeaturesCheckboxes.js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
+import './BikeAdd.css'
 
 function EditBike(props){
-    console.log(props)
+    // TODO: Remove
+    console.log("BIKE TO EDIT");
+    console.log(props);
     const bike = props.location.state.bike;
     console.log(bike);
-    //fix array for states
-    const states = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA",
-        "MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN",
-        "TX","UT","VT","VA","WA","WV","WI","WY"];
 
-    const [categories, setCategories] = useState([]);
-    const [features, setFeatures] = useState([]);
     const [bikeInfo, setBikeInfo] = useState({});
     const [isAuthenticated, setIsAuthenticated] = useState(true);
     const [alertInfo, setAlertInfo] = useState({});
     const [disableButton, setDisableButton] = useState(false);
+    const [uploadFiles, setUploadFiles] = useState([]);
+    const fileRef = useRef(null);
+    const imgRef = useRef([]);
 
+    //modal control
+    const [modalShow, setModalShow] = useState(false);
+    const [modalText, setModalText] = useState("Adding Bike...");
+
+
+    const resetFileValue = (e) => {
+        fileRef.current.value = "";
+    }
+
+    // This is getting the change in the input fields and setting those fields to the state obj through event value
     const textChangeHandler = (e) => {
+
         let curInput = e.target.value;
         let curInputField = e.target.name;
+        if(curInputField === undefined){
+            curInputField = e.target.className;
+        }
+        // console.log("HERE");
+        // console.log(curInputField)
 
         let oldBikeInfo = {...bikeInfo};
         switch(curInputField){
-            case "features":
-                if(!oldBikeInfo.hasOwnProperty("bikeFeatures")){
-                    oldBikeInfo.bikeFeatures = {};
+            case "filesUpload":
+                let userfiles = [];
+                //limit files to the first four selected
+                let fileLimit = (e.target.files.length > 4? 4: e.target.files.length);
+                for(let i = 0; i < fileLimit; i++){
+                    let curFile = e.target.files[i];
+                    curFile.ranKey = Math.floor(Math.random() * 100000);  //this is to make sure react will rerender the screen for attachment
+                    curFile.willUpload = true;
+                    curFile.isPrimary = false;
+                    userfiles.push(curFile);
                 }
-                let newFeatures = {...oldBikeInfo.bikeFeatures};
-                newFeatures[e.target.id] = e.target.checked?true:false;
-                oldBikeInfo.bikeFeatures = {...newFeatures};
+                setUploadFiles(userfiles);
+                break;
+            case "closeImg":
+                e.target.parentElement.style.display = "none";
+                let curFiles = [...uploadFiles];
+                curFiles[e.target.id].willUpload = false;
+                setUploadFiles(curFiles);
                 break;
             default:
                 oldBikeInfo[curInputField] = curInput;
@@ -51,23 +82,44 @@ function EditBike(props){
         }
 
         setBikeInfo(oldBikeInfo);
-        console.log(e.target.value);
-    }
-
-    const fetchCategory = async () => {
-        await fetch('/api/get/categories')
-            .then((res) => {return res.json()})
-            .then((res) => {console.log(res); setCategories(res.data)})
-            .catch((err) => {console.log(err)});
 
     }
 
-    const fetchFeature = async () => {
-        await fetch('/api/get/features')
-            .then((res) => {return res.json()})
-            .then((res) => {console.log(res); setFeatures(res.data)})
-            .catch((err) => {console.log(err)});
+    const setFavoritePic = (e) => {
 
+        let picIdx = e.target.id;
+        picIdx = picIdx.substr(picIdx.length-1,1);
+
+        let curFiles = [...uploadFiles];
+        curFiles[picIdx].isPrimary = !curFiles[picIdx].isPrimary;
+        console.log(curFiles);
+
+        imgRef.current.forEach((img,index) => {
+            if(img !== null){
+                if(picIdx == index && curFiles[index].isPrimary){
+                    img.style.color="orange"
+                }else{
+                    img.style.color = "black";
+                    curFiles[index].isPrimary = false;
+                }
+            }
+        })
+
+        setUploadFiles(curFiles);
+    }
+
+    const dropDownSelected = (name, value) => {
+        let oldBikeInfo = {...bikeInfo};
+        oldBikeInfo[name] = value;
+        setBikeInfo(oldBikeInfo);
+    }
+
+    const updateFeatures = (selectedFeatures) => {
+        let oldBikeInfo = {...bikeInfo};
+        let newFeatures = {...selectedFeatures};
+        oldBikeInfo.bikeFeatures = newFeatures;
+        console.log(oldBikeInfo);
+        setBikeInfo(oldBikeInfo);
     }
 
     const fetchUser = async() => {
@@ -80,32 +132,103 @@ function EditBike(props){
             })
     }
 
-    const postBike = async () => {
-        setDisableButton(true);
-        await fetch('/api/add/bike',{
+    const uploadAttachment = async (listingId) => {
+        //update status
+        setModalText("Saving images...");
+        //create form data
+        let formData = new FormData();
+        //add listing id to formData
+        formData.append('listId', listingId);
+        //add files to formData
+        let fileCt = 0;
+        let primaryFilename = "";
+        for(let i = 0; i < uploadFiles.length; i++){
+            if(uploadFiles[i].willUpload){
+                primaryFilename = uploadFiles[i].isPrimary ? uploadFiles[i].name : "";
+                formData.append('aws_multiple_images', uploadFiles[i]);
+                fileCt++;
+            }
+        }
+        //add upload file count to formData
+        formData.append('newFileCt', fileCt);
+        //add primary image information to formData
+        formData.append('primaryImg', primaryFilename);
+
+
+        //fetch backend to upload
+        await fetch('/api/aws/upload',{
             method: 'POST',
+            body: formData
+        })
+            .then((res) => {
+                return res.json();
+            })
+            .then((res) => {
+                //console.log(res);
+                if(res.err === undefined){
+                    closeModal("Your bike has been added successfully!", true, '/', 5000, res);
+                }else{
+                    console.log(res.err);
+                    closeModal("Bike added but image upload failed!", true, '/', 5000, res);
+                }
+            })
+            .catch((err) => {
+                closeModal("Image upload err: " + err, true, '/', 5000, err);
+            });
+    }
+
+    const putBike = async () => {
+        // TODO: Remove
+        console.log("SENDING NEW BIKE INFO");
+        console.log(bikeInfo);
+        setDisableButton(true);
+        setModalShow(true);     //modal show
+        await fetch(`/api/update/bike/${bike.id}`,{
+            method: 'PUT',
             headers: { 'Content-Type' : 'application/json'},
             body: JSON.stringify({
                 ...bikeInfo,
             })
         })
-            .then((res) => {return res.json()})
-            .then((res) => {
-                console.log(res);
-                if(res.isAuthenticated == false){
-                    setIsAuthenticated(false);
-                }else if(res.hasOwnProperty('err')){
-                    setAlertInfo({hasError:true, status:res});
-                }else{
-                    setAlertInfo({isBikeAdded:true, status:res});
-                }
-
-            })
+            // .then((res) => {return res.json()})
+            // .then(async (res) => {
+            //     console.log("HERE")
+            //     console.log(res);
+            //     if(res.isAuthenticated == false){
+            //         props.passUser({...res});
+            //         closeModal("You are not logged in! Please login!",true, "/login",2000,res);
+            //     }else if(res.hasOwnProperty('err')){
+            //         setAlertInfo({hasError:true, status:res});
+            //         closeModal("Posting Error! Please try again later!",false, "",5000,res);
+            //     }else{
+            //         //upload images
+            //         // await uploadAttachment(res.bikeId);
+            //     }
+            //
+            // })
     }
 
     const closeAlert = () => {
         setAlertInfo({hasError:false,isBikeAdded:false,status:{}});
         setDisableButton(false);
+    }
+
+    const closeModal = (msg,shouldRedirect, redirectTo, secondToClose, res) => {
+        setModalText(msg);
+
+        setTimeout(()=>{
+            setModalShow(false);
+            if(shouldRedirect){
+                if(redirectTo === '/login'){
+                    setIsAuthenticated(false);
+                }else if(redirectTo === '/'){
+                    setAlertInfo({isBikeAdded:true, status:res});
+                }
+            }else{
+                closeAlert();
+            }
+        },secondToClose);
+
     }
 
     function home(e) {
@@ -115,19 +238,15 @@ function EditBike(props){
 
     useEffect(() => {
         fetchUser();
-        fetchCategory();
-        fetchFeature();
     },[])
 
     return (
 
-        <div className="AddNewBike">
-
-            <Container style={{marginTop: "100px"}}>
-
-                <Row>
+        <div>
+            <Container-fluid>
+                <Row className="AddNewBike">
                     <Col></Col>
-                    <Col lg={10}>
+                    <Col lg={8} style={{marginTop: "100px",maxWidth:"800px"}}>
                         <Card>
                             <Card.Body>
                                 {!isAuthenticated?<Redirect
@@ -139,42 +258,21 @@ function EditBike(props){
                                         }
                                     }}/>:null
                                 }
-                                {alertInfo.isBikeAdded == true?<DismissibleAlert
-                                    title={alertInfo.status.status}
-                                    message="Bike edited successfully!"
-                                    type = "info"
-                                    redirectLink="/"
-                                    shouldRedirect={true}
-                                    duration={5000}
-                                    parentCleanup={()=>{}}
-                                />: null
-
-                                }
-                                {alertInfo.hasError == true?<DismissibleAlert
-                                    title="Adding bike error"
-                                    message="Server Error while adding bike, please try again later!"
-                                    type = "danger"
-                                    redirectLink="/"
-                                    shouldRedirect={false}
-                                    duration={3000}
-                                    parentCleanup={closeAlert}
-                                />: null
-
-                                }
+                                {alertInfo.isBikeAdded == true?<Redirect to='/'/> : null}
 
                                 <Card.Title style={{display:"flex", flexFlow:"column", justifyContent:"center"}}>
-                                    <div style={{width:"100%",fontSize:"40px",textAlign:"center",marginBottom:"5px" }}><strong>Edit Bike</strong></div>
+                                    <div style={{width:"100%",fontSize:"40px",textAlign:"center",marginBottom:"5px" }}><strong>Edit bike</strong></div>
                                 </Card.Title>
                                 <Form>
                                     <Form.Row>
                                         <Form.Group as={Col} lg={9}>
 
                                             <Form.Label>Bike name</Form.Label>
-                                            <Form.Control  type="text" placeholder={bike.bikeName} name="bikename" onChange={textChangeHandler} />
+                                            <Form.Control  type="text" defaultValue={bike.bikeName} name="bikename" onChange={textChangeHandler} />
                                         </Form.Group>
                                         <Form.Group as={Col} lg={3}>
                                             <Form.Label>Rent Per Day</Form.Label>
-                                            <Form.Control  type="text" placeholder={bike.price} name="rentPrice" onChange={textChangeHandler} />
+                                            <Form.Control  type="text" defaultValue={bike.price} name="rentPrice" onChange={textChangeHandler} />
 
                                         </Form.Group>
 
@@ -183,42 +281,33 @@ function EditBike(props){
                                     <Form.Row>
                                         <Form.Group as={Col} lg={6}>
                                             <Form.Label>Brand</Form.Label>
-                                            <Form.Control type="text" placeholder={bike.brand} name="bikeBrand" onChange={textChangeHandler} />
+                                            <Form.Control type="text" defaultValue={bike.brand} name="bikeBrand" onChange={textChangeHandler} />
                                         </Form.Group>
                                         <Form.Group as={Col} lg={6}>
                                             <Form.Label>Type</Form.Label>
-                                            <Form.Control as="select" name="category" defaultValue="Choose..." onChange={textChangeHandler}>
-                                                <option>Choose...</option>
-                                                {categories.map((category) =>
-                                                    (<option key={category.id}>{category.name}</option>)
-                                                )}
-                                            </Form.Control>
+                                            <CustomDropDown label="" name="category" sendSelected={dropDownSelected}/>
                                         </Form.Group>
                                     </Form.Row>
 
                                     <Form.Row>
                                         <Form.Group as={Col} lg={12}>
                                             <Form.Label>Location</Form.Label>
-                                            <Form.Control type="text" placeholder={bike.address} name="address" onChange={textChangeHandler} />
+                                            <Form.Control type="text" defaultValue={bike.address} name="address" onChange={textChangeHandler} />
                                         </Form.Group>
                                     </Form.Row>
 
                                     <Form.Row>
                                         <Form.Group as={Col}>
-                                            <Form.Control type="text" placeholder={bike.city} name="city" onChange={textChangeHandler} />
+                                            <Form.Control type="text" defaultValue={bike.city} name="city" onChange={textChangeHandler} />
                                         </Form.Group>
 
                                         <Form.Group as={Col}>
-                                            <Form.Control as="select" name="state" defaultValue={bike.state} onChange={textChangeHandler}>
-                                                <option>State</option>
-                                                {states.map((state,index) =>
-                                                    (<option key={index}>{state}</option>)
-                                                )}
-                                            </Form.Control>
+                                            <CustomDropDown label="" name="state" sendSelected={dropDownSelected}/>
+
                                         </Form.Group>
 
                                         <Form.Group as={Col}>
-                                            <Form.Control type="text" placeholder={bike.zip} name="zip" onChange={textChangeHandler} />
+                                            <Form.Control type="text" defaultValue={bike.zip} name="zip" onChange={textChangeHandler} />
                                         </Form.Group>
 
                                     </Form.Row>
@@ -227,20 +316,44 @@ function EditBike(props){
 
                                         <Form.Group as={Col} lg={3}>
                                             <Form.Label>Features</Form.Label>
-                                            {features.map((feature) =>
-                                                (<Form.Check type="checkbox" name="features" id={feature.id} value={feature.name} label={feature.name} key={feature.id} onClick={textChangeHandler} />)
-                                            )}
+                                            <FeaturesCheckboxes getUpdatedFeatures={updateFeatures} />
+
                                         </Form.Group>
                                         <Form.Group as={Col} lg={9}>
                                             <Form.Label>Tell us more about it</Form.Label>
-                                            <Form.Control as="textarea" rows="10" placeholder={bike.bike_details} name="bikeDesc" onChange={textChangeHandler} />
+                                            <Form.Control as="textarea" rows="5" defaultValue={bike.bike_details} name="bikeDesc" onChange={textChangeHandler} />
                                         </Form.Group>
 
                                     </Form.Row>
 
+                                    <Form.Row>
+                                        <Form.Group>
+                                            <Form.File id="FormFile1" style={{display:"flex", position:"relative"}}>
+
+                                                <Form.File.Label style={{color:"blue",textDecoration:"underline blue", cursor:"pointer"}}>Add pictures of your bike (4 max)</Form.File.Label>
+                                                <Form.File.Input accept="image/*" style={{opacity:0, position:"absolute", zIndex:-1}} onChange={textChangeHandler} ref={fileRef} onClick={resetFileValue} name="filesUpload" multiple/>
+
+                                            </Form.File>
+                                            <div style={{display:"flex",flexFlow:"row wrap"}}>
+                                                {uploadFiles.length > 0 ?
+                                                    uploadFiles.map((file,index) => (
+                                                        <div key={"container"+file.ranKey} id={"img"+file.ranKey} style={{display:"flex", position: "relative"}}>
+                                                            <img className="img-wrap" key={"img"+file.ranKey} style={{objectFit:"contain",width:"160px",height:"90px",background:"gray",order:1,margin:"5px"}}
+                                                                 src={URL.createObjectURL(file)}/>
+                                                            <div key={file.ranKey} id={index} onClick={textChangeHandler} className="closeImg">x</div>
+                                                            <div key={file.ranKey+"_1"} id={index} onClick={setFavoritePic} ref={(el) => (imgRef.current[index] = el)} className="markFavorite" id={"fav-"+index}>{'★'}</div>
+
+                                                        </div>
+                                                    )):null
+                                                }
+                                            </div>
+
+                                        </Form.Group>
+                                    </Form.Row>
+
                                 </Form>
                                 <Row style={{display:"flex", justifyContent:"center"}}>
-                                    <Button className = "btn-danger" onClick={postBike} disabled={disableButton} style={{minWidth:"200px", marginBottom:"10px"}}>Edit Bike</Button>
+                                    <Button className = "btn-danger" onClick={putBike} disabled={disableButton} style={{minWidth:"200px", marginBottom:"10px"}}>Edit Bike</Button>
                                 </Row>
                                 <Row style={{display:"flex", justifyContent:"center"}}>
                                     <Button className = "btn-secondary" onClick={home} disabled={disableButton} style={{minWidth:"200px"}}>Cancel</Button>
@@ -253,12 +366,20 @@ function EditBike(props){
 
 
                 </Row>
-            </Container>
+            </Container-fluid>
 
-
+            <>
+                <CenteredModal
+                    show={modalShow}
+                    onHide={() => setModalShow(false)}
+                    warningtext = {modalText}
+                />
+            </>
         </div>
+
     );
 
 }
+
 
 export default EditBike;

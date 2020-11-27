@@ -15,6 +15,8 @@ import DismissibleAlert from '../components/DismissibleAlert.js';
 import CenteredModal from '../components/VerticalCenteredModal.js';
 import CustomDropDown from '../components/DropDown.js';
 import FeaturesCheckboxes from '../components/FeaturesCheckboxes.js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 import './BikeAdd.css'
 
 function BikeAdd(props){
@@ -26,6 +28,7 @@ function BikeAdd(props){
     const [disableButton, setDisableButton] = useState(false);
     const [uploadFiles, setUploadFiles] = useState([]);
     const fileRef = useRef(null);
+    const imgRef = useRef([]);
 
     //modal control
     const [modalShow, setModalShow] = useState(false);
@@ -37,6 +40,7 @@ function BikeAdd(props){
     }
 
     const textChangeHandler = (e) => {
+        
 		let curInput = e.target.value;
         let curInputField = e.target.name;
         if(curInputField === undefined){
@@ -53,6 +57,7 @@ function BikeAdd(props){
                     let curFile = e.target.files[i];
                     curFile.ranKey = Math.floor(Math.random() * 100000);  //this is to make sure react will rerender the screen for attachment
                     curFile.willUpload = true;
+                    curFile.isPrimary = false;
                     userfiles.push(curFile);
                 }
                 setUploadFiles(userfiles);
@@ -71,7 +76,30 @@ function BikeAdd(props){
         
         setBikeInfo(oldBikeInfo);
 
-	}
+    }
+    
+    const setFavoritePic = (e) => {
+
+        let picIdx = e.target.id;
+        picIdx = picIdx.substr(picIdx.length-1,1);
+
+        let curFiles = [...uploadFiles];
+        curFiles[picIdx].isPrimary = !curFiles[picIdx].isPrimary;
+        console.log(curFiles);
+
+        imgRef.current.forEach((img,index) => {
+            if(img !== null){
+                if(picIdx == index && curFiles[index].isPrimary){
+                    img.style.color="orange"
+                }else{
+                    img.style.color = "black";
+                    curFiles[index].isPrimary = false;
+                }
+            }
+        })
+
+        setUploadFiles(curFiles);
+    }
 
     const dropDownSelected = (name, value) => {
         let oldBikeInfo = {...bikeInfo};
@@ -102,18 +130,23 @@ function BikeAdd(props){
         setModalText("Saving images...");
         //create form data
         let formData = new FormData();
+        //add listing id to formData
         formData.append('listId', listingId);
+        //add files to formData
         let fileCt = 0;
+        let primaryFilename = "";
         for(let i = 0; i < uploadFiles.length; i++){
             if(uploadFiles[i].willUpload){
+                primaryFilename = uploadFiles[i].isPrimary ? uploadFiles[i].name : "";
                 formData.append('aws_multiple_images', uploadFiles[i]);
                 fileCt++;
             }
         }
+        //add upload file count to formData
         formData.append('newFileCt', fileCt);
-        //for(let item of formData.entries()){
-            //console.log(item[0], item[1]);
-        //}
+        //add primary image information to formData
+        formData.append('primaryImg', primaryFilename);
+
 
         //fetch backend to upload
         await fetch('/api/aws/upload',{
@@ -193,12 +226,11 @@ function BikeAdd(props){
 
     return (
 
-		<div className="AddNewBike">
-			<Container style={{marginTop: "100px"}}>
-            
-				<Row>
+		<div>
+			<Container-fluid>           
+				<Row className="AddNewBike">
                     <Col></Col>
-                    <Col lg={10}>
+                    <Col lg={8} style={{marginTop: "100px",maxWidth:"800px"}}>
                         <Card>
                             <Card.Body>
                                 {!isAuthenticated?<Redirect 
@@ -206,7 +238,9 @@ function BikeAdd(props){
                                                             pathname: '/login',
                                                             state: {
                                                                 showAlert: true,
-                                                                warningText: "You must login to continue!"
+                                                                warningText: "You must login to continue!",
+                                                                from: props.location.pathname,
+                                                                ...props.location.state
                                                             }
                                                         }}/>:null
                                 }
@@ -293,6 +327,8 @@ function BikeAdd(props){
                                                             <img className="img-wrap" key={"img"+file.ranKey} style={{objectFit:"contain",width:"160px",height:"90px",background:"gray",order:1,margin:"5px"}}
                                                             src={URL.createObjectURL(file)}/>
                                                             <div key={file.ranKey} id={index} onClick={textChangeHandler} className="closeImg">x</div>
+                                                            <div key={file.ranKey+"_1"} id={index} onClick={setFavoritePic} ref={(el) => (imgRef.current[index] = el)} className="markFavorite" id={"fav-"+index}>{'★'}</div>
+                                                            
                                                         </div>
                                                     )):null     
                                                 }   
@@ -313,7 +349,7 @@ function BikeAdd(props){
                     			
 					
 				</Row>
-			</Container>
+			</Container-fluid>
       			
 			<>
                 <CenteredModal

@@ -66,7 +66,7 @@ let methods = {
 	getBikeImages: function(bike_id, mysql){
 		let promise = new Promise( (resolve, reject) => {
 			// get images for bike with passed in id
-		    let query = 'SELECT url' +
+		    let query = 'SELECT url, isPrimary' +
 		                ' FROM image' +
 		                ' WHERE bike_id = ?;'
 
@@ -78,12 +78,15 @@ let methods = {
 		        } else {
 		        	if (result.length === 0) resolve(null);
 
-		            let items = [];
+					let items = [];
+					//put primary pic at position 0 if found
 		            for (let i = 0; i < result.length; i++){
 		                let item = {
 		                    ...result[i],
 		                }
-		                items.push(item);
+						
+						item.isPrimary?items = [item, ...items]:items.push(item);
+						
 		            }
 		            resolve(items);
 		        }

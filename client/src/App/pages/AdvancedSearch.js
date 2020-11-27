@@ -102,11 +102,11 @@ const AdvancedSearch = (props) => {
 
 
     return(
-        <div className="AdvancedSearch">
-            <Container style={{marginTop: "100px"}}>
-                <Row>
+        <div>
+            <Container-fluid>
+                <Row className="AdvancedSearch">
                     <Col></Col>
-                    <Col lg={10}>
+                    <Col lg={8} style={{marginTop:"100px", maxWidth:"800px"}}>
                         <Card>
                             <Card.Body>
                                 <Card.Title style={{display:"flex", flexFlow:"column", justifyContent:"center"}}>
@@ -209,7 +209,7 @@ const AdvancedSearch = (props) => {
                     </Col>
                     <Col></Col>
                 </Row>
-            </Container>
+            </Container-fluid>
         </div>
     )
 

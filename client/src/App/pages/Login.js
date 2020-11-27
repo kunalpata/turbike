@@ -2,7 +2,7 @@
 
 import React, { useState, useRef} from 'react';
 import './Login.css';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -23,6 +23,7 @@ function Login (props){
 	const [enableButton, setEnableButton] = useState(false);
 	const [attemptFailed, setAttemptFailed] = useState(false);
 	const btnRef = useRef(null);
+	const history = useHistory();
 
 	const login = async () => {
 		await fetch('/api/auth/login',{
@@ -109,7 +110,13 @@ function Login (props){
 										</div >
 										<div style={{display:"flex", flexFlow:"row wrap", justifyContent: "center"}}>
 											<div >{"Don't have an account? "}</div>
-											<div><b><Link to={'./Register'} >Sign Up</Link></b></div>
+											<div><b><Link to={{
+																pathname: '/register',
+																state: {
+																	from: props.location.state.from,
+																	...props.location.state
+																}
+															  }} >Sign Up</Link></b></div>
 										</div>
 										
 									</div>
@@ -120,7 +127,7 @@ function Login (props){
 				</Row>
 			
 			</Container>
-      			{loginStatus.login? <Redirect to="/" /> : null}
+      			{loginStatus.login? history.push(props.location.state.from,props.location.state) : null}
 			
 		</div>
 	);
