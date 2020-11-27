@@ -18,6 +18,7 @@ import BikeAdd from './pages/BikeAdd';
 import EditBike from "./pages/EditBike";
 import MyNavbar from './components/MyNavbar';
 import AdvancedSearch from './pages/AdvancedSearch';
+import UserContract from './pages/UserContract';
 
 
 
@@ -59,7 +60,7 @@ class App extends Component {
           <MyNavbar userInfo={this.state.user} passUser={this.authenticateInfo}/>
           <Switch>
               <Route exact path='/' render={(props) => <Home {...props} userInfo={this.state.user}/>} />
-              <Route exact path='/bikeAdd' render={(props) => <BikeAdd {...props} passUser={this.authenticateInfo}/>} />
+              
               <Route path='/bikeTable' component={BikeTable} />
               <Route 
                 path='/register' 
@@ -73,16 +74,16 @@ class App extends Component {
               <Route exact path='/listings' component={Listings} />
               <Route exact path='/bikeView' component={BikeView} />
               <Route exact path='/reservation' render={(props) => <Reservation {...props} userInfo={this.state.user} />} />
-
-              <Route exact path='/bikeAdd' component={BikeAdd} />
+              <Route exact path='/bikeAdd' render={(props) => <BikeAdd {...props} passUser={this.authenticateInfo}/>} />
               <Route exact path='/editBike' render={(props) => <EditBike {...props} passUser={this.authenticateInfo}/>}  />
               <Route exact path='/advancedSearch' component={AdvancedSearch}/>
 
               <Route exact path='/dashboard' render={(props) => <UserDashboard {...props} userInfo={this.state.user} />}/>
               <Route exact path='/userInfo' render={(props) => <UserAccountInfo {...props} userInfo={this.state.user} />}/>
+              <Route exact path='/userContracts' render={(props) => <UserContract {...props} userInfo={this.state.user} passUser={this.authenticateInfo}/>}/>
               <Route exact path='/userBikes' render={(props) => <UserBikeList {...props} userInfo={this.state.user} authUser={this.state.isAuthenticated} />} />
 
-
+              
               {/*{console.log(this.state.user)}*/}
           </Switch>
       </Router>

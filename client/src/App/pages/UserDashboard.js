@@ -47,8 +47,13 @@ const UserDashboard = (props) => {
                     <Card>
                         <Card.Body>
                             <Card.Img variant="top" src={require("../images/turbike_logo.png")} />
-                            <Card.Title as={Link} to="/">Personal Information</Card.Title>
-                            <Card.Text>Enter and edit your information for ways to contact you</Card.Text>
+                            <Card.Title as={Link} to={{
+                                                        pathname: './userContracts',
+                                                        state: {
+                                                            userId: props.userInfo.user !== undefined ? props.userInfo.user.id : 0
+                                                        }
+                                                    }}>Leasing Contracts</Card.Title>
+                            <Card.Text>See all your contract details</Card.Text>
                         </Card.Body>
                     </Card>
                 </Col>

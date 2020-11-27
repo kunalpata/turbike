@@ -19,7 +19,7 @@ router.use('/api/get', require('./utilities.js'));
 //router.use('/delete', require('./delete.js'));
 
 //update item page
-//router.use('/update', require('./update.js'));
+router.use('/api/update', require('./update.js'));
 
 //display items
 router.use('/api/search', require('./searchBikes.js'));
