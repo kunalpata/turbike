@@ -22,6 +22,7 @@ const Reservation = (props) => {
 	const [stepThree, setStepThree] = useState(false);
 	const [stepNum, setStepNum] = useState(1);
 	const [confirm, setConfirm] = useState(false);
+	const [notice, setNotice] = useState("");
 
 	const bike = props.location.state.bike;
 
@@ -49,6 +50,7 @@ const Reservation = (props) => {
 	const handleBookIt = () => {
 		setStepThree(false);
 		setConfirm(true);
+		postContract();
 	}
 
 	const handleGoBackToOne = () => {
@@ -61,6 +63,40 @@ const Reservation = (props) => {
 		setStepTwo(true);
 		setStepThree(false);
 		setStepNum(2);
+	}
+
+
+	// Post contract
+	const postContract = async () => {
+		// Build post body with contract info
+		let contractInfo = {
+			host_id: bike.user_id,
+			customer_id: props.userInfo.user.id,
+			bike_id: bike.id,
+			start_datetime: formInfo.startDate + ' ' + formInfo.startTime,
+			expiration_datetime: formInfo.endDate + ' ' + formInfo.endTime
+		}
+
+		// Post to db
+		await fetch('/api/add/contract', {
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({contractInfo})
+		})
+		.then( (res) => { 
+			return res.json 
+		})
+		.then( (res) => {
+			console.log(res);
+			if(res.isAuthenticated == false) {
+				props.passUser({...res});
+			} else if (res.err === undefined) {
+				setNotice("Contract Created");
+			} else {
+				setNotice("Server Error! Please Try Again.");
+			}
+		})
+		.catch( (err) => { console.log(err) });
 	}
 
 
