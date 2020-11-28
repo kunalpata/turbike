@@ -91,7 +91,54 @@ router.post('/rating', authHelpers.checkAuthenticated, async (req, res) => {
 });
 
 
+// add contract
+router.post('/contract', authHelpers.checkAuthenticated, async (req, res) => {
+    let conInfo = req.body.contractInfo;
+    conInfo.host_id = await getOtherIDFromUserId('host', conInfo.host_id);
+    conInfo.customer_id = await getOtherIDFromUserId('customer', conInfo.customer_id);
+
+    // build query to create contract
+    let query = 'INSERT INTO contract ' +
+                '(host_id, customer_id, bike_id, start_datetime, expiration_datetime, status) ' +
+                'VALUES (?,?,?,?,?,"pending");'
+
+    pool.query(query, 
+        [conInfo.host_id, conInfo.customer_id, conInfo.bike_id, conInfo.start_datetime, conInfo.expiration_datetime], 
+        (err, result) => {
+
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send({status: "success", insertId: result.insertId});
+        }
+    }); 
+});
+
+
 //helper function
+
+/* Takes in a type of id to retreive (table name) and a user id. Gets the host or
+customer id that corresponds to the passed in user id */
+async function getOtherIDFromUserId(idType, userId){
+    let promise = new Promise((resolve, reject) => {
+        let query = 'SELECT * FROM ' + idType + ' WHERE user_id=?;'
+        pool.query(query, [userId], (err, result) => {
+            if(err){
+                resolve({err:err});
+            }else{
+                if(result.length == 0){
+                    resolve({err:"no such user"});
+                }else{
+                    resolve(result[0].id);
+                }
+            }
+        });
+    });
+    return promise;
+}
+
+
 async function addBikeFeatures(selectedFeatures, bikeId){
     let promise = new Promise(async (resolve, reject) => {
         let featureArr = [];

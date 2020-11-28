@@ -28,9 +28,9 @@ const BikeView = (props) => {
 	const [total, setTotal] = useState("Enter start and end dates for an estimate");
 	const [numDays, setNumDays] = useState(0);
 	const [startDate, setStartDate] = useState(today);
-	const [startTime, setStartTime] = useState("10:00");
+	const [startTime, setStartTime] = useState("10:00:00");
 	const [endDate, setEndDate] = useState("");
-	const [endTime, setEndTime] = useState("10:00");
+	const [endTime, setEndTime] = useState("10:00:00");
 	const [location, setLocation] = useState(bike.city+', '+bike.state);
 
 
@@ -147,7 +147,7 @@ const BikeView = (props) => {
 								</Form.Group>
 								<Form.Group as={Col} controlId="eTime">
 									<Form.Label>End Time</Form.Label>
-								    <Form.Control disabled="disabeled" type="time" value="10:00" name="endTime" />
+								    <Form.Control disabled="disabeled" type="time" value={endTime} name="endTime" />
 								</Form.Group>
 							</Form.Row>
 
