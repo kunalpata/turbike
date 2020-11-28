@@ -15,6 +15,10 @@ import { faBicycle } from '@fortawesome/free-solid-svg-icons';
 
 
 const Reservation = (props) => {
+	// check form dates for scheduling conflict
+	useEffect(() => {
+		getContractDates();
+	}, []);
 
 	// For rendering differnet steps of the contract
 	const [stepOne, setStepOne] = useState(true);
@@ -22,6 +26,7 @@ const Reservation = (props) => {
 	const [stepThree, setStepThree] = useState(false);
 	const [stepNum, setStepNum] = useState(1);
 	const [confirm, setConfirm] = useState(false);
+	const [badDates, setBadDates] = useState(false);
 	const [notice, setNotice] = useState("");
 
 	const bike = props.location.state.bike;
@@ -65,6 +70,40 @@ const Reservation = (props) => {
 		setStepNum(2);
 	}
 
+	// Sees if dates from form are available and updates state
+	const getContractDates = async () => {
+		// get contract dates for this bike
+		await fetch('/api/get/contracts/dates?bikeId=' + bike.id)
+		.then( (res) => { return res.json() })
+		.then( (res) => {
+			if (res.dates) {
+				// loop over contract dates and check for conflicts
+				res.dates.forEach( (dateRange) => {
+					if (isDateConflict(dateRange.start_datetime, dateRange.expiration_datetime)) {
+						setBadDates(true);
+					}
+				});
+			}
+		})
+		.catch( (err) => { console.log(err) });
+	}
+
+	// Sees if contract dates have conflict with desired booking
+	const isDateConflict = (contractStart, contractEnd) => {
+		// Convert dates to time stamps for comparison
+		contractStart = new Date(contractStart).getTime();
+		contractEnd = new Date(contractEnd).getTime();
+		let desiredStart = new Date(formInfo.startDate + ' ' + formInfo.startTime).getTime();
+		let desiredEnd = new Date(formInfo.endDate + ' ' + formInfo.endTime).getTime();
+		
+		if (desiredStart >= contractStart && desiredStart <= contractEnd) {
+			return true;
+		}
+		if (desiredEnd >= contractStart && desiredEnd <= contractEnd) {
+			return true;
+		}
+		return false;
+	}
 
 	// Post contract
 	const postContract = async () => {
@@ -102,7 +141,10 @@ const Reservation = (props) => {
 
     return (
     	<Container className="reservation-body-area">
-    		{confirm ? 
+    		{badDates ?
+    			<DatePicker />
+    		:
+    		confirm ? 
     			<Confirmation />
     		:
     		<Row>
@@ -210,6 +252,15 @@ const LineItem = (props) => {
 		</div>
 	);
 };
+
+/* Renders if bad dates selected. Allows user to select new dates */
+const DatePicker = (props) => {
+	return(
+		<div>
+			<h1>Bad Dates</h1>
+		</div>
+	);
+}
 
 /* Step 1: confirm user info */
 const ContractStepOne = (props) => {
