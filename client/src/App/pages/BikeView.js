@@ -76,9 +76,13 @@ const BikeView = (props) => {
 	const calcPriceTotal = () => {
 		// source: https://stackoverflow.com/questions/2627473
 		const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-		const firstDate = new Date(startDate.replace('-', ','));
-		const secondDate = new Date(endDate.replace('-', ','));
-	
+
+		let firstDate = startDate.split('-');
+		let secondDate = endDate.split('-');
+		firstDate = new Date(parseInt(firstDate[0]), parseInt(firstDate[1])-1, parseInt(firstDate[2]));
+		secondDate = new Date(parseInt(secondDate[0]), parseInt(secondDate[1])-1, parseInt(secondDate[2]));
+		//const firstDate = new Date(startDate.replace('-', ','));
+		//const secondDate = new Date(endDate.replace('-', ','));
 		const diffDays = Math.round(Math.abs((firstDate - secondDate) / oneDay)); 
 		setNumDays(diffDays);
 		setTotal(diffDays*bike.price);

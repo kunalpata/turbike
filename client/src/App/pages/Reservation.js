@@ -93,8 +93,8 @@ const Reservation = (props) => {
 		// Convert dates to time stamps for comparison
 		contractStart = new Date(contractStart).getTime();
 		contractEnd = new Date(contractEnd).getTime();
-		let desiredStart = new Date(formInfo.startDate + ' ' + formInfo.startTime).getTime();
-		let desiredEnd = new Date(formInfo.endDate + ' ' + formInfo.endTime).getTime();
+		let desiredStart = new Date(formInfo.startDate + 'T' + formInfo.startTime).getTime();
+		let desiredEnd = new Date(formInfo.endDate + 'T' + formInfo.endTime).getTime();
 		
 		if (desiredStart >= contractStart && desiredStart <= contractEnd) {
 			return true;
@@ -234,7 +234,9 @@ const Reservation = (props) => {
 ** as an object with month and day attributes. */
 function formatDate(date) {
 	const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-	date = new Date(date.replace('-', ','));
+	//date = new Date(date.replace('-', ','));
+	date = date.split('-');
+	date = new Date(parseInt(date[0]), parseInt(date[1])-1, parseInt(date[2]));
 
 	let dateObj = {};
 	dateObj.month = months[date.getMonth()];
