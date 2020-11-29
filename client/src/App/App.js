@@ -79,7 +79,7 @@ class App extends Component {
               <Route exact path='/advancedSearch' component={AdvancedSearch}/>
 
               <Route exact path='/dashboard' render={(props) => <UserDashboard {...props} userInfo={this.state.user} passUser={this.authenticateInfo}/>}/>
-              <Route exact path='/userInfo' render={(props) => <UserAccountInfo {...props} userInfo={this.state.user} />}/>
+              <Route exact path='/userInfo' render={(props) => <UserAccountInfo {...props} userInfo={this.state.user} passUser={this.authenticateInfo}/>}/>
               <Route exact path='/userContracts' render={(props) => <UserContract {...props} userInfo={this.state.user} passUser={this.authenticateInfo}/>}/>
               <Route exact path='/userBikes' render={(props) => <UserBikeList {...props} userInfo={this.state.user} authUser={this.state.isAuthenticated} />} />
 
