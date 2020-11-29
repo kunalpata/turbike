@@ -29,6 +29,9 @@ const Home = (props) => {
   // On submit redirect to listings with search entry from form
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!search) {
+      alert("Please enter a search before continuing.");
+    } else {
     push({
       pathname: './listings',
       state: {
@@ -38,10 +41,12 @@ const Home = (props) => {
         longitude: longitude
       }
     })
+    }
   }
 
   return (
     <div>
+      
       {/* Displays message if user is sent back due to no search results */}
       {noBikes ?
         <DismissibleAlert 

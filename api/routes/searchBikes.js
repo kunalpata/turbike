@@ -18,7 +18,7 @@ router.get('/location', (req, res) => {
         // query by closest match to coordinates of search
         // formula source: https://stackoverflow.com/questions/11112926
 
-        let query = 'SELECT b.id,b.price,b.bike_details,b.bikeName,b.brand,b.penalty,' +
+        let query = 'SELECT b.id,b.price,b.bike_details,b.bikeName,b.brand,b.penalty,b.user_id,' +
                         'u.user_name,u.email,' +
                         'l.address,l.city,l.state,l.zip,l.latitude,l.longitude,' +
                         'c.name,' +
@@ -66,7 +66,7 @@ router.get('/category', (req, res) => {
     const lng = req.query.lng;
 
     // get bikes in this category that are the closest to users current location
-    let query = 'SELECT b.id,b.price,b.bike_details,b.bikeName,b.brand,b.penalty,' +
+    let query = 'SELECT b.id,b.price,b.bike_details,b.bikeName,b.brand,b.penalty,b.user_id,' +
                     'u.user_name,u.email,' +
                     'l.address,l.city,l.state,l.zip,l.latitude,l.longitude,' +
                     'c.name' +

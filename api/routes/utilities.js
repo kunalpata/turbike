@@ -53,9 +53,24 @@ router.get('/contracts', async (req, res) => {
     }
 })
 
+// get contract dates by bike id
+router.get('/contracts/dates', async (req, res) => {
+  let query = 'SELECT start_datetime, expiration_datetime ' +
+              'FROM contract ' +
+              'WHERE bike_id=?;'
+
+  pool.query(query, [req.query.bikeId], (err, result) => {
+    if (err) {
+      res.send({err:err});
+    } else {
+      res.send({dates:result});
+    }
+  })  
+});
+
 //get ratings with specific contract info
 router.post('/rating', async (req, res) => {
-    pool.query('SELECT * FROM Rating WHERE contract_id=? and rated_by_id=?',
+    pool.query('SELECT * FROM rating WHERE contract_id=? and rated_by_id=?',
                [req.body.contract_id, req.body.user_id],
                (err, result) => {
                    if(err){
