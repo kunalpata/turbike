@@ -8,7 +8,7 @@ router.post('/login', authHelpers.checkNotAuthenticated, (req, res, next) => {
     passport.authenticate("local", (err, user, info) => {
         if(err) res.send({err:err});
         if(!user){
-            res.send({err:"No user found"});
+            res.send({login:false,err:"No user found"});
         }else{
             req.logIn(user, err => {
                 if(err){

@@ -100,7 +100,13 @@ const UserContract = (props) => {
                 <Col xs={2}></Col>
                 </Row>
             </div>
-            <FeedbackModal location={props.location} show={showModal} passUser={props.passUser} contract={curContract} close={()=>{setShowModal(false)}}/>
+            <FeedbackModal 
+                location={props.location} 
+                show={showModal} 
+                passUser={props.passUser} 
+                contract={curContract} 
+                close={()=>{setShowModal(false)}}
+            />
         </Container-fluid>
     );
 }
@@ -118,7 +124,7 @@ function FeedbackModal(props) {
     }
 
     useEffect(()=>{
-        updateContract();
+        //updateContract();
     },[props.contract]);
 
     return (
@@ -136,7 +142,15 @@ function FeedbackModal(props) {
             <Modal.Title id="contained-modal-title-vcenter">Leave Feedback</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Rating location={props.location} passUser={props.passUser} customer={contract.customer} host={contract.host} bike={contract.bike} contract_id={contract.contract_id} user_id={contract.user_id} />
+            <Rating 
+                location={props.location}
+                passUser={props.passUser}
+                customer={props.contract.customer} 
+                host={props.contract.host} 
+                bike={props.contract.bike} 
+                contract_id={props.contract.contract_id} 
+                user_id={props.contract.user_id} 
+            />
           </Modal.Body>
 
         </Modal>

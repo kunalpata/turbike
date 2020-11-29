@@ -56,7 +56,6 @@ const Home = (props) => {
           redirectLink="/"
           shouldRedirect={false}
           duration={5000}
-          parentCleanup={()=>{}}
           />:null
       }
       <Container-fluid>

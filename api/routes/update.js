@@ -30,7 +30,7 @@ router.post('/rating', authHelpers.checkAuthenticated, async (req, res) => {
 
 router.post('/user', authHelpers.checkAuthenticated, async(req, res)=>{
     console.log(req.body);
-    pool.query('SELECT * from user where id=?',[req.body.userId],(err,result) => {
+    pool.query('SELECT * from user where id=?',[req.body.userId],async (err,result) => {
         if(err){
             res.send({err:err});
         }else{
@@ -38,9 +38,15 @@ router.post('/user', authHelpers.checkAuthenticated, async(req, res)=>{
                 res.send({err:"no user found"});
             }else{
                 let oldUserInfo = {...result[0]};
+                //rehash the new password
+                const bcrypt = require('bcrypt');
+                let newPassword = result[0].password;
+                if(req.body.password != null){
+                    newPassword = await bcrypt.hash(req.body.password,10);
+                }
                 pool.query('UPDATE user SET user_name=?, password=?, first_name=?, last_name=?, email=? WHERE id=?',
                             [req.body.user_name || result[0].user_name,
-                             req.body.password || result[0].password,
+                             newPassword,
                              req.body.first_name || result[0].first_name,
                              req.body.last_name || result[0].last_name,
                              req.body.email || result[0].email,

@@ -16,7 +16,6 @@ function DismissibleAlert(props){
         setTimeout(()=>{
             console.log("I was called")
             setShow(false);
-            props.parentCleanup();
             setRedir(props.shouldRedirect);
         },second);
     }
