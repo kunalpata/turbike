@@ -15,6 +15,10 @@ import { faBicycle } from '@fortawesome/free-solid-svg-icons';
 
 
 const Reservation = (props) => {
+	// check form dates for scheduling conflict
+	useEffect(() => {
+		getContractDates();
+	}, []);
 
 	// For rendering differnet steps of the contract
 	const [stepOne, setStepOne] = useState(true);
@@ -22,6 +26,8 @@ const Reservation = (props) => {
 	const [stepThree, setStepThree] = useState(false);
 	const [stepNum, setStepNum] = useState(1);
 	const [confirm, setConfirm] = useState(false);
+	const [badDates, setBadDates] = useState(false);
+	const [notice, setNotice] = useState("");
 
 	const bike = props.location.state.bike;
 
@@ -49,6 +55,7 @@ const Reservation = (props) => {
 	const handleBookIt = () => {
 		setStepThree(false);
 		setConfirm(true);
+		postContract();
 	}
 
 	const handleGoBackToOne = () => {
@@ -63,10 +70,81 @@ const Reservation = (props) => {
 		setStepNum(2);
 	}
 
+	// Sees if dates from form are available and updates state
+	const getContractDates = async () => {
+		// get contract dates for this bike
+		await fetch('/api/get/contracts/dates?bikeId=' + bike.id)
+		.then( (res) => { return res.json() })
+		.then( (res) => {
+			if (res.dates) {
+				// loop over contract dates and check for conflicts
+				res.dates.forEach( (dateRange) => {
+					if (isDateConflict(dateRange.start_datetime, dateRange.expiration_datetime)) {
+						setBadDates(true);
+					}
+				});
+			}
+		})
+		.catch( (err) => { console.log(err) });
+	}
+
+	// Sees if contract dates have conflict with desired booking
+	const isDateConflict = (contractStart, contractEnd) => {
+		// Convert dates to time stamps for comparison
+		contractStart = new Date(contractStart).getTime();
+		contractEnd = new Date(contractEnd).getTime();
+		let desiredStart = new Date(formInfo.startDate + 'T' + formInfo.startTime).getTime();
+		let desiredEnd = new Date(formInfo.endDate + 'T' + formInfo.endTime).getTime();
+		
+		if (desiredStart >= contractStart && desiredStart <= contractEnd) {
+			return true;
+		}
+		if (desiredEnd >= contractStart && desiredEnd <= contractEnd) {
+			return true;
+		}
+		return false;
+	}
+
+	// Post contract
+	const postContract = async () => {
+		// Build post body with contract info
+		let contractInfo = {
+			host_id: bike.user_id,
+			customer_id: props.userInfo.user.id,
+			bike_id: bike.id,
+			start_datetime: formInfo.startDate + ' ' + formInfo.startTime,
+			expiration_datetime: formInfo.endDate + ' ' + formInfo.endTime
+		}
+
+		// Post to db
+		await fetch('/api/add/contract', {
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({contractInfo})
+		})
+		.then( (res) => { 
+			return res.json 
+		})
+		.then( (res) => {
+			console.log(res);
+			if(res.isAuthenticated == false) {
+				props.passUser({...res});
+			} else if (res.err === undefined) {
+				setNotice("Contract Created");
+			} else {
+				setNotice("Server Error! Please Try Again.");
+			}
+		})
+		.catch( (err) => { console.log(err) });
+	}
+
 
     return (
     	<Container className="reservation-body-area">
-    		{confirm ? 
+    		{badDates ?
+    			<DatePicker />
+    		:
+    		confirm ? 
     			<Confirmation />
     		:
     		<Row>
@@ -156,7 +234,9 @@ const Reservation = (props) => {
 ** as an object with month and day attributes. */
 function formatDate(date) {
 	const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-	date = new Date(date.replace('-', ','));
+	//date = new Date(date.replace('-', ','));
+	date = date.split('-');
+	date = new Date(parseInt(date[0]), parseInt(date[1])-1, parseInt(date[2]));
 
 	let dateObj = {};
 	dateObj.month = months[date.getMonth()];
@@ -174,6 +254,15 @@ const LineItem = (props) => {
 		</div>
 	);
 };
+
+/* Renders if bad dates selected. Allows user to select new dates */
+const DatePicker = (props) => {
+	return(
+		<div>
+			<h1>Bad Dates</h1>
+		</div>
+	);
+}
 
 /* Step 1: confirm user info */
 const ContractStepOne = (props) => {

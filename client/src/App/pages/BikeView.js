@@ -28,9 +28,9 @@ const BikeView = (props) => {
 	const [total, setTotal] = useState("Enter start and end dates for an estimate");
 	const [numDays, setNumDays] = useState(0);
 	const [startDate, setStartDate] = useState(today);
-	const [startTime, setStartTime] = useState("10:00");
+	const [startTime, setStartTime] = useState("10:00:00");
 	const [endDate, setEndDate] = useState("");
-	const [endTime, setEndTime] = useState("10:00");
+	const [endTime, setEndTime] = useState("10:00:00");
 	const [location, setLocation] = useState(bike.city+', '+bike.state);
 
 
@@ -76,9 +76,13 @@ const BikeView = (props) => {
 	const calcPriceTotal = () => {
 		// source: https://stackoverflow.com/questions/2627473
 		const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-		const firstDate = new Date(startDate.replace('-', ','));
-		const secondDate = new Date(endDate.replace('-', ','));
-	
+
+		let firstDate = startDate.split('-');
+		let secondDate = endDate.split('-');
+		firstDate = new Date(parseInt(firstDate[0]), parseInt(firstDate[1])-1, parseInt(firstDate[2]));
+		secondDate = new Date(parseInt(secondDate[0]), parseInt(secondDate[1])-1, parseInt(secondDate[2]));
+		//const firstDate = new Date(startDate.replace('-', ','));
+		//const secondDate = new Date(endDate.replace('-', ','));
 		const diffDays = Math.round(Math.abs((firstDate - secondDate) / oneDay)); 
 		setNumDays(diffDays);
 		setTotal(diffDays*bike.price);
@@ -147,7 +151,7 @@ const BikeView = (props) => {
 								</Form.Group>
 								<Form.Group as={Col} controlId="eTime">
 									<Form.Label>End Time</Form.Label>
-								    <Form.Control disabled="disabeled" type="time" value="10:00" name="endTime" />
+								    <Form.Control disabled="disabeled" type="time" value={endTime} name="endTime" />
 								</Form.Group>
 							</Form.Row>
 
