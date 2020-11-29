@@ -12,7 +12,6 @@ import Col from 'react-bootstrap/Col';
 
 import {Link, Redirect} from 'react-router-dom';
 import Card from "react-bootstrap/Card";
-import DismissibleAlert from '../components/DismissibleAlert.js';
 
 
 function UserAccountInfo (props){

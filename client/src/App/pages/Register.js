@@ -1,6 +1,6 @@
 // Register.js
 
-import React, { useState } from 'react';
+import React, { useState,useRef } from 'react';
 import '../bootstrap/bootstrap.min.css';
 import './Register.css';
 import InformSpan from '../components/InformSpan.js';
@@ -25,9 +25,12 @@ function Register (props){
 	const [registerStatus, setRegisterStatus] = useState({});
 	const [checkStatus, setCheckStatus] = useState({username:{},email:{},firstname:{},lastname:{},password:{}});
 	const [enableButton, setEnableButton] = useState(false);
+	const regBtnRef = useRef(null);
 
 	const register = async () => {
 		if(checkFields(checkStatus)){
+			regBtnRef.current.disabled = true;
+			regBtnRef.current.textContent = "Agree & Continue";
 			await fetch('/api/auth/register',{
 				method: 'POST',
 				headers: { 'Content-Type' : 'application/json' },
@@ -35,8 +38,20 @@ function Register (props){
 				
 			})
 			.then((res) => { return res.json()})
-			.then((res) => { setRegisterStatus(res); console.log(res)})
-			.catch((err) => { console.log(err)})
+			.then((res) => { 
+				if(res.err == undefined){
+					setRegisterStatus(res);
+				}else{
+					console.log(res.err);
+					regBtnRef.current.textContent = "Server Error! Retry?";
+					regBtnRef.current.disabled = false;
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+				regBtnRef.current.textContent = "Server Error! Retry?";
+				regBtnRef.current.disabled = false;
+			})
 		}
 	};
 
@@ -168,7 +183,6 @@ function Register (props){
 												payload={props.location.state}
 												shouldRedirect={true}
 												duration={5000}
-												parentCleanup={()=>{}}
 											/>:null}													
 				<Row>
 					<Col sm={2} md={4} lg={6} xl={7}></Col>
@@ -216,7 +230,7 @@ function Register (props){
 
 									<div className="accountSignUpR">
 										<div style={{display:"flex", flexFlow:"row wrap", margin : "10px", justifyContent:"center"}}>
-											<Button className = "btn-danger" onClick={register} disabled={!enableButton} style={{minWidth: "200px"}}>{"Agree & Continue"}</Button>	
+											<Button className = "btn-danger" onClick={register} ref={(el) => (regBtnRef.current = el)} disabled={!enableButton} style={{minWidth: "200px"}}>{"Agree & Continue"}</Button>	
 										</div>
 										
 										<div style={{display:"flex", flexFlow:"row wrap", justifyContent: "center"}}>

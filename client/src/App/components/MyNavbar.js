@@ -1,6 +1,6 @@
 // Navbar.js
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import Navbar from 'react-bootstrap/Navbar';
@@ -14,6 +14,7 @@ const MyNavbar = (props) => {
   console.log(props);
   //const {user} = props.userInfo;
   let location = props.location || {pathname:'/',state:{}};
+  let curUser = props.userInfo.user || {isAuthenticated:false};
   const [isLoggingOut, setLoggingOut] = useState(false);
   const logout = async () => {
 		await fetch('/api/auth/logout')
@@ -27,9 +28,13 @@ const MyNavbar = (props) => {
 		.catch((err) => {console.log(err)});
 	};
 
-  const ResetLoggingOut = () => {
-    setLoggingOut(false);
-  }
+
+  useEffect(()=>{
+    if(props.userInfo.isAuthenticated){
+      setLoggingOut(false);
+    }
+  },[props.userInfo]);
+
 
 	return (
 	  <Navbar expand="md" fixed="top">
@@ -85,7 +90,6 @@ const MyNavbar = (props) => {
                           redirectLink="/" 
                           shouldRedirect={true}
                           duration={2000}
-                          parentCleanup={ResetLoggingOut}
                       />:null}
     </Navbar>
 	)
