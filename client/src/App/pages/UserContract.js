@@ -67,8 +67,8 @@ const UserContract = (props) => {
                 <Row>
                 <Col xs={2}></Col>
                 <Col xs={8}>
-                    <Row style={{display:"flex", justifyContent:"center"}}><h1>Your Contracts</h1></Row>
-                    <Row style={{display:"flex", justifyContent:"center"}}>
+                    <Row className="contractHeader" style={{display:"flex", justifyContent:"center"}}><h1>Your Contracts</h1></Row>
+                    <Row style={{display:"flex", justifyContent:"center",marginTop:"20px"}}>
                         <Table striped bordered hover responsive="md">
                             <thead>
                                 <tr>

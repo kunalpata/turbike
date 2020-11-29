@@ -8,7 +8,7 @@ var methods = {
                 }else{
                     let matchedArr = [];
                     for(let i = 0; i < results.length; i++){
-                        let curItem = {...results[0]};
+                        let curItem = {...results[i]};
                         
                         //console.log(curItem);
                         matchedArr.push(curItem);
