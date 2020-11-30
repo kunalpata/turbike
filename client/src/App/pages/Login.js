@@ -26,6 +26,9 @@ function Login (props){
 	const history = useHistory();
 
 	const login = async () => {
+		btnRef.current.disabled = true;
+		btnRef.current.textContent = "login";
+		setAttemptFailed(false);
 		await fetch('/api/auth/login',{
 			method: 'POST',
 			headers: { 'Content-Type' : 'application/json' },
@@ -34,21 +37,26 @@ function Login (props){
 		})
 		.then((res) => { return res.json()})
 		.then((res) => { 
-							setLoginStatus(res);
-							props.passUser({isAuthenticated:res.login,user:res.user});
-							if(!res.login){
-								setAttemptFailed(true);
+							console.log(res);
+							if(res.login != undefined){
+								setLoginStatus(res);
+								props.passUser({isAuthenticated:res.login,user:res.user});
+								if(!res.login){
+									setAttemptFailed(true);
+									btnRef.current.disabled = false;
+								}
+							}else{
+								btnRef.current.textContent = "Server Error! Retry?";
+								btnRef.current.disabled = false;
 							}
 						})
-		.catch((err) => { console.log(err)})
+		.catch((err) => { 
+			console.log(err);
+			btnRef.current.textContent = "Server Error! Retry?";
+			btnRef.current.disabled = false;
+		})
 	};
 
-	const getUser = async () => {
-		await fetch('/api/auth/user')
-		.then((res) => {return res.json()})
-		.then((res) => {console.log(res)})
-		.catch((err) => {console.log(err)});
-	}
 
 	const textChangeHandler = (e) => {
 		let curInput = e.target.value;
@@ -77,7 +85,6 @@ function Login (props){
 													redirectLink=""
 													shouldRedirect={false}
 													duration={5000}
-													parentCleanup={()=>{}}
 												/>:null}
 				<Row>
 					<Col sm={1} xl={2}></Col>
@@ -127,7 +134,7 @@ function Login (props){
 				</Row>
 			
 			</Container>
-      			{loginStatus.login? history.push(props.location.state.from,props.location.state) : null}
+      		{loginStatus.login? history.push(props.location.state.from,props.location.state) : null}
 			
 		</div>
 	);

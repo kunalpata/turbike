@@ -11,7 +11,6 @@ import Button from 'react-bootstrap/Button';
 import Card from "react-bootstrap/Card";
 import {Link} from "react-router-dom";
 import InformSpan from '../components/InformSpan.js';
-import DismissibleAlert from '../components/DismissibleAlert.js';
 import CenteredModal from '../components/VerticalCenteredModal.js';
 import CustomDropDown from '../components/DropDown.js';
 import FeaturesCheckboxes from '../components/FeaturesCheckboxes.js';

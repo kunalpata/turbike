@@ -28,6 +28,51 @@ router.post('/rating', authHelpers.checkAuthenticated, async (req, res) => {
 })
 
 
+router.post('/user', authHelpers.checkAuthenticated, async(req, res)=>{
+    console.log(req.body);
+    pool.query('SELECT * from user where id=?',[req.body.userId],async (err,result) => {
+        if(err){
+            res.send({err:err});
+        }else{
+            if(result.length == 0){
+                res.send({err:"no user found"});
+            }else{
+                let oldUserInfo = {...result[0]};
+                //rehash the new password
+                const bcrypt = require('bcrypt');
+                let newPassword = result[0].password;
+                if(req.body.password != null){
+                    newPassword = await bcrypt.hash(req.body.password,10);
+                }
+                pool.query('UPDATE user SET user_name=?, password=?, first_name=?, last_name=?, email=? WHERE id=?',
+                            [req.body.user_name || result[0].user_name,
+                             newPassword,
+                             req.body.first_name || result[0].first_name,
+                             req.body.last_name || result[0].last_name,
+                             req.body.email || result[0].email,
+                             req.body.userId
+                            ],
+                             (err, result) => {
+                                 if(err){
+                                     res.send({err:err});
+                                 }else{
+                                     res.send({
+                                         isAuthenticated:true,
+                                         user:{
+                                             user_name:req.body.user_name || oldUserInfo.user_name,
+                                             email:req.body.email || oldUserInfo.email,
+                                             id:req.body.userId,
+                                             first_name:req.body.first_name || oldUserInfo.first_name,
+                                             last_name:req.user.last_name || oldUserInfo.last_name
+                                         }
+                                     });
+                                 }
+                             })
+            }
+        }
+    });
+})
+
 router.put('/bike/:id', authHelpers.checkAuthenticated,async (req, res) => {
     console.log(req.body);
     console.log(req.body.category);

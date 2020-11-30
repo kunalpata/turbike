@@ -70,7 +70,7 @@ router.get('/contracts/dates', async (req, res) => {
 
 //get ratings with specific contract info
 router.post('/rating', async (req, res) => {
-    pool.query('SELECT * FROM Rating WHERE contract_id=? and rated_by_id=?',
+    pool.query('SELECT * FROM rating WHERE contract_id=? and rated_by_id=?',
                [req.body.contract_id, req.body.user_id],
                (err, result) => {
                    if(err){
