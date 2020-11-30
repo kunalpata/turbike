@@ -12,12 +12,21 @@ import Col from 'react-bootstrap/Col';
 const RatingDetails = (props) => {
     //props has id, type, name, show-a state variable, close-a function
     const [reviews, setReviews] = useState([]);
+    const [loadingMessage, setLoadingMsg] = useState("Loading...");
 
     const fetchReviews = async(id, type) => {
+        setReviews([]);
+        setLoadingMsg("Loading...");
         //fetch, type is either bike, host or customer
         await fetch(`/api/get/ratings?id=${id}&type=${type}`)
         .then((res) => {return res.json()})
-        .then((res) => {console.log(res);setReviews(res);})
+        .then((res) => {
+            //console.log(res);
+            setReviews(res);
+            if(res.length == 0){
+                setLoadingMsg("No review yet!");
+            }
+        })
         .catch((err) => {console.log(err)});
     };
 
@@ -52,7 +61,7 @@ const RatingDetails = (props) => {
                                 <tr>
                                     <td style={{display:"flex",justifyContent:"center"}}>
                                         {[0,0,0,0,0].map((item,index) => (
-                                            (index < review.rating_score-1)?
+                                            (index < review.rating_score)?
                                                 <span style={{color:"orange",fontSize:"1em"}}>{'★'}</span>
                                                 :
                                                 <span style={{color:"gray",fontSize:"1em"}}>{'★'}</span>
@@ -66,7 +75,7 @@ const RatingDetails = (props) => {
                         }
                     </tbody>
                 </Table>
-                : <h4>No review was found!</h4>
+                : <h4>{loadingMessage}</h4>
                 }
             </Modal.Body>
             

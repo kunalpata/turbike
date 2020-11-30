@@ -20,7 +20,6 @@ const BikeView = (props) => {
 
 	// bike info
 	const bike = props.location.state.bike;
-	console.log(bike);
 	const [features, setFeatures] = useState({});
 	const encodedID = encodeURIComponent(bike.id);
 
@@ -73,11 +72,13 @@ const BikeView = (props) => {
 
 	// show rating modal
 	const openRating = (e) => {
+		let newRatingObj = {};
 		if(e.target.id == "bikeRating1"){
-			setRatingObj({id:bike.id,type:"bike",name:bike.bikeName});
+			newRatingObj = {id:bike.id,type:"bike",name:bike.bikeName};
 		}else if(e.target.id == "hostRating1"){
-			setRatingObj({id:bike.host_id,type:"host",name:bike.user_name});
+			newRatingObj = {id:bike.host_id,type:"host",name:bike.user_name};
 		}
+		setRatingObj(newRatingObj);
 		setShowRating(true);
 	}
 
@@ -126,7 +127,7 @@ const BikeView = (props) => {
 						<td>
 						<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>
 						</td>
-						<span className="bike-header" id="bikeRating1" onClick={openRating}>{bike.rating ? bike.rating : " -"}</span>   
+						<span className={"bike-header","rating-display"} id="bikeRating1" onClick={openRating}>{bike.rating ? bike.rating : " -"}</span>   
 						<span className={"bike-header", "sub-title"}>{bike.ratingLabel}</span>
 					</div>
     				<div>
@@ -198,7 +199,11 @@ const BikeView = (props) => {
     			<Col md={{span: 2, offset: 0}}>
     				<p className="label">Hosted By</p>
     				<h3>{bike.user_name}</h3>
-    				<p>{bike.email}</p>
+    				<div>{bike.email}</div>
+					<span>
+						<img id="star-img2" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>
+						<span className="rating-display" onClick={openRating} id="hostRating1">{bike.rating?bike.rating:" -"}</span>
+					</span>
     			</Col>
     			<Col md={{span: 4, offset: 0}}>
     				<p className="label">Description</p>
