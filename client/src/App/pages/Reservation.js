@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { Link, useHistory } from 'react-router-dom';
+import DismissibleAlert from '../components/DismissibleAlert';
+
 import './Reservation.css';
 
 import Container from 'react-bootstrap/Container';
@@ -28,9 +30,9 @@ const Reservation = (props) => {
 	const [stepNum, setStepNum] = useState(1);
 	const [confirm, setConfirm] = useState(false);
 	const [badDates, setBadDates] = useState(false);
+	const [invalidBook, setInvalidBook] = useState(true);
 	const [notice, setNotice] = useState("");
 	const { push } = useHistory();
-
 
 	const bike = props.location.state.bike;
 
@@ -58,7 +60,7 @@ const Reservation = (props) => {
 	const handleBookIt = () => {
 		setStepThree(false);
 		setConfirm(true);
-		//postContract();
+		postContract();
 	}
 
 	const handleGoBackToOne = () => {
@@ -120,26 +122,31 @@ const Reservation = (props) => {
 			expiration_datetime: formInfo.endDate + ' ' + formInfo.endTime
 		}
 
-		// Post to db
-		await fetch('/api/add/contract', {
-			method: 'POST',
-			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify({contractInfo})
-		})
-		.then( (res) => { 
-			return res.json 
-		})
-		.then( (res) => {
-			console.log(res);
-			if(res.isAuthenticated == false) {
-				props.passUser({...res});
-			} else if (res.err === undefined) {
-				setNotice("Contract Created");
-			} else {
-				setNotice("Server Error! Please Try Again.");
-			}
-		})
-		.catch( (err) => { console.log(err) });
+		// Block host from reserving own bike
+		if (contractInfo.host_id === contractInfo.customer_id) {
+			setInvalidBook(true);
+		} else {
+			// Post to db
+			await fetch('/api/add/contract', {
+				method: 'POST',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify({contractInfo})
+			})
+			.then( (res) => { 
+				return res.json 
+			})
+			.then( (res) => {
+				console.log(res);
+				if(res.isAuthenticated == false) {
+					props.passUser({...res});
+				} else if (res.err === undefined) {
+					setNotice("Contract Created");
+				} else {
+					setNotice("Server Error! Please Try Again.");
+				}
+			})
+			.catch( (err) => { console.log(err) });
+		}
 	}
 
 
@@ -150,6 +157,7 @@ const Reservation = (props) => {
     		:
     		confirm ? 
     			<Confirmation 
+    				invalidBook={invalidBook}
     				bike={bike}
     				startDate={startDate}
     				endDate={endDate}
@@ -183,10 +191,10 @@ const Reservation = (props) => {
 															from: props.location.pathname,
 															...props.location.state
                                                         }
-                                              }}><Button>Log In</Button></Link>
+                                              }}><Button className="continue-button">Log In</Button></Link>
 		    					</div>
-		    				: stepOne ? 
-		    					<ContractStepOne handleGoToTwo={handleGoToTwo} user={props.userInfo.user}/>
+		    				: stepOne ?
+		    					<ContractStepOne handleGoToTwo={handleGoToTwo} user={props.userInfo.user} bike={bike} />
 		    				: stepTwo ?
 		    					<ContractStepTwo handleGoToThree={handleGoToThree} handleGoBackToOne={handleGoBackToOne} />
 		    				: stepThree ?
@@ -277,6 +285,17 @@ const DatePicker = (props) => {
 
 /* Step 1: confirm user info */
 const ContractStepOne = (props) => {
+	const { push } = useHistory();
+	const handleGoBack = (event) => {
+		event.preventDefault();
+		push({
+			pathname: '/bikeView',
+			state: {
+				bike: props.bike
+			}
+		})
+	}
+
 	return(
 		<div>
 			<div className="float-right">Step 1</div>
@@ -291,8 +310,17 @@ const ContractStepOne = (props) => {
     		<div className="sub-title">Email</div>
     		<div className="user-info">{props.user.email}</div>
 
-    		<div className="continue-note">By clicking 'Confirm & Continue' you are agreeing to our Terms and Conditions, and to receive booking-related emails.</div>
-    		<Button className="continue-button" onClick={props.handleGoToTwo}>Confirm & Continue</Button>
+    		{props.user.id === props.bike.user_id ? 
+    			<div>
+    				<div className="invalid-note">Sorry, a host cannot reserve their own listing.</div>
+    				<Button className="go-back-button" onClick={handleGoBack}>Go Back</Button>
+    			</div>
+    		:
+    			<div>
+    				<div className="continue-note">By clicking 'Confirm & Continue' you are agreeing to our Terms and Conditions, and to receive booking-related emails.</div>
+    				<Button className="continue-button" onClick={props.handleGoToTwo}>Confirm & Continue</Button>
+				</div>
+			}
 		</div>
 	);
 };
@@ -412,6 +440,15 @@ const Confirmation = (props) => {
 
 	return(
 		<div>
+			{props.invalidBook ?
+			<DismissibleAlert 
+	          title="Invalid Booking"
+	          message="Sorry, a host can not reserve their own listing."
+	          type="warning"
+	          shouldRedirect={true}
+	          duration={5000}
+          	/>
+		:
 			<Jumbotron>
 			  <h1>That's it, you're booked!</h1>
 			  <p>You will be hearing from {props.bike.user_name} soon.</p>
@@ -436,6 +473,7 @@ const Confirmation = (props) => {
 			  	<Button className="go-back-button" onClick={handleBackToSearch}>New Search</Button>
 			  </p>
 			</Jumbotron>
+		}
 		</div>
 	);
 };

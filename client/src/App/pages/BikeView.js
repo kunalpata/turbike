@@ -161,10 +161,13 @@ const BikeView = (props) => {
 								    <Form.Control disabled="disabeled" type="text" value={location} name="location" />
 								</Form.Group>
 							</Form.Row>
-							  
-							<Button type="submit" className="reservation-button" block>
-							    Continue
-							</Button>
+							{props.userInfo.isAuthenticated && props.userInfo.user.id === bike.user_id ?
+								<div className="sorry-message">Sorry, a host cannot reserve their own listing</div>
+							:
+								<Button type="submit" className="reservation-button" block>
+								    Continue
+								</Button>
+							}
 					    </Form>
 					  </Card.Body>
 					</Card>

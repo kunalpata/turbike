@@ -72,7 +72,7 @@ class App extends Component {
               />
 
               <Route exact path='/listings' component={Listings} />
-              <Route exact path='/bikeView' component={BikeView} />
+              <Route exact path='/bikeView' render={(props) => <BikeView {...props} userInfo={this.state.user} />} />
               <Route exact path='/reservation' render={(props) => <Reservation {...props} userInfo={this.state.user} />} />
               <Route exact path='/bikeAdd' render={(props) => <BikeAdd {...props} passUser={this.authenticateInfo}/>} />
               <Route exact path='/editBike' render={(props) => <EditBike {...props} passUser={this.authenticateInfo}/>}  />
