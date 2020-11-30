@@ -1,7 +1,7 @@
 // Reservation.js
 
 import React, { useState, useEffect } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import './Reservation.css';
 
 import Container from 'react-bootstrap/Container';
@@ -9,6 +9,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Jumbotron from 'react-bootstrap/Jumbotron'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBicycle } from '@fortawesome/free-solid-svg-icons';
@@ -28,6 +29,8 @@ const Reservation = (props) => {
 	const [confirm, setConfirm] = useState(false);
 	const [badDates, setBadDates] = useState(false);
 	const [notice, setNotice] = useState("");
+	const { push } = useHistory();
+
 
 	const bike = props.location.state.bike;
 
@@ -55,7 +58,7 @@ const Reservation = (props) => {
 	const handleBookIt = () => {
 		setStepThree(false);
 		setConfirm(true);
-		postContract();
+		//postContract();
 	}
 
 	const handleGoBackToOne = () => {
@@ -69,6 +72,7 @@ const Reservation = (props) => {
 		setStepThree(false);
 		setStepNum(2);
 	}
+
 
 	// Sees if dates from form are available and updates state
 	const getContractDates = async () => {
@@ -145,7 +149,14 @@ const Reservation = (props) => {
     			<DatePicker />
     		:
     		confirm ? 
-    			<Confirmation />
+    			<Confirmation 
+    				bike={bike}
+    				startDate={startDate}
+    				endDate={endDate}
+    				formInfo={formInfo}
+    				userInfo={props.userInfo}
+    				amount={(subTotal + 2.0 + tax + bike.penalty).toFixed(2)}
+    			/>
     		:
     		<Row>
     		{/* Contract area */}
@@ -188,7 +199,7 @@ const Reservation = (props) => {
 		    						formInfo={formInfo} 
 		    						amount={(subTotal + 2.0 + tax + bike.penalty).toFixed(2)}
 		    					/>
-	    				: 	<Confirmation />
+	    				: 	<h1>Something went wrong</h1>
 	    				}
 	    			</Container>
     			</Col>
@@ -362,9 +373,69 @@ const ContractStepThree = (props) => {
 
 /* Confirmation page */
 const Confirmation = (props) => {
+	const { push } = useHistory();
+
+	const handleViewContracts = (event) => {
+		event.preventDefault();
+		push({
+      		pathname: './userContracts',
+      		state: {
+      			userId: props.userInfo.user !== undefined ? props.userInfo.user.id : 0
+      		}
+    	})
+	}
+
+	const handleBackToSearch = (event) => {
+		event.preventDefault();
+		push({
+      		pathname: './',
+    	})
+	}
+
+	const getFullMonth = (abbr) => {
+		const months = {
+			"Jan": "January",
+			"Feb": "February",
+			"Mar": "March",
+			"Apr": "April",
+			"May": "May",
+			"Jun": "June",
+			"Jul": "July",
+			"Aug": "August",
+			"Sep": "September",
+			"Oct": "October",
+			"Nov": "November",
+			"Dec": "December"
+		}
+		return months[abbr];
+	}
+
 	return(
 		<div>
-			<h1>Congrats</h1>
+			<Jumbotron>
+			  <h1>That's it, you're booked!</h1>
+			  <p>You will be hearing from {props.bike.user_name} soon.</p>
+			  <Row className="confirmation-box">
+			  	<Col className="verticle-rule" md={{span: 3, offset: 0}}>
+			  		<p>Starting</p>
+			  		<h3>{props.startDate.day}</h3>
+			  		<h5>{getFullMonth(props.startDate.month)}</h5>
+			  		<hr></hr>
+			  		<p>at 10:00 am</p>
+			  	</Col>
+			  	<Col md={{span: 8, offset: 0}}>
+			  		<h3>{props.bike.bikeName}</h3>
+			  		<p>{props.bike.user_name}</p>
+			  		<br></br>
+			  		<p>{props.formInfo.numDays} {props.formInfo.numDays === 1 ? "day" : "days"} | ${props.amount}</p>
+			  		<p>{props.bike.address}, {props.bike.city}, {props.bike.state} {props.bike.zip}</p>
+			  	</Col>
+			  </Row>
+			  <p>
+			    <Button className="continue-button" onClick={handleViewContracts}>View Contracts</Button>
+			  	<Button className="go-back-button" onClick={handleBackToSearch}>New Search</Button>
+			  </p>
+			</Jumbotron>
 		</div>
 	);
 };
