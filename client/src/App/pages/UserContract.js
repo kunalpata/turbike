@@ -113,19 +113,6 @@ const UserContract = (props) => {
 
 
 function FeedbackModal(props) {
-  
-    const [contract, setContract] = useState({});
-
-    const updateContract = () => {
-        let newContract = {
-            ...props.contract
-        }
-        setContract(newContract);
-    }
-
-    useEffect(()=>{
-        //updateContract();
-    },[props.contract]);
 
     return (
       <> 

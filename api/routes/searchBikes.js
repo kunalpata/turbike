@@ -19,7 +19,7 @@ router.get('/location', (req, res) => {
         // formula source: https://stackoverflow.com/questions/11112926
 
         let query = 'SELECT b.id,b.price,b.bike_details,b.bikeName,b.brand,b.penalty,b.user_id,' +
-                        'u.user_name,u.email,' +
+                        'u.user_name,u.email,h.id as host_id,' +
                         'l.address,l.city,l.state,l.zip,l.latitude,l.longitude,' +
                         'c.name,' +
                         ' ( 3959 * acos( cos( radians(l.latitude) ) * cos( radians(?) ) * cos( radians(?) - radians(l.longitude) ) + sin( radians(l.latitude) ) * sin( radians(?) ) ) )' +
@@ -28,6 +28,7 @@ router.get('/location', (req, res) => {
                     ' inner join location l on b.location_id = l.id ' +
                     ' inner join bike_category bc on b.id = bc.bike_id ' +
                     ' inner join category c on bc.category_id = c.id' +
+                    ' inner join host h on h.user_id = u.id'
                     //' ORDER BY distance LIMIT 0, 10' +
                     ' HAVING distance < 50 ORDER BY distance LIMIT 0, 10;'
 
@@ -67,7 +68,7 @@ router.get('/category', (req, res) => {
 
     // get bikes in this category that are the closest to users current location
     let query = 'SELECT b.id,b.price,b.bike_details,b.bikeName,b.brand,b.penalty,b.user_id,' +
-                    'u.user_name,u.email,' +
+                    'u.user_name,u.email,h.id as host_id,' +
                     'l.address,l.city,l.state,l.zip,l.latitude,l.longitude,' +
                     'c.name' +
                     ', ( 3959 * acos( cos( radians(l.latitude) ) * cos( radians(?) ) * cos( radians(?) - radians(l.longitude) ) + sin( radians(l.latitude) ) * sin( radians(?) ) ) )' +
@@ -76,6 +77,7 @@ router.get('/category', (req, res) => {
                 ' inner join location l on b.location_id = l.id' +
                 ' inner join bike_category bc on b.id = bc.bike_id' +
                 ' inner join category c on bc.category_id = c.id' +
+                ' inner join host h on h.user_id = u.id'
                 ' WHERE c.name = ?' +
                 //' ORDER BY distance LIMIT 0, 10;'
                 ' HAVING distance < 50 ORDER BY distance LIMIT 0, 10;'
@@ -158,12 +160,13 @@ router.post('/advanced', async (req, res) => {
 
     //base query without filters to select all bikes combining category and features, but group by bike.id
     let baseQueryColumns = 'SELECT b.id, b.price, b.bike_details, b.brand, b.bikeName,b.penalty,' +
-                    'u.user_name, u.email,' +
-                    'l.address, l.city, l.state, l.zip, l.latitude, l.longitude,';
+                            'u.user_name, u.email,h.id as host_id,' +
+                            'l.address, l.city, l.state, l.zip, l.latitude, l.longitude,';
     
     let baseQueryColumnEnd = ' t.feature_id, t2.category_id, t2.name, count(*) as matched_feature_count, t.total_feature_count FROM bike b '
     let baseQueryJoins = ' inner join user u on b.user_id = u.id' +
                          ' inner join location l on l.id = b.location_id' +
+                         ' inner join host h on h.user_id = u.id' +
                          ' left join (SELECT bf.feature_id, bf.bike_id, f.name, t3.total_feature_count FROM bike_feature bf ' + 
                                 'inner join feature f on bf.feature_id = f.id ' +
                                 'inner join (SELECT bf2.bike_id, count(*) as total_feature_count FROM bike_feature bf2 group by bf2.bike_id) '+

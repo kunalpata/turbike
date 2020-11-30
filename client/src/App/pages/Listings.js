@@ -13,7 +13,6 @@ import Col from 'react-bootstrap/Col';
 const Listings = (props) => {
   useEffect(() => {
     if(props.location.state.advancedSearch !== undefined){
-      //console.log(props.location.state.advancedSearch);
       advancedGetBikes();
     }else{
       getBikes();
