@@ -81,10 +81,9 @@ const BikeView = (props) => {
 		let secondDate = endDate.split('-');
 		firstDate = new Date(parseInt(firstDate[0]), parseInt(firstDate[1])-1, parseInt(firstDate[2]));
 		secondDate = new Date(parseInt(secondDate[0]), parseInt(secondDate[1])-1, parseInt(secondDate[2]));
-		//const firstDate = new Date(startDate.replace('-', ','));
-		//const secondDate = new Date(endDate.replace('-', ','));
+
 		const diffDays = Math.round(Math.abs((firstDate - secondDate) / oneDay)); 
-		setNumDays(diffDays);
+		setNumDays(diffDays + 1);  // +1 for single day bookings
 		setTotal(diffDays*bike.price);
 	}
 
