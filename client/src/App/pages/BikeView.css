@@ -19,6 +19,11 @@
 	margin-top: 25px;
 }
 
+.sorry-message {
+	color: red;
+	font-size: 1.2em;
+}
+
 .reservation-button {
 	background-color: #F29898;
 	border-color: #F29898;

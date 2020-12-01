@@ -1,7 +1,14 @@
 // Reservation.js
 
 import React, { useState, useEffect } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import DismissibleAlert from '../components/DismissibleAlert';
+import setHours from "date-fns/setHours";
+import setMinutes from "date-fns/setMinutes";
+import setSeconds from "date-fns/setSeconds";
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
+
 import './Reservation.css';
 
 import Container from 'react-bootstrap/Container';
@@ -9,6 +16,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Jumbotron from 'react-bootstrap/Jumbotron'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBicycle } from '@fortawesome/free-solid-svg-icons';
@@ -26,17 +34,26 @@ const Reservation = (props) => {
 	const [stepThree, setStepThree] = useState(false);
 	const [stepNum, setStepNum] = useState(1);
 	const [confirm, setConfirm] = useState(false);
+	
+	// For validating contract - dates and users
 	const [badDates, setBadDates] = useState(false);
+	const [dates, setDates] = useState([]);
+	const [contractDates, setContractDates] = useState([]);
+	const [invalidBook, setInvalidBook] = useState(true);
 	const [notice, setNotice] = useState("");
 
+	const { push } = useHistory();
 	const bike = props.location.state.bike;
 
 	// For billing 
 	const formInfo = props.location.state;
-	const subTotal = bike.price * formInfo.numDays;
+	const [numDays, setNumDays] = useState(formInfo.numDays);
+	const subTotal = bike.price * numDays;
 	const tax = subTotal * .06;
-	const startDate = formatDate(formInfo.startDate);
-	const endDate = formatDate(formInfo.endDate);
+	const [startDate, setStartDate] = useState(formatDate(formInfo.startDate));
+	const [endDate, setEndDate] = useState(formatDate(formInfo.endDate));
+	const [startDT, setStartDT] = useState(formInfo.startDate);
+	const [endDT, setEndDT] = useState(formInfo.endDate);
 
 
 	// Button handlers
@@ -70,32 +87,91 @@ const Reservation = (props) => {
 		setStepNum(2);
 	}
 
-	// Sees if dates from form are available and updates state
+	const handleResetDates = (start, end) => {
+		start = formatToCalendarDate(start);
+		end = formatToCalendarDate(end); 
+
+		// formatted version for display
+		setStartDate(formatDate(start));
+		setEndDate(formatDate(end));
+		
+		// date-time version for db
+		setStartDT(start);
+		setEndDT(end);
+
+		resetNumDays(start, end);
+		setBadDates(false);
+	}
+
+	/* Called if user selects new dates. It calcs the number of days in the new range
+	and rests numDays */
+	const resetNumDays = (startDate, endDate) => {
+		const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+
+		let firstDate = startDate.split('-');
+		let secondDate = endDate.split('-');
+
+		firstDate = new Date(parseInt(firstDate[0]), parseInt(firstDate[1])-1, parseInt(firstDate[2]));
+		secondDate = new Date(parseInt(secondDate[0]), parseInt(secondDate[1])-1, parseInt(secondDate[2]));
+
+		const diffDays = Math.round(Math.abs((firstDate - secondDate) / oneDay)); 
+		setNumDays(diffDays + 1);  // +1 for single day bookings
+	}
+
+	/* Takes in a date and formats it to get out yyyy-mm-dd */
+	const formatToCalendarDate = (date) => {
+		let d = new Date(date),
+        	month = '' + (d.getMonth() + 1),
+        	day = '' + d.getDate(),
+        	year = d.getFullYear();
+
+	    if (month.length < 2) 
+	        month = '0' + month;
+	    if (day.length < 2) 
+	        day = '0' + day;
+
+	    return [year, month, day].join('-');
+	}
+
+
+	/* Gets the dates of the constracts this bike is booked in. Stores the dates
+	as contractDates, gets the all the dates in the range between start and end
+	and stores them dates, and checks for conflicts. */
 	const getContractDates = async () => {
 		// get contract dates for this bike
 		await fetch('/api/get/contracts/dates?bikeId=' + bike.id)
 		.then( (res) => { return res.json() })
 		.then( (res) => {
 			if (res.dates) {
-				// loop over contract dates and check for conflicts
-				res.dates.forEach( (dateRange) => {
-					if (isDateConflict(dateRange.start_datetime, dateRange.expiration_datetime)) {
-						setBadDates(true);
-					}
-				});
+				setContractDates(res.dates);
+				setDates(getAllBlockedDates(res.dates));
+				checkForConflicts(res.dates);
 			}
 		})
 		.catch( (err) => { console.log(err) });
 	}
 
-	// Sees if contract dates have conflict with desired booking
+	/* Takes in a list of contract date ranges, where date ranges have a start date and end date. 
+	Loops over the contract dates and if there is a conflict with the selected dates, it
+	sets badDates to render the date picker. */
+	const checkForConflicts = (dates) => {
+		dates.forEach( (dateRange) => {
+			if (isDateConflict(dateRange.start_datetime, dateRange.expiration_datetime)) {
+				setBadDates(true);
+			}
+		});	
+	}
+
+	/* Takes in the start and end date of a contract and determines if the desired form dates
+	overlap with any contract dates. Returns true if there is a conflict, false otherwise. */
 	const isDateConflict = (contractStart, contractEnd) => {
 		// Convert dates to time stamps for comparison
 		contractStart = new Date(contractStart).getTime();
 		contractEnd = new Date(contractEnd).getTime();
-		let desiredStart = new Date(formInfo.startDate + 'T' + formInfo.startTime).getTime();
-		let desiredEnd = new Date(formInfo.endDate + 'T' + formInfo.endTime).getTime();
+		let desiredStart = new Date(startDT + 'T' + formInfo.startTime).getTime();
+		let desiredEnd = new Date(endDT + 'T' + formInfo.endTime).getTime();
 		
+		// See if they overlap
 		if (desiredStart >= contractStart && desiredStart <= contractEnd) {
 			return true;
 		}
@@ -105,47 +181,70 @@ const Reservation = (props) => {
 		return false;
 	}
 
-	// Post contract
+	/* Takes in contract date ranges and creates an array of all the dates under
+	contract.  */
+	const getAllBlockedDates = (cDates) => {
+		let dates = new Array();
+		cDates.forEach( (dateRange) => {
+			let datesToAdd = getDates(dateRange.start_datetime, dateRange.expiration_datetime);
+			dates = dates.concat(datesToAdd);
+		});
+		return dates;
+	}
+
+	/* Post contract - builds the contract info needed for the db and posts it to 
+	the backend. Has one last safety net to catch a user booking their own bike. */
 	const postContract = async () => {
 		// Build post body with contract info
 		let contractInfo = {
 			host_id: bike.user_id,
 			customer_id: props.userInfo.user.id,
 			bike_id: bike.id,
-			start_datetime: formInfo.startDate + ' ' + formInfo.startTime,
-			expiration_datetime: formInfo.endDate + ' ' + formInfo.endTime
+			start_datetime: startDT + ' ' + formInfo.startTime,
+			expiration_datetime: endDT + ' ' + formInfo.endTime
 		}
 
-		// Post to db
-		await fetch('/api/add/contract', {
-			method: 'POST',
-			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify({contractInfo})
-		})
-		.then( (res) => { 
-			return res.json 
-		})
-		.then( (res) => {
-			console.log(res);
-			if(res.isAuthenticated == false) {
-				props.passUser({...res});
-			} else if (res.err === undefined) {
-				setNotice("Contract Created");
-			} else {
-				setNotice("Server Error! Please Try Again.");
-			}
-		})
-		.catch( (err) => { console.log(err) });
+		// Block host from reserving own bike
+		if (contractInfo.host_id === contractInfo.customer_id) {
+			setInvalidBook(true);
+		} else {
+			// Post to db
+			await fetch('/api/add/contract', {
+				method: 'POST',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify({contractInfo})
+			})
+			.then( (res) => { 
+				return res.json 
+			})
+			.then( (res) => {
+				if(res.isAuthenticated == false) {
+					props.passUser({...res});
+				} else if (res.err === undefined) {
+					setNotice("Contract Created");
+				} else {
+					setNotice("Server Error! Please Try Again.");
+				}
+			})
+			.catch( (err) => { console.log(err) });
+		}
 	}
 
 
     return (
     	<Container className="reservation-body-area">
     		{badDates ?
-    			<DatePicker />
+    			<Calendar dates={dates} handleResetDates={handleResetDates} />
     		:
     		confirm ? 
-    			<Confirmation />
+    			<Confirmation 
+    				bike={bike}
+    				startDate={startDate}
+    				endDate={endDate}
+    				formInfo={formInfo}
+    				userInfo={props.userInfo}
+    				amount={(subTotal + 2.0 + tax + bike.penalty).toFixed(2)}
+    			/>
     		:
     		<Row>
     		{/* Contract area */}
@@ -172,10 +271,10 @@ const Reservation = (props) => {
 															from: props.location.pathname,
 															...props.location.state
                                                         }
-                                              }}><Button>Log In</Button></Link>
+                                              }}><Button className="continue-button">Log In</Button></Link>
 		    					</div>
-		    				: stepOne ? 
-		    					<ContractStepOne handleGoToTwo={handleGoToTwo} user={props.userInfo.user}/>
+		    				: stepOne ?
+		    					<ContractStepOne handleGoToTwo={handleGoToTwo} user={props.userInfo.user} bike={bike} />
 		    				: stepTwo ?
 		    					<ContractStepTwo handleGoToThree={handleGoToThree} handleGoBackToOne={handleGoBackToOne} />
 		    				: stepThree ?
@@ -188,7 +287,7 @@ const Reservation = (props) => {
 		    						formInfo={formInfo} 
 		    						amount={(subTotal + 2.0 + tax + bike.penalty).toFixed(2)}
 		    					/>
-	    				: 	<Confirmation />
+	    				: 	<h1>Something went wrong</h1>
 	    				}
 	    			</Container>
     			</Col>
@@ -210,7 +309,7 @@ const Reservation = (props) => {
 							<LineItem label="Start Trip" amount={startDate.month +' '+ startDate.day} />
 							<LineItem label="End Trip" amount={endDate.month +' '+ endDate.day} />
 						</div>
-						<LineItem label={'$'+bike.price+' x '+formInfo.numDays+' days'} amount={'$'+subTotal.toFixed(2)} />
+						<LineItem label={'$'+bike.price+' x '+numDays+' days'} amount={'$'+subTotal.toFixed(2)} />
 						<LineItem label="Service Fee" amount="$2.00" />
 						<LineItem label="Tax" amount={'$'+tax.toFixed(2)} />
 						<hr></hr>
@@ -228,44 +327,81 @@ const Reservation = (props) => {
     );
 };
 
-/* ----------  Helpers  ----------- */
 
-/* Takes in the date in the form submit format, gets the month and day in a readable format and returns them
-** as an object with month and day attributes. */
-function formatDate(date) {
-	const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-	//date = new Date(date.replace('-', ','));
-	date = date.split('-');
-	date = new Date(parseInt(date[0]), parseInt(date[1])-1, parseInt(date[2]));
 
-	let dateObj = {};
-	dateObj.month = months[date.getMonth()];
-	dateObj.day = date.getDate();
-
-	return dateObj;
-}
-
-/* Used for items in the billing section. Have a label and price */
-const LineItem = (props) => {
-	return (
-		<div>
-			<span className={props.class}>{props.label}</span>
-			<div className="float-right">{props.amount}</div>
-		</div>
-	);
-};
+/*----------------------- Helper Components --------------------------------*/
 
 /* Renders if bad dates selected. Allows user to select new dates */
-const DatePicker = (props) => {
+const Calendar = (props) => {
+	const [startDate, setStartDate] = useState(setHours(setMinutes(setSeconds(new Date(), 0), 0), 10));
+  	const [endDate, setEndDate] = useState(setHours(setMinutes(setSeconds(new Date(), 0), 0), 10));
+  	const [goodRange, setGoodRange] = useState(true);
+  	const [displayStart, setDisplayStart] = useState(null);
+  	const [displayEnd, setDisplayEnd] = useState(null);
+
+  	const onChange = dates => {
+    	const [start, end] = dates;
+    	setStartDate(start);
+    	setEndDate(end);
+    	setDisplayStart(start);
+    	setDisplayEnd(end);
+    	let dateRange = getDates(start, end);
+    	checkDateRange(dateRange);
+  	};
+
+  	const checkDateRange = (dateRange) => {
+  		for(let i = 0; i < dateRange.length; i++){
+  			for(let j = 0; j < props.dates.length; j ++){
+  				if (dateRange[i].toString() === props.dates[j].toString()){
+  					setGoodRange(false);
+  					return;
+  				}
+  			}
+  		}
+  		setGoodRange(true);
+  	}
+
 	return(
 		<div>
-			<h1>Bad Dates</h1>
+		<Container className="calendar-page">
+			<h3>The dates you have selected are not available for this bike.</h3>
+			<p>Please review the calendar below to select a different range.</p>
+			<p><strong>Start:</strong> {displayStart ? displayStart.toDateString() : ""}</p>
+			<p><strong>End:</strong> {displayEnd ? displayEnd.toDateString() : ""}</p>
+			<DatePicker
+				selected={startDate}
+				onChange={onChange}
+				startDate={startDate}
+				endDate={endDate}
+				selectsRange
+				inline
+				excludeDates={props.dates}
+    		/>
+    		{goodRange && startDate && endDate && displayStart && displayEnd ? 
+    			<Button className="continue-button" onClick={props.handleResetDates.bind(this, startDate, endDate)}>Submit New Dates</Button>
+			: startDate && endDate && displayStart && displayEnd ?
+				<div className="sorry-message">Please select range without blacked out dates to continue</div>
+			:
+				<div className="sorry-message">Please select a start date and end date to continue</div>
+			}
+		</Container>
 		</div>
 	);
 }
 
 /* Step 1: confirm user info */
 const ContractStepOne = (props) => {
+	const { push } = useHistory();
+	const handleGoBack = (event) => {
+		event.preventDefault();
+		push({
+			pathname: '/bikeView',
+			state: {
+				bike: props.bike
+			}
+		})
+	}
+
 	return(
 		<div>
 			<div className="float-right">Step 1</div>
@@ -280,8 +416,17 @@ const ContractStepOne = (props) => {
     		<div className="sub-title">Email</div>
     		<div className="user-info">{props.user.email}</div>
 
-    		<div className="continue-note">By clicking 'Confirm & Continue' you are agreeing to our Terms and Conditions, and to receive booking-related emails.</div>
-    		<Button className="continue-button" onClick={props.handleGoToTwo}>Confirm & Continue</Button>
+    		{props.user.id === props.bike.user_id ? 
+    			<div>
+    				<div className="invalid-note">Sorry, a host cannot reserve their own listing.</div>
+    				<Button className="go-back-button" onClick={handleGoBack}>Go Back</Button>
+    			</div>
+    		:
+    			<div>
+    				<div className="continue-note">By clicking 'Confirm & Continue' you are agreeing to our Terms and Conditions, and to receive booking-related emails.</div>
+    				<Button className="continue-button" onClick={props.handleGoToTwo}>Confirm & Continue</Button>
+				</div>
+			}
 		</div>
 	);
 };
@@ -362,12 +507,121 @@ const ContractStepThree = (props) => {
 
 /* Confirmation page */
 const Confirmation = (props) => {
+	const { push } = useHistory();
+
+	const handleViewContracts = (event) => {
+		event.preventDefault();
+		push({
+      		pathname: './userContracts',
+      		state: {
+      			userId: props.userInfo.user !== undefined ? props.userInfo.user.id : 0
+      		}
+    	})
+	}
+
+	const handleBackToSearch = (event) => {
+		event.preventDefault();
+		push({
+      		pathname: './',
+    	})
+	}
+
+	const getFullMonth = (abbr) => {
+		const months = {
+			"Jan": "January",
+			"Feb": "February",
+			"Mar": "March",
+			"Apr": "April",
+			"May": "May",
+			"Jun": "June",
+			"Jul": "July",
+			"Aug": "August",
+			"Sep": "September",
+			"Oct": "October",
+			"Nov": "November",
+			"Dec": "December"
+		}
+		return months[abbr];
+	}
+
 	return(
 		<div>
-			<h1>Congrats</h1>
+			<Jumbotron>
+			  <h1>That's it, you're booked!</h1>
+			  <p>You will be hearing from {props.bike.user_name} soon.</p>
+			  <Row className="confirmation-box">
+			  	<Col className="verticle-rule" md={{span: 3, offset: 0}}>
+			  		<p>Starting</p>
+			  		<h3>{props.startDate.day}</h3>
+			  		<h5>{getFullMonth(props.startDate.month)}</h5>
+			  		<hr></hr>
+			  		<p>at 10:00 am</p>
+			  	</Col>
+			  	<Col md={{span: 8, offset: 0}}>
+			  		<h3>{props.bike.bikeName}</h3>
+			  		<p>{props.bike.user_name}</p>
+			  		<br></br>
+			  		<p>{props.formInfo.numDays} {props.formInfo.numDays === 1 ? "day" : "days"} | ${props.amount}</p>
+			  		<p>{props.bike.address}, {props.bike.city}, {props.bike.state} {props.bike.zip}</p>
+			  	</Col>
+			  </Row>
+			  <p>
+			    <Button className="continue-button" onClick={handleViewContracts}>View Contracts</Button>
+			  	<Button className="go-back-button" onClick={handleBackToSearch}>New Search</Button>
+			  </p>
+			</Jumbotron>
 		</div>
 	);
 };
+
+/* Used for items in the billing section. Have a label and price */
+const LineItem = (props) => {
+	return (
+		<div>
+			<span className={props.class}>{props.label}</span>
+			<div className="float-right">{props.amount}</div>
+		</div>
+	);
+};
+
+
+/* ----------  Helpers  ----------- */
+
+/* Takes in the date in the form submit format, gets the month and day in a readable format and returns them
+** as an object with month and day attributes. */
+function formatDate(date) {
+	const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+	//date = new Date(date.replace('-', ','));
+	date = date.split('-');
+	date = new Date(parseInt(date[0]), parseInt(date[1])-1, parseInt(date[2]));
+
+	let dateObj = {};
+	dateObj.month = months[date.getMonth()];
+	dateObj.day = date.getDate();
+
+	return dateObj;
+}
+
+/* Takes in a date and the number of days to increment it, then increments the date. */
+// Source: https://stackoverflow.com/questions/4413590
+const addDays = function(old_date, days) {
+    var date = new Date(old_date);
+    date.setDate(date.getDate() + days);
+    return date;
+}
+
+/* Takes in a start and end date then returns an array of all the dates in the range. */
+// Source: https://stackoverflow.com/questions/4413590
+function getDates(startDate, stopDate) {
+    var dateArray = new Array();
+    var currentDate = addDays(startDate, 0);
+    var stopDate = addDays(stopDate, 0);
+    while (currentDate <= stopDate) {
+        dateArray.push(new Date (currentDate));
+        currentDate = addDays(currentDate, 1);
+    }
+    return dateArray;
+}
 
 
 export default Reservation;

@@ -96,10 +96,9 @@ const BikeView = (props) => {
 		let secondDate = endDate.split('-');
 		firstDate = new Date(parseInt(firstDate[0]), parseInt(firstDate[1])-1, parseInt(firstDate[2]));
 		secondDate = new Date(parseInt(secondDate[0]), parseInt(secondDate[1])-1, parseInt(secondDate[2]));
-		//const firstDate = new Date(startDate.replace('-', ','));
-		//const secondDate = new Date(endDate.replace('-', ','));
+
 		const diffDays = Math.round(Math.abs((firstDate - secondDate) / oneDay)); 
-		setNumDays(diffDays);
+		setNumDays(diffDays + 1);  // +1 for single day bookings
 		setTotal(diffDays*bike.price);
 	}
 
@@ -184,10 +183,13 @@ const BikeView = (props) => {
 								    <Form.Control disabled="disabeled" type="text" value={location} name="location" />
 								</Form.Group>
 							</Form.Row>
-							  
-							<Button type="submit" className="reservation-button" block>
-							    Continue
-							</Button>
+							{props.userInfo.isAuthenticated && props.userInfo.user.id === bike.user_id ?
+								<div className="sorry-message">Sorry, a host cannot reserve their own listing</div>
+							:
+								<Button type="submit" className="reservation-button" block>
+								    Continue
+								</Button>
+							}
 					    </Form>
 					  </Card.Body>
 					</Card>
