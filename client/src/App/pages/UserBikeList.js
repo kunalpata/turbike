@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import '../bootstrap/bootstrap.min.css';
-import './UserDashboard.css';
+import './UserBikeList.css';
 import InformSpan from '../components/InformSpan.js';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -18,6 +18,8 @@ import BikeEditCards from "../components/BikeEditCards";
 const UserBikeList = (props) => {
 
     const [bikes, setBikes] = useState({});
+    const [isAuthenticated,setIsAuthenticated] = useState(true);
+    const [fetchBikeMsg, setFetchBikeMsg] = useState("Loading...");
 
     const lookForMatch = async() => {
         // console.log("HERE IN LOOKFORMATCH");
@@ -31,6 +33,8 @@ const UserBikeList = (props) => {
                 if (currentUser.isAuthenticated) {
                     // console.log("IN IF");
                     // console.log(currentUser.user.last_name);
+                    setFetchBikeMsg("Loading...");
+                    setIsAuthenticated(true);
                     fetch('/api/getBikes/submittedBikes', {
                         method: 'POST',
                         headers: { 'Content-Type' : 'application/json'},
@@ -42,8 +46,12 @@ const UserBikeList = (props) => {
                         if (!res.hasError) {
                             // console.log(res)
                             setBikes(res);
+                        }else{
+                            setFetchBikeMsg("Error getting bikes from server");
                         }
                     })
+                }else{
+                    setIsAuthenticated(false);
                 }
             })
             .catch((err)=>{console.log(err)});
@@ -62,14 +70,44 @@ const UserBikeList = (props) => {
 
 
     return (
-        <Container className="dashboard-body">
+        <Container>
+            {!isAuthenticated?<Redirect
+                                    to={{
+                                        pathname: '/login',
+                                        state: {
+                                            showAlert: true,
+                                            warningText: "You must login to continue!",
+                                            from: props.location.pathname,
+                                            ...props.location.state
+                                        }
+                                    }}/>:null}
+            <div style={{marginTop:"100px"}}>       
+
             <Row>
-                <h1 className="dashboard-title" style={{marginTop: "40px"}}>My Bikes</h1>
-                {(bikes.hasOwnProperty("hasError") && !bikes.hasError) ?
-                    (<BikeEditCards bikes={bikes.data}/>):"LOADING..."
-                }
+                <Col sm={2}></Col>
+                <Col sm={8}>
+                    <Row className="bikeHeader" style={{display:"flex", justifyContent:"center"}}>
+                        <h1>My Bikes</h1>
+                    </Row>
+                    <Row style={{display:"flex", justifyContent:"center"}}>
+                        {(bikes.hasOwnProperty("hasError") && !bikes.hasError) ?
+                            bikes.data.length?
+                            (<BikeEditCards bikes={bikes.data}/>)
+                            :
+                            <div style={{display:"inline"}}>
+                                <span>Have a bike to share?</span>
+                                <Link to='/bikeAdd'><Button variant="danger" style={{marginLeft:"10px",marginRight:"10px"}}>List Here</Button></Link>
+                                <Link to='/dashboard'><Button variant="danger">Return to Dashboard</Button></Link>
+                            </div>
+                            :
+                            <p>{fetchBikeMsg}</p>
+                        }
+                    </Row>
+                </Col>
+                <Col sm={2}></Col>
 
             </Row>
+            </div>
 
         </Container>
 

@@ -27,7 +27,7 @@ const RatingDetails = (props) => {
                 setLoadingMsg("No review yet!");
             }
         })
-        .catch((err) => {console.log(err)});
+        .catch((err) => {console.log(err);setLoadingMsg("Error loading reviews!")});
     };
 
     useEffect(() => {

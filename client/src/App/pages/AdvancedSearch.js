@@ -110,7 +110,7 @@ const AdvancedSearch = (props) => {
                         <Card>
                             <Card.Body>
                                 <Card.Title style={{display:"flex", flexFlow:"column", justifyContent:"center"}}>
-                                    <div style={{width:"100%",fontSize:"40px",textAlign:"center",marginBottom:"10px" }}><strong>Custom Search</strong></div>
+                                    <div style={{width:"100%",fontSize:"40px",textAlign:"center",marginBottom:"10px" }}><strong>Customize Your Search</strong></div>
                                 </Card.Title>
                                 <Form>
                                     <Form.Row>
