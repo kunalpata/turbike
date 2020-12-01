@@ -10,6 +10,7 @@ import Figure from 'react-bootstrap/Figure';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import RatingModal from '../components/RatingDetails';
 
 
 const BikeView = (props) => {
@@ -32,6 +33,8 @@ const BikeView = (props) => {
 	const [endDate, setEndDate] = useState("");
 	const [endTime, setEndTime] = useState("10:00:00");
 	const [location, setLocation] = useState(bike.city+', '+bike.state);
+	const [showRating, setShowRating] = useState(false);
+	const [ratingObj, setRatingObj] = useState({id:0,type:"bike",name:""});
 
 
 	// on page load, queries for bike-features
@@ -67,6 +70,18 @@ const BikeView = (props) => {
 		})
 	}
 
+	// show rating modal
+	const openRating = (e) => {
+		let newRatingObj = {};
+		if(e.target.id == "bikeRating1"){
+			newRatingObj = {id:bike.id,type:"bike",name:bike.bikeName};
+		}else if(e.target.id == "hostRating1"){
+			newRatingObj = {id:bike.host_id,type:"host",name:bike.user_name};
+		}
+		setRatingObj(newRatingObj);
+		setShowRating(true);
+	}
+
 	// calls calcPrice after a date state has changed
 	useEffect(() => {
 		calcPriceTotal();
@@ -89,6 +104,13 @@ const BikeView = (props) => {
 
     return(
     	<Container className="bike-view-body">
+			<RatingModal 
+				show={showRating}
+				close={()=>{setShowRating(false)}}
+				id={ratingObj.id}
+				type={ratingObj.type}
+				name={ratingObj.name}
+			/>
     		<Row>
     	{/* Bike carousel section */}
     			<Col md={{span: 6, offset: 0}}>
@@ -104,10 +126,10 @@ const BikeView = (props) => {
 						<td>
 						<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>
 						</td>
-						<span className="bike-header">{bike.rating ? bike.rating : " -"}</span>   
+						<span className={"bike-header","rating-display"} id="bikeRating1" onClick={openRating}>{bike.rating ? bike.rating : " -"}</span>   
 						<span className={"bike-header", "sub-title"}>{bike.ratingLabel}</span>
 					</div>
-    				
+    				<div>
     				{!bike.images ?
     				// no imgs = no image available image
     					<Figure>
@@ -123,6 +145,7 @@ const BikeView = (props) => {
     				// 2+ imgs goes to carousel
     					<MyCarousel images={bike.images}/>
     				}
+					</div>
     			</Col>
 
 		{/* Reservation form section */}
@@ -178,7 +201,11 @@ const BikeView = (props) => {
     			<Col md={{span: 2, offset: 0}}>
     				<p className="label">Hosted By</p>
     				<h3>{bike.user_name}</h3>
-    				<p>{bike.email}</p>
+    				<div>{bike.email}</div>
+					<span>
+						<img id="star-img2" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>
+						<span className="rating-display" onClick={openRating} id="hostRating1">{bike.rating?bike.rating:" -"}</span>
+					</span>
     			</Col>
     			<Col md={{span: 4, offset: 0}}>
     				<p className="label">Description</p>

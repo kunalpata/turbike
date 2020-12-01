@@ -128,7 +128,7 @@ async function getOtherIDFromUserId(idType, userId){
                 resolve({err:err});
             }else{
                 if(result.length == 0){
-                    resolve({err:"no such user"});
+                    resolve({err:"no such user", supplyId:userId});
                 }else{
                     resolve(result[0].id);
                 }

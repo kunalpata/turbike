@@ -68,7 +68,7 @@ router.get('/contracts/dates', async (req, res) => {
   })  
 });
 
-//get ratings with specific contract info
+//get all the ratings for a specific contract and rated by a user
 router.post('/rating', async (req, res) => {
     pool.query('SELECT * FROM rating WHERE contract_id=? and rated_by_id=?',
                [req.body.contract_id, req.body.user_id],
@@ -96,7 +96,23 @@ router.post('/rating', async (req, res) => {
                })
 })
 
+//get ratings for either bike, host or customer
+router.get('/ratings', async (req, res) => {
+    let targetId = "bike_id";
+    if(req.query.type == "host")
+        targetId = "host_id";
+    else if(req.query.type == "customer")
+        targetId = "customer_id";
 
+    pool.query('SELECT * FROM rating WHERE ' + targetId + '=? ORDER BY id DESC',[req.query.id],
+                (err, result) => {
+                    if(err){
+                        res.send({err:err});
+                    }else{
+                        res.send([...result]);
+                    }
+                })
+})
 
 //helper functions
 

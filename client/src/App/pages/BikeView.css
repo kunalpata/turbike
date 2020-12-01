@@ -48,3 +48,7 @@
 	display: inline;
 	margin-left: 10px;
 }
+
+.rating-display {
+	cursor: pointer;
+}
