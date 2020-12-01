@@ -12,22 +12,36 @@ import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import Rating from '../components/Rating';
 import Modal from 'react-bootstrap/Modal';
+import { Redirect,Link } from 'react-router-dom';
 
 const UserContract = (props) => {
     console.log(props);
-    let userId = props.location.state.userId;
-
+    let userId = props.userInfo.user != undefined? props.userInfo.user.id : 0;
     const [contracts, setContracts] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [curContract, setCurContract] = useState({});
     const [userHostId, setUserHostId] = useState(-1);
     const [userCustomerId, setUserCustomerId] = useState(-1);
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
+
+    const fetchUserAndContract = async() => {
+        await fetch('api/auth/user')
+        .then(res=> res.json())
+        .then((res) => {
+            props.passUser({...res});
+            setIsAuthenticated(res.isAuthenticated);
+            if(res.isAuthenticated){
+                userId = res.user.id;
+                fetchContract();
+            }
+        })
+    }
 
     const fetchContract = async () => {
         await fetch('/api/get/contracts?userId=' + userId)
         .then((res) => {return res.json()})
         .then((res) => {
-            console.log(res);
+            //console.log(res);
             if(res.err == undefined){
                 setUserHostId(res.curUser_host_id);
                 setUserCustomerId(res.curUser_customer_id);
@@ -40,8 +54,8 @@ const UserContract = (props) => {
     }
 
     const openFeedbackModal = (e) => {
-        console.log(e.target.name, e.target.id);
-        console.log(contracts[e.target.id])
+        //console.log(e.target.name, e.target.id);
+        //console.log(contracts[e.target.id])
         let thisContract = contracts[e.target.id];
         //build current contract obj
         let curContractObj = {contract_id:thisContract.id,user_id:userId};
@@ -58,17 +72,29 @@ const UserContract = (props) => {
     }
 
     useEffect(()=>{
-        fetchContract();
+        fetchUserAndContract();
     },[]);
 
     return (
         <Container-fluid className="usercontract">
+            {!isAuthenticated?<Redirect
+                                    to={{
+                                        pathname: '/login',
+                                        state: {
+                                            showAlert: true,
+                                            warningText: "You must login to continue!",
+                                            from: props.location.pathname,
+                                            ...props.location.state
+                                        }
+                                    }}/>:null
+            }
             <div style={{marginTop:"100px"}}>
                 <Row>
                 <Col xs={2}></Col>
                 <Col xs={8}>
                     <Row className="contractHeader" style={{display:"flex", justifyContent:"center"}}><h1>Your Contracts</h1></Row>
                     <Row style={{display:"flex", justifyContent:"center",marginTop:"20px"}}>
+                        {contracts.length ?
                         <Table striped bordered hover responsive="md">
                             <thead>
                                 <tr>
@@ -82,7 +108,7 @@ const UserContract = (props) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {contracts.length > 0 ? contracts.map((contract, index)=>(
+                                {contracts.map((contract, index)=>(
                                     <tr>
                                         <td>{index+1}</td>
                                         <td>{contract.customer_user_name}</td>
@@ -92,9 +118,15 @@ const UserContract = (props) => {
                                         <td>{contract.end_datetime}</td>
                                         <td><Button size="sm" variant="danger" name="leaveFeedback" key={index} id={index} onClick={openFeedbackModal}>Leave Feedback</Button></td>
                                     </tr>
-                                )):null}
+                                ))}
                             </tbody>
                         </Table>
+                        :<div style={{display:"inline"}}>
+                            <span>Haven't Tried Your First Ride? </span> 
+                            <Link to='/advancedSearch'><Button variant="danger" style={{marginLeft:"10px",marginRight:"10px"}}>Book Your First Ride</Button></Link>
+                            <Link to='/dashboard'><Button variant="danger">Return to Dashboard</Button></Link>
+                        </div>
+                        }
                     </Row>
                 </Col>
                 <Col xs={2}></Col>
@@ -113,19 +145,6 @@ const UserContract = (props) => {
 
 
 function FeedbackModal(props) {
-  
-    const [contract, setContract] = useState({});
-
-    const updateContract = () => {
-        let newContract = {
-            ...props.contract
-        }
-        setContract(newContract);
-    }
-
-    useEffect(()=>{
-        //updateContract();
-    },[props.contract]);
 
     return (
       <> 
