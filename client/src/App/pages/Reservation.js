@@ -524,7 +524,7 @@ const Confirmation = (props) => {
 	const handleBackToSearch = (event) => {
 		event.preventDefault();
 		push({
-      		pathname: './',
+      		pathname: './advancedSearch',
     	})
 	}
 
