@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const searchHelpers = require('../helpers/searchBikesHelpers.js');
 const pool = require('../dbcon').pool;
 
 //add dotenv functionality
@@ -36,7 +37,8 @@ router.post('/submittedBikes', (req, res) => {
         ' FROM bike b inner join user u on b.user_id = u.id ' +
         'inner join location l on b.location_id = l.id;'
 
-    pool.query(query, (err, result)=>{
+
+    pool.query(query, async (err, result)=>{
         if(err){
             res.send({data:[],err:err,hasError:1});
 
@@ -46,6 +48,9 @@ router.post('/submittedBikes', (req, res) => {
                 let item = {
                     ...result[i],
                 }
+
+                item.images = await searchHelpers.getBikeImages(item.id, pool);
+
                 items.push(item);
             }
             // console.log(items.length);
