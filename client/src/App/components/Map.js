@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Map, GoogleApiWrapper, InfoWindow, Marker } from 'google-maps-react';
+import Card from 'react-bootstrap/Card';
 import '../pages/Listings.css';
 
 export class MapContainer extends Component {
@@ -51,7 +52,10 @@ export class MapContainer extends Component {
 							lat: bike.latitude,
 							lng: bike.longitude
 						}}
-						name={bike.brand}
+						brand={bike.brand}
+						name={bike.bikeName}
+						price={bike.price}
+						img={bike.images ? bike.images[0].url : null}
 					/>
 				))}
 				<InfoWindow
@@ -60,7 +64,20 @@ export class MapContainer extends Component {
 					onClose={this.onClose}
 				>
 					<div>
-						<p>{this.state.selectedPlace.name}</p>
+						<Card style={{width: '10rem'}}>
+							{this.state.selectedPlace.img ?
+								<Card.Img variant="top" src={this.state.selectedPlace.img} />
+							:
+								null
+							}
+							<Card.Body>
+								<Card.Title>{this.state.selectedPlace.name}</Card.Title>
+								<Card.Text>
+									{this.state.selectedPlace.brand} 
+									<span className="float-right">${this.state.selectedPlace.price}/Day</span>
+								</Card.Text>
+							</Card.Body>
+						</Card>
 					</div>
 				</InfoWindow>
 			</Map>

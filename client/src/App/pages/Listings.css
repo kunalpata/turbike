@@ -31,6 +31,10 @@
 	width: 100%;
 }
 
+.info-window {
+	background: red;
+}
+
 .card {
 	margin: 25px 0 25px 0;
 	color: black;
