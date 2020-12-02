@@ -146,7 +146,7 @@ const UserContract = (props) => {
                                         <td>{formatDate(contract.start_datetime)}</td>
                                         <td>{contract.end_datetime ? formatDate(contract.end_datetime) : "          "}</td>
                                         <td>{contract.status}</td>
-                                        {contract.end_datetime ?
+                                        {contract.end_datetime || contract.host_id == userHostId ?
                                             <td><Button size="sm" variant="danger" name="confirmEndContract" key={index} id={index} disabled={true}>End Contract</Button></td>
                                         :
                                             <td><Button size="sm" variant="danger" name="confirmEndContract" key={index} id={index} onClick={confirmEndContract}>End Contract</Button></td>
