@@ -73,8 +73,8 @@ export class MapContainer extends Component {
 							<Card.Body>
 								<Card.Title>{this.state.selectedPlace.name}</Card.Title>
 								<Card.Text>
-									{this.state.selectedPlace.brand} 
-									<span className="float-right">${this.state.selectedPlace.price}/Day</span>
+									<div>{this.state.selectedPlace.brand}</div>
+									<div>${this.state.selectedPlace.price}/Day</div>
 								</Card.Text>
 							</Card.Body>
 						</Card>
