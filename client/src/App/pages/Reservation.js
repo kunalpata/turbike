@@ -206,6 +206,7 @@ const Reservation = (props) => {
 
 		// Block host from reserving own bike
 		if (contractInfo.host_id === contractInfo.customer_id) {
+			console.log("here");
 			setInvalidBook(true);
 		} else {
 			// Post to db
@@ -373,6 +374,7 @@ const Calendar = (props) => {
 				onChange={onChange}
 				startDate={startDate}
 				endDate={endDate}
+				minDate={new Date()}
 				selectsRange
 				inline
 				excludeDates={props.dates}
@@ -522,7 +524,7 @@ const Confirmation = (props) => {
 	const handleBackToSearch = (event) => {
 		event.preventDefault();
 		push({
-      		pathname: './',
+      		pathname: './advancedSearch',
     	})
 	}
 
