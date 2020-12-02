@@ -141,17 +141,17 @@ function setRatingLabel(bikes) {
     let rating = bike.rating;
     
     if (rating === 0) {
-      bike.ratingLabel = "not yet rated";
+      bike.ratingLabel = " not yet rated";
     } else if (rating > 0 && rating < 1) {
-      bike.ratingLabel = "Bad";
+      bike.ratingLabel = ' "Bad"';
     } else if (rating >= 1 && rating < 2) {
-      bike.ratingLabel = "Fair";
+      bike.ratingLabel = ' "Fair"';
     } else if (rating >= 2 && rating < 3) {
-      bike.ratingLabel = "Good";
+      bike.ratingLabel = ' "Good"';
     } else if (rating >= 3 && rating < 4) {
-      bike.ratingLabel = "Very Good";
+      bike.ratingLabel = ' "Very Good"';
     } else if (rating >= 4 && rating <= 5) {
-      bike.ratingLabel = "Excellent";
+      bike.ratingLabel = ' "Excellent"';
     } else {
       bike.ratingLabel = "not yet rated";
     }
