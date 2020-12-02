@@ -83,8 +83,9 @@ router.get('/bikes' , (req, res) => {
                     ...result[i],
                 }
 
-                // add rating and images to bike obj
-                item.rating = await searchHelpers.calcBikeAvgRating(item.id, pool);
+                // add ratings and images to bike obj
+                item.rating = await searchHelpers.calcAvgRating(item.id, "bike", pool);
+                item.hostRating = await searchHelpers.calcAvgRating(item.host_id, "host", pool);
                 item.images = await searchHelpers.getBikeImages(item.id, pool);
 
                 items.push(item);
