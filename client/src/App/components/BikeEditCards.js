@@ -3,7 +3,6 @@
 import React from "react";
 import { Link } from 'react-router-dom';
 import Card from "react-bootstrap/Card";
-import Figure from "react-bootstrap/Figure";
 import "../pages/Listings.css";
 
 
@@ -14,15 +13,8 @@ const BikeEditCards = ({bikes}) => {
                 <div key={i} style={{ textDecoration: 'none' }}>
                     <Card className="card">
 
-                        {/*<Card.Img variant="top" src={require("../images/road_bike.jpg")} />*/}
-                        {bike.images ?
-                            <Card.Img variant="top" src={bike.images[0].url} />
-                        :
-                            <Figure>
-                                <Figure.Image alt="no image available" width="100%" src={require("../images/cancel_bike_200.png")} />
-                                <Figure.Caption className="text-center">no image available</Figure.Caption>
-                            </Figure>
-                        }
+                        {/* TODO: Get images from bike-image table */}
+                        <Card.Img variant="top" src={require("../images/road_bike.jpg")} />
                         <Card.Body>
 
                             <Card.Title id="card-title" className="card-info">{bike.brand}</Card.Title>
@@ -37,7 +29,7 @@ const BikeEditCards = ({bikes}) => {
                                 {/*/!* TODO: Add rating as bike.rating_score - need bikes to start with default rating *!/*/}
                                 {/*<span>4.5</span>*/}
                                 <span id="category" className="card-info">{bike.bikeName}</span>
-								<span className="float-right">${bike.price}/day</span>
+								<span className="float-right">${bike.price}/hour</span>
                                 <br/>
                                 <Link to={{
                                     pathname: "./editBike",
