@@ -28,7 +28,7 @@ router.get('/location', (req, res) => {
                     ' inner join location l on b.location_id = l.id ' +
                     ' inner join bike_category bc on b.id = bc.bike_id ' +
                     ' inner join category c on bc.category_id = c.id' +
-                    ' inner join host h on h.user_id = u.id'
+                    ' inner join host h on h.user_id = u.id' +
                     //' ORDER BY distance LIMIT 0, 10' +
                     ' HAVING distance < 50 ORDER BY distance LIMIT 0, 10;'
 
@@ -60,6 +60,41 @@ router.get('/location', (req, res) => {
 });
 
 
+// get bikes by user id
+router.get('/bikes' , (req, res) => {
+    let query = 'SELECT b.id, b.price, b.bike_details, b.bikeName, b.brand, b.penalty, b.user_id,'+
+                'u.user_name,u.email,h.id as host_id,' +
+                'l.address,l.city,l.state,l.zip,l.latitude,l.longitude,' +
+                'c.name'+
+                ' FROM bike b inner join user u on b.user_id = u.id' +
+                ' inner join location l on b.location_id = l.id '+
+                ' inner join bike_category bc on b.id = bc.bike_id ' +
+                ' inner join category c on bc.category_id = c.id' +
+                ' inner join host h on h.user_id = u.id' + 
+                ' WHERE u.id = ?';
+    pool.query(query,[req.query.userId], async(err, result) => {
+        if(err){
+            res.send({data:[],err:err,hasError:1});
+        }else{
+            let items = [];
+            for(let i = 0; i < result.length; i++){
+                let item = {
+                    ...result[i],
+                }
+
+                // add rating and images to bike obj
+                item.rating = await searchHelpers.calcBikeAvgRating(item.id, pool);
+                item.images = await searchHelpers.getBikeImages(item.id, pool);
+
+                items.push(item);
+            }
+
+            res.send(JSON.stringify({data:items,err:"",hasError:0}));
+        }
+    })
+});
+
+
 // get bikes by category
 router.get('/category', (req, res) => {
     const category = req.query.cat;
@@ -77,7 +112,7 @@ router.get('/category', (req, res) => {
                 ' inner join location l on b.location_id = l.id' +
                 ' inner join bike_category bc on b.id = bc.bike_id' +
                 ' inner join category c on bc.category_id = c.id' +
-                ' inner join host h on h.user_id = u.id'
+                ' inner join host h on h.user_id = u.id' +
                 ' WHERE c.name = ?' +
                 //' ORDER BY distance LIMIT 0, 10;'
                 ' HAVING distance < 50 ORDER BY distance LIMIT 0, 10;'

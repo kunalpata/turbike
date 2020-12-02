@@ -29,20 +29,17 @@ const UserBikeList = (props) => {
             .catch((err)=>{console.log(err)});
 
         const currentUser = await data.json()
-            .then((currentUser)=>{
+            .then(async(currentUser)=>{
                 if (currentUser.isAuthenticated) {
                     // console.log("IN IF");
                     // console.log(currentUser.user.last_name);
                     setFetchBikeMsg("Loading...");
                     setIsAuthenticated(true);
-                    fetch('/api/getBikes/submittedBikes', {
-                        method: 'POST',
-                        headers: { 'Content-Type' : 'application/json'},
-                        body: JSON.stringify({...currentUser})
-                    })
+                    await fetch('/api/search/bikes?userId=' + currentUser.user.id)
                     .then((res) => {return res.json()})
-                    .then(async (res) => {
+                    .then((res) => {
                         // console.log("REQ")
+                        console.log(res)
                         if (!res.hasError) {
                             // console.log(res)
                             setBikes(res);
