@@ -4,17 +4,27 @@ import React from "react";
 import { Link } from 'react-router-dom';
 import Card from "react-bootstrap/Card";
 import "../pages/Listings.css";
+import Figure from "react-bootstrap/esm/Figure";
 
 
 const BikeEditCards = ({bikes}) => {
     return(
         <div>
             {bikes.map( (bike, i) => (
-                <div key={i} style={{ textDecoration: 'none' }}>
+                <Link key={i} to={{
+                    pathname: "./bikeView",
+                    state: {bike:bike}
+                }} style={{ textDecoration: 'none' }}>
                     <Card className="card">
-
-                        {/* TODO: Get images from bike-image table */}
-                        <Card.Img variant="top" src={require("../images/road_bike.jpg")} />
+                        {bike.images ? 
+                            <Card.Img variant="top" style={{objectFit:"contain",height:"350px"}} src={bike.images[0].url} />
+                        :
+                            <Figure>
+                                <Figure.Image alt="no image available" style={{display:"block", marginLeft:"auto", marginRight:"auto", objectFit:"contain",maxHeight:"800px", maxWidth:"600px"}} src={require("../images/cancel_bike_200.png")} />
+                                <Figure.Caption className="text-center">no image available</Figure.Caption>
+                            </Figure>
+                        }
+                        
                         <Card.Body>
 
                             <Card.Title id="card-title" className="card-info">{bike.brand}</Card.Title>
@@ -39,7 +49,7 @@ const BikeEditCards = ({bikes}) => {
                             </Card.Text>
                         </Card.Body>
                     </Card>
-                </div>
+                </Link>
             ))}
         </div>
 
