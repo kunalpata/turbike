@@ -99,8 +99,8 @@ router.post('/contract', authHelpers.checkAuthenticated, async (req, res) => {
 
     // build query to create contract
     let query = 'INSERT INTO contract ' +
-                '(host_id, customer_id, bike_id, start_datetime, expiration_datetime, status) ' +
-                'VALUES (?,?,?,?,?,"pending");'
+                '(host_id, customer_id, bike_id, start_datetime, expiration_datetime, status, end_datetime) ' +
+                'VALUES (?,?,?,?,?,"pending", null);'
 
     pool.query(query, 
         [conInfo.host_id, conInfo.customer_id, conInfo.bike_id, conInfo.start_datetime, conInfo.expiration_datetime], 
