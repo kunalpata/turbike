@@ -126,8 +126,8 @@ const BikeView = (props) => {
 						<td>
 						<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>
 						</td>
-						<span className={"bike-header","rating-display"} id="bikeRating1" onClick={openRating}>{bike.rating ? bike.rating : " -"}</span>   
-						<span className={"bike-header", "sub-title"}>{bike.ratingLabel}</span>
+						<span className={"bike-header","rating-display"} id="bikeRating1" onClick={openRating}>{bike.rating ? ' ' + bike.rating.toFixed(1) : " -"}</span>   
+						<span className={"bike-header", "sub-title"}><em>{bike.ratingLabel}</em></span>
 					</div>
     				<div>
     				{!bike.images ?
@@ -204,7 +204,7 @@ const BikeView = (props) => {
     				<div>{bike.email}</div>
 					<span>
 						<img id="star-img2" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>
-						<span className="rating-display" onClick={openRating} id="hostRating1">{bike.rating?bike.rating:" -"}</span>
+						<span className="rating-display" onClick={openRating} id="hostRating1">{bike.hostRating ? ' ' + bike.hostRating.toFixed(1) : " -"}</span>
 					</span>
     			</Col>
     			<Col md={{span: 4, offset: 0}}>

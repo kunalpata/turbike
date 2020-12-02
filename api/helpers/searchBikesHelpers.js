@@ -30,14 +30,27 @@ let methods = {
 	** Takes in a bike id, gets all the ratings for the bike and calculates
 	** the average rating. Returns 0 if no ratings, otherwise returns the avg.
 	*/
-	calcBikeAvgRating: function(bike_id, mysql){
+	//calcBikeAvgRating: function(bike_id, mysql){
+	calcAvgRating: function(id, type, mysql){
 	    let promise = new Promise( (resolve, reject) => {
-	        // get ratings for this bike
-	        let query = 'SELECT rating_score' +
-	                    ' FROM rating' +
-	                    ' WHERE bike_id = ?;'
 
-	        mysql.query(query, [bike_id], (err, result) => {
+	    	let query = "";
+	    	if (type === "bike"){
+		    	// build query for bike
+		        query = 'SELECT rating_score' +
+		                    ' FROM rating' +
+		                    ' WHERE bike_id = ?;'
+
+	    	} else if (type === "host") {
+	    		// build query for host
+	    		query = 'SELECT rating_score' +
+		                    ' FROM rating' +
+		                    ' WHERE host_id = ?;'
+	    	}
+	        
+
+	        //mysql.query(query, [bike_id], (err, result) => {
+	        mysql.query(query, [id], (err, result) => {
 	            if(err) {
 	                console.log(err);
 	                resolve(0);
@@ -49,7 +62,7 @@ let methods = {
 	                if (num_ratings === 0) resolve(0);
 
 	                for (let i = 0; i < num_ratings; i++){
-	                    sum += result[i];
+	                    sum += result[i].rating_score;
 	                }
 	                
 	                return resolve(sum/num_ratings);
