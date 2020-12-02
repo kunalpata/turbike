@@ -143,8 +143,8 @@ const UserContract = (props) => {
                                         <td>{contract.customer_user_name}</td>
                                         <td>{contract.host_user_name}</td>
                                         <td>{contract.bikeName}</td>
-                                        <td>{contract.start_datetime}</td>
-                                        <td>{contract.end_datetime}</td>
+                                        <td>{formatDate(contract.start_datetime)}</td>
+                                        <td>{contract.end_datetime ? formatDate(contract.end_datetime) : "          "}</td>
                                         <td>{contract.status}</td>
                                         {contract.end_datetime ?
                                             <td><Button size="sm" variant="danger" name="confirmEndContract" key={index} id={index} disabled={true}>End Contract</Button></td>
@@ -184,6 +184,25 @@ const UserContract = (props) => {
     );
 }
 
+/* Takes in a date and formats it to get out yyyy-mm-dd */
+const formatDate = (date) => {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    let d = new Date(date),
+        month = '' + (d.getMonth()),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month == '0')
+        month = 0;
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return months[month] + ' ' + day + ', ' + year;
+    //return [year, month, day].join('-');
+}
 
 function FeedbackModal(props) {
 
