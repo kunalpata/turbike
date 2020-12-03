@@ -101,7 +101,13 @@ const Reservation = (props) => {
 
 		resetNumDays(start, end);
 		setBadDates(false);
+
+		//checkForConflicts(dates);
 	}
+
+	useEffect(()=>{
+		checkForConflicts(contractDates);
+	}, [startDT, endDT]);
 
 	/* Called if user selects new dates. It calcs the number of days in the new range
 	and rests numDays */
@@ -155,6 +161,7 @@ const Reservation = (props) => {
 	Loops over the contract dates and if there is a conflict with the selected dates, it
 	sets badDates to render the date picker. */
 	const checkForConflicts = (dates) => {
+		console.log(dates);
 		dates.forEach( (dateRange) => {
 			if (isDateConflict(dateRange.start_datetime, dateRange.expiration_datetime)) {
 				setBadDates(true);
@@ -170,7 +177,7 @@ const Reservation = (props) => {
 		contractEnd = new Date(contractEnd).getTime();
 		let desiredStart = new Date(startDT + 'T' + formInfo.startTime).getTime();
 		let desiredEnd = new Date(endDT + 'T' + formInfo.endTime).getTime();
-		
+
 		// See if desired start is within contracted range
 		if (desiredStart >= contractStart && desiredStart <= contractEnd) {
 			return true;
@@ -190,7 +197,7 @@ const Reservation = (props) => {
 		if (contractEnd >= desiredStart && contractEnd <= desiredEnd) {
 			return true;
 		}
-		
+
 		return false;
 	}
 
