@@ -61,7 +61,7 @@ const MyNavbar = (props) => {
 	return (
 	  <Navbar id="mobile-background" expand="md" fixed="top" style={{backgroundColor: scrollState === "top" ? null : '#F3F3F3'}} >
         <Navbar.Brand as={Link} to="./">
-          <img alt="turbike logo" src={require("../images/logo_black_200.png")} height="100" width="100"/>
+          <img id="logo" alt="turbike logo" src={require("../images/logo_black_200.png")} height="100" width="100"/>
         </Navbar.Brand>
         
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
