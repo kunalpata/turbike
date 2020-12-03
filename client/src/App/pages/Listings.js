@@ -25,6 +25,7 @@ const Listings = (props) => {
   const encodedCategory = encodeURIComponent(props.location.state.category);
   const encodedLatitude = encodeURIComponent(props.location.state.latitude);
   const encodedLongitude = encodeURIComponent(props.location.state.longitude);
+  const encodedCatSearch = encodeURIComponent(props.location.state.catSearch);
   const { push } = useHistory();
 
   /*
@@ -34,12 +35,18 @@ const Listings = (props) => {
   */
   const getBikes = async () => {
     // Build the url depending on if user is searching or browsing
+
     let url = "";
     if (encodedSearch !== ""){
       url = '/api/search/location?loc=' + encodedSearch;
     } else if (encodedCategory !== ""){
-      url = '/api/search/category?cat=' + encodedCategory +
+      if (encodedLatitude === "null" || encodedLongitude === "null") {
+        url = '/api/search/searchCategory?cat=' + encodedCategory +
+            '&loc=' + encodedCatSearch;
+      } else {
+        url = '/api/search/category?cat=' + encodedCategory +
             '&lat=' + encodedLatitude + '&lng=' + encodedLongitude;
+      }
     }
     
     // Get and set the bike data

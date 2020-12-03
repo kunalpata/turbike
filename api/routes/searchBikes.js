@@ -143,6 +143,56 @@ router.get('/category', (req, res) => {
 });
 
 
+// get bikes by category and search
+router.get('/searchCategory', (req, res) => {
+    const category = req.query.cat;
+    
+    searchHelpers.getCoords(req.query.loc).then(location => {
+        // get the searchs lat/lng from the location return
+        const lat = location.lat;
+        const lng = location.lng;
+
+        // get bikes in this category that are the closest to users current location
+        let query = 'SELECT b.id,b.price,b.bike_details,b.bikeName,b.brand,b.penalty,b.user_id,' +
+                        'u.user_name,u.email,h.id as host_id,' +
+                        'l.address,l.city,l.state,l.zip,l.latitude,l.longitude,' +
+                        'c.name' +
+                        ', ( 3959 * acos( cos( radians(l.latitude) ) * cos( radians(?) ) * cos( radians(?) - radians(l.longitude) ) + sin( radians(l.latitude) ) * sin( radians(?) ) ) )' +
+                        ' AS distance' +
+                    ' FROM bike b inner join user u on b.user_id = u.id' + 
+                    ' inner join location l on b.location_id = l.id' +
+                    ' inner join bike_category bc on b.id = bc.bike_id' +
+                    ' inner join category c on bc.category_id = c.id' +
+                    ' inner join host h on h.user_id = u.id' +
+                    ' WHERE c.name = ?' +
+                    //' ORDER BY distance LIMIT 0, 10;'
+                    ' HAVING distance < 50 ORDER BY distance LIMIT 0, 10;'
+
+        pool.query(query, [lat, lng, lat, category], async (err, result)=>{
+            if(err){
+                console.log(err);
+                res.send({data:[],err:err,hasError:1});
+                
+            }else{
+                let items = [];
+                for (let i = 0; i < result.length; i++){
+                    let item = {
+                        ...result[i],
+                    }
+
+                    item.rating = await searchHelpers.calcAvgRating(item.id, "bike", pool);
+                    item.hostRating = await searchHelpers.calcAvgRating(item.host_id, "host", pool);
+                    item.images = await searchHelpers.getBikeImages(item.id, pool);
+                    items.push(item);
+                }
+                //console.log(items)
+                res.send(JSON.stringify({data:items,err:"",hasError:0}));
+            }
+        });
+    });
+});
+
+
 // get bike features
 router.get('/features', (req, res) => {
     const bike_id = req.query.id;
