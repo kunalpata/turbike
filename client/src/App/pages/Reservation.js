@@ -303,8 +303,8 @@ const Reservation = (props) => {
 							<td>
 								<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>
 							</td>
-							<span>{bike.rating ? bike.rating : " -"}</span>   
-							<span className="sub-title">{bike.ratingLabel}</span>
+							<span>{bike.rating ? ' ' + bike.rating.toFixed(1) : " -"}</span>   
+							<span className="sub-title"><em>{bike.ratingLabel}</em></span>
 						</div>	
 						<div className="billing-dates">
 							<LineItem label="Start Trip" amount={startDate.month +' '+ startDate.day} />
@@ -327,7 +327,6 @@ const Reservation = (props) => {
     	</Container>
     );
 };
-
 
 
 /*----------------------- Helper Components --------------------------------*/
@@ -353,7 +352,8 @@ const Calendar = (props) => {
   	const checkDateRange = (dateRange) => {
   		for(let i = 0; i < dateRange.length; i++){
   			for(let j = 0; j < props.dates.length; j ++){
-  				if (dateRange[i].toString() === props.dates[j].toString()){
+  				//if (dateRange[i].toString() === props.dates[j].toString()){
+  				if (dateRange[i].getTime() === props.dates[j].getTime()) {
   					setGoodRange(false);
   					return;
   				}
