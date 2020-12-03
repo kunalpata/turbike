@@ -258,8 +258,8 @@ function ConfirmModal(props) {
                 <Modal.Body>
                     <p><strong>Bike:</strong> <span className="border">{props.contract.bikeName}</span></p>
                     <p><strong>Host:</strong> <span className="border">{props.contract.host_user_name}</span></p>
-                    <p><strong>From:</strong> <span className="border">{props.contract.start_datetime}</span></p>
-                    <p><strong>To:</strong> <span className="border">{props.contract.expiration_datetime}</span></p>
+                    <p><strong>From:</strong> <span className="border">{formatDate(props.contract.start_datetime)}</span></p>
+                    <p><strong>  To:</strong> <span className="border">{formatDate(props.contract.expiration_datetime)}</span></p>
                     <p>Are you sure you want to end this contract?</p>
                 </Modal.Body>
                 <Modal.Footer>
