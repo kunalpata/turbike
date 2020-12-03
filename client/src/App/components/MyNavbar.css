@@ -2,4 +2,9 @@
 	#mobile-background {
 		background-color: #F3F3F3;
 	}
+
+	#logo {
+		height: 50px;
+		width: 50px;
+	}
 }
