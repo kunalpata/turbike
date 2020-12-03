@@ -34,6 +34,8 @@ const MyNavbar = (props) => {
     }
   },[props.userInfo]);
 
+  // Add background color to navbar if not at top
+  // Source: https://stackoverflow.com/questions/59510990/
   let listener = null;
   const [scrollState, setScrollState] = useState("top");
 
@@ -55,11 +57,6 @@ const MyNavbar = (props) => {
       document.removeEventListener("scroll", listener);
     }
   }, [scrollState]);
-
-  const handleDropDown = () => {
-    alert("hi");
-  }
-
 
 	return (
 	  <Navbar id="mobile-background" expand="md" fixed="top" style={{backgroundColor: scrollState === "top" ? null : '#F3F3F3'}} >
