@@ -107,7 +107,7 @@ const Reservation = (props) => {
 
 	useEffect(()=>{
 		checkForConflicts(contractDates);
-	}, [startDT, endDT]);
+	}, [startDT, endDT, badDates]);
 
 	/* Called if user selects new dates. It calcs the number of days in the new range
 	and rests numDays */
@@ -372,8 +372,7 @@ const Calendar = (props) => {
   	const checkDateRange = (dateRange) => {
   		for(let i = 0; i < dateRange.length; i++){
   			for(let j = 0; j < props.dates.length; j ++){
-  				//if (dateRange[i].toString() === props.dates[j].toString()){
-  				if (dateRange[i].getTime() === props.dates[j].getTime()) {
+  				if (dateRange[i].toString() === props.dates[j].toString()){
   					setGoodRange(false);
   					return;
   				}
@@ -385,8 +384,8 @@ const Calendar = (props) => {
 	return(
 		<div>
 		<Container className="calendar-page">
-			<h3>The dates you have selected are not available for this bike.</h3>
-			<p>Please review the calendar below to select a different range.</p>
+			<h3>Some or all of the dates you have selected are not available for this bike.</h3>
+			<p>Please review the calendar below to select a range without blacked out dates.</p>
 			<p><strong>Start:</strong> {displayStart ? displayStart.toDateString() : ""}</p>
 			<p><strong>End:</strong> {displayEnd ? displayEnd.toDateString() : ""}</p>
 			<DatePicker
