@@ -107,7 +107,7 @@ const Reservation = (props) => {
 
 	useEffect(()=>{
 		checkForConflicts(contractDates);
-	}, [startDT, endDT]);
+	}, [startDT, endDT, badDates]);
 
 	/* Called if user selects new dates. It calcs the number of days in the new range
 	and rests numDays */
@@ -372,8 +372,7 @@ const Calendar = (props) => {
   	const checkDateRange = (dateRange) => {
   		for(let i = 0; i < dateRange.length; i++){
   			for(let j = 0; j < props.dates.length; j ++){
-  				//if (dateRange[i].toString() === props.dates[j].toString()){
-  				if (dateRange[i].getTime() === props.dates[j].getTime()) {
+  				if (dateRange[i].toString() === props.dates[j].toString()){
   					setGoodRange(false);
   					return;
   				}
