@@ -269,7 +269,7 @@ const Reservation = (props) => {
     		<Row>
     		{/* Contract area */}
     			<Col md={{span: 7, offset: 0}}>
-    				<Container>
+    				<Container style={{paddingBottom: 20}}>
     					<div className="float-right">Step {stepNum} of 3</div>
 	    				<div className="main-title">Book your ride with {bike.bikeName}</div>
 	    				<div>	
@@ -314,7 +314,7 @@ const Reservation = (props) => {
 
     		{/* Billing area */}
     			<Col md={{span: 5, offset: 0}}>
-    				<Container>
+    				<Container style={{paddingBottom: 20}}>
     				<div className="billing-area">
 						<div className="billing-heading">{bike.brand} - {bike.name} Bike</div>
 						<div>{formInfo.location}</div>
