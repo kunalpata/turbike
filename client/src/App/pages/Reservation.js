@@ -384,8 +384,8 @@ const Calendar = (props) => {
 	return(
 		<div>
 		<Container className="calendar-page">
-			<h3>The dates you have selected are not available for this bike.</h3>
-			<p>Please review the calendar below to select a different range.</p>
+			<h3>Some or all of the dates you have selected are not available for this bike.</h3>
+			<p>Please review the calendar below to select a range without blacked out dates.</p>
 			<p><strong>Start:</strong> {displayStart ? displayStart.toDateString() : ""}</p>
 			<p><strong>End:</strong> {displayEnd ? displayEnd.toDateString() : ""}</p>
 			<DatePicker
