@@ -57,9 +57,10 @@ router.get('/contracts', async (req, res) => {
 router.get('/contracts/dates', async (req, res) => {
   let query = 'SELECT start_datetime, expiration_datetime ' +
               'FROM contract ' +
-              'WHERE bike_id=?;'
+              'WHERE bike_id=? ' +
+              'AND status=?'
 
-  pool.query(query, [req.query.bikeId], (err, result) => {
+  pool.query(query, [req.query.bikeId, "pending"], (err, result) => {
     if (err) {
       res.send({err:err});
     } else {

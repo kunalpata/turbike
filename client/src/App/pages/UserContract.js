@@ -24,6 +24,9 @@ const UserContract = (props) => {
     const [userCustomerId, setUserCustomerId] = useState(-1);
     const [isAuthenticated, setIsAuthenticated] = useState(true);
 
+    const [endingContract, setEndingContract] = useState({});
+    const [confirm, setConfirm] = useState(false);
+
     const fetchUserAndContract = async() => {
         await fetch('api/auth/user')
         .then(res=> res.json())
@@ -71,6 +74,30 @@ const UserContract = (props) => {
         setShowModal(true);
     }
 
+    // set the contract to end and trigger are you sure modal
+    const confirmEndContract = (e) => {
+        let thisContract = contracts[e.target.id];
+
+        setEndingContract(thisContract);
+        setConfirm(true);
+    }
+
+    // triggered if user is sure - updates ending of contract in db
+    const endContract = async () => {
+        await fetch('/api/update/contract', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(endingContract)
+        })
+        .then( (res) => { return res.json() })
+        .then( (res) => {
+            if(res.err == undefined) {
+                fetchContract();
+            }
+        })
+        .catch( (err) => {console.log(err) });
+    }
+
     useEffect(()=>{
         fetchUserAndContract();
     },[]);
@@ -104,6 +131,8 @@ const UserContract = (props) => {
                                     <th>Bike Name</th>
                                     <th>Start Date</th>
                                     <th>End Date</th>
+                                    <th>Status</th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -114,9 +143,15 @@ const UserContract = (props) => {
                                         <td>{contract.customer_user_name}</td>
                                         <td>{contract.host_user_name}</td>
                                         <td>{contract.bikeName}</td>
-                                        <td>{contract.start_datetime}</td>
-                                        <td>{contract.end_datetime}</td>
-                                        <td><Button size="sm" variant="danger" name="leaveFeedback" key={index} id={index} onClick={openFeedbackModal}>Leave Feedback</Button></td>
+                                        <td>{formatDate(contract.start_datetime)}</td>
+                                        <td>{contract.end_datetime ? formatDate(contract.end_datetime) : "          "}</td>
+                                        <td>{contract.status}</td>
+                                        {contract.end_datetime || contract.host_id == userHostId ?
+                                            <td><Button size="sm" variant="danger" name="confirmEndContract" key={index} id={index} disabled={true}>End Contract</Button></td>
+                                        :
+                                            <td><Button size="sm" variant="danger" name="confirmEndContract" key={index} id={index} onClick={confirmEndContract}>End Contract</Button></td>
+                                        }
+                                        <td><Button size="sm" variant="info" name="leaveFeedback" key={index} id={index} onClick={openFeedbackModal}>Leave Feedback</Button></td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -139,10 +174,35 @@ const UserContract = (props) => {
                 contract={curContract} 
                 close={()=>{setShowModal(false)}}
             />
+            <ConfirmModal
+                contract={endingContract}
+                show={confirm}
+                close={()=>{setConfirm(false)}}
+                endContract={endContract}
+            />
         </Container-fluid>
     );
 }
 
+/* Takes in a date and formats it to get out yyyy-mm-dd */
+const formatDate = (date) => {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    let d = new Date(date),
+        month = '' + (d.getMonth()),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month == '0')
+        month = 0;
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return months[month] + ' ' + day + ', ' + year;
+    //return [year, month, day].join('-');
+}
 
 function FeedbackModal(props) {
 
@@ -176,5 +236,39 @@ function FeedbackModal(props) {
       </>
     );
   }
+
+function ConfirmModal(props) {
+    const handleEndContract = () => {
+        props.close();
+        props.endContract();
+    }
+
+    return (
+        <div>
+            <Modal
+                show={props.show}
+                onHide={props.close}
+                backdrop="static"
+                keyboard={false}
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Are You Sure?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p><strong>Bike:</strong> <span className="border">{props.contract.bikeName}</span></p>
+                    <p><strong>Host:</strong> <span className="border">{props.contract.host_user_name}</span></p>
+                    <p><strong>From:</strong> <span className="border">{props.contract.start_datetime}</span></p>
+                    <p><strong>To:</strong> <span className="border">{props.contract.expiration_datetime}</span></p>
+                    <p>Are you sure you want to end this contract?</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={props.close}>Back</Button>
+                    <Button variant="danger" onClick={handleEndContract}>End Contract</Button>
+                </Modal.Footer>
+            </Modal>
+        </div>
+    )
+}
 
 export default UserContract;

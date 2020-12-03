@@ -7,6 +7,55 @@ const fetch = require('node-fetch');
 //add dotenv functionality
 require('dotenv').config();
 
+router.post('/contract', authHelpers.checkAuthenticated, async (req, res) => {
+    let end_datetime = new Date();
+
+    // figure out contract status
+    let end_time = end_datetime.getTime();
+    let start_time = new Date(req.body.start_datetime).getTime();
+    let expiration_time = new Date(req.body.expiration_datetime).getTime();
+
+    let status = "";
+    // check for valid cancelation - before 3 hours prior to start
+    if (end_time < (start_time - 10800000)) {
+        status = "canceled";
+    // check for penalty cancelation
+    } else if (end_time < start_time) {
+        status = "canceled with penalty"
+    // check for valid end
+    } else if (end_time <= expiration_time) {
+        status = "complete";
+    // check for late
+    } else if (end_time > expiration_time) {
+        status = "late with penalty"
+    } else {
+        status = "canceled";
+    }
+
+    let query = 'UPDATE contract ' +
+                'SET id=?,host_id=?,customer_id=?,start_datetime=?,expiration_datetime=?,status=?,bike_id=?,end_datetime=? ' +
+                'WHERE id=?;'
+    pool.query(query, 
+                [
+                    req.body.id,
+                    req.body.host_id,
+                    req.body.customer_id,
+                    req.body.start_datetime,
+                    req.body.expiration_datetime,
+                    status,
+                    req.body.bike_id,
+                    end_datetime,
+                    req.body.id
+                ], (err, result) => {
+                    if (err) {
+                        console.log(err);
+                        res.send({err:err});
+                    } else {
+                        res.send(result);
+                    }
+                });
+})
+
 router.post('/rating', authHelpers.checkAuthenticated, async (req, res) => {
     pool.query('UPDATE rating SET bike_id=?,host_id=?,customer_id=?,rating_score=?,rating_details=?,rated_by_id=?,contract_id=? WHERE id=?',
                [

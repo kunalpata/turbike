@@ -38,8 +38,8 @@ const BikeCards = ({bikes}) => {
 									<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>   
 								</td>
 								
-								<span>{bike.rating ? bike.rating : " -"}</span>
-                						<span id="category" className="card-info">{bike.ratingLabel}</span>
+								<span>{bike.rating ? " " + bike.rating.toFixed(1) : " -"}</span>
+                						<span id="category" className="card-info"><em>{bike.ratingLabel}</em></span>
 								<span className="float-right">${bike.price}/Day</span>
 							</span>
 						</Card.Text>
