@@ -171,13 +171,26 @@ const Reservation = (props) => {
 		let desiredStart = new Date(startDT + 'T' + formInfo.startTime).getTime();
 		let desiredEnd = new Date(endDT + 'T' + formInfo.endTime).getTime();
 		
-		// See if they overlap
+		// See if desired start is within contracted range
 		if (desiredStart >= contractStart && desiredStart <= contractEnd) {
 			return true;
 		}
+
+		// See if desired end is within contracted range
 		if (desiredEnd >= contractStart && desiredEnd <= contractEnd) {
 			return true;
 		}
+
+		// See if contract start is within desired range
+		if (contractStart >= desiredStart && contractStart <= desiredEnd) {
+			return true;
+		}
+
+		// See if contract end is within desired range
+		if (contractEnd >= desiredStart && contractEnd <= desiredEnd) {
+			return true;
+		}
+		
 		return false;
 	}
 
