@@ -22,7 +22,7 @@ body {
 .main-text {
 	color: white;
 	font-size: 4vw;
-	margin-top: 7%;
+	margin-top: 10%;
 }
 
 .search-button {
@@ -87,7 +87,8 @@ p.browse-text {
 	}
 
 	.main-text {
-		margin-top: 30%;
+		margin-top: 40%;
+		font-size: 6vw;
 	}
 }
 
@@ -95,6 +96,6 @@ p.browse-text {
 
 @media only screen and (min-width: 1200px) {
 	.main-text {
-		margin-top: 3%;
+		margin-top: 10%;
 	}
 }
