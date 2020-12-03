@@ -161,7 +161,6 @@ const Reservation = (props) => {
 	Loops over the contract dates and if there is a conflict with the selected dates, it
 	sets badDates to render the date picker. */
 	const checkForConflicts = (dates) => {
-		console.log(dates);
 		dates.forEach( (dateRange) => {
 			if (isDateConflict(dateRange.start_datetime, dateRange.expiration_datetime)) {
 				setBadDates(true);

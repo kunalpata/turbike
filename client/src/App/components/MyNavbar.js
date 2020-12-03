@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import './MyNavbar.css';
 
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
@@ -11,7 +12,6 @@ import NavDropdown from 'react-bootstrap/NavDropdown'
 import DismissibleAlert from './DismissibleAlert.js';
 
 const MyNavbar = (props) => {
-  console.log(props);
   //const {user} = props.userInfo;
   let location = props.location || {pathname:'/',state:{}};
   let curUser = props.userInfo.user || {isAuthenticated:false};
@@ -20,7 +20,6 @@ const MyNavbar = (props) => {
 		await fetch('/api/auth/logout')
 		.then((res) => {return res.json()})
 		.then((res) => {
-                      console.log(res);
                       setLoggingOut(res.isLogOut);
                       props.passUser({isAuthenticated:false,user:{}});
 
@@ -35,9 +34,35 @@ const MyNavbar = (props) => {
     }
   },[props.userInfo]);
 
+  let listener = null;
+  const [scrollState, setScrollState] = useState("top");
+
+  useEffect(() => {
+    listener = document.addEventListener("scroll", e => {
+      let scrolled = document.scrollingElement.scrollTop;
+
+      if (scrolled >= 1) {
+        if (scrollState !== "scrolling") {
+          setScrollState("scrolling");
+        } 
+      } else {
+        if (scrollState !== "top") {
+          setScrollState("top");
+        }
+      }
+    })
+    return () => {
+      document.removeEventListener("scroll", listener);
+    }
+  }, [scrollState]);
+
+  const handleDropDown = () => {
+    alert("hi");
+  }
+
 
 	return (
-	  <Navbar expand="md" fixed="top">
+	  <Navbar id="mobile-background" expand="md" fixed="top" style={{backgroundColor: scrollState === "top" ? null : '#F3F3F3'}} >
         <Navbar.Brand as={Link} to="./">
           <img alt="turbike logo" src={require("../images/logo_black_200.png")} height="100" width="100"/>
         </Navbar.Brand>
