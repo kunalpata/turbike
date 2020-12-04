@@ -79,7 +79,7 @@ let methods = {
 	getBikeImages: function(bike_id, mysql){
 		let promise = new Promise( (resolve, reject) => {
 			// get images for bike with passed in id
-		    let query = 'SELECT url, isPrimary' +
+		    let query = 'SELECT url, isPrimary, id' +
 		                ' FROM image' +
 		                ' WHERE bike_id = ?;'
 

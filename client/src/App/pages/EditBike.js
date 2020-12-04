@@ -30,6 +30,7 @@ function EditBike(props){
     const [alertInfo, setAlertInfo] = useState({});
     const [disableButton, setDisableButton] = useState(false);
     const [uploadFiles, setUploadFiles] = useState([]);
+    const [totalFileCt, setTotalFileCt] = useState(0);   //this is the number of files for this bike listing [old + new]
     const fileRef = useRef(null);
     const imgRef = useRef([]);
 
@@ -56,23 +57,33 @@ function EditBike(props){
         let oldBikeInfo = {...bikeInfo};
         switch(curInputField){
             case "filesUpload":
-                let userfiles = [];
+                let userfiles = [...uploadFiles];
+                let currentFileCt = checkImagesTotal(userfiles);
+                console.log(currentFileCt);
                 //limit files to the first four selected
-                let fileLimit = (e.target.files.length > 4? 4: e.target.files.length);
+                let fileLimit = (e.target.files.length > (4-currentFileCt)? (4-currentFileCt): e.target.files.length);
                 for(let i = 0; i < fileLimit; i++){
                     let curFile = e.target.files[i];
                     curFile.ranKey = Math.floor(Math.random() * 100000);  //this is to make sure react will rerender the screen for attachment
                     curFile.willUpload = true;
                     curFile.isPrimary = false;
+                    curFile.isOld=false;
+                    curFile.remove=false;
                     userfiles.push(curFile);
                 }
+                console.log(userfiles);
                 setUploadFiles(userfiles);
+                checkImagesTotal(userfiles);
                 break;
             case "closeImg":
                 e.target.parentElement.style.display = "none";
                 let curFiles = [...uploadFiles];
                 curFiles[e.target.id].willUpload = false;
+                curFiles[e.target.id].remove = true;
+                console.log(curFiles);
+                
                 setUploadFiles(curFiles);
+                checkImagesTotal(curFiles);
                 break;
             default:
                 oldBikeInfo[curInputField] = curInput;
@@ -91,19 +102,21 @@ function EditBike(props){
 
         let curFiles = [...uploadFiles];
         curFiles[picIdx].isPrimary = !curFiles[picIdx].isPrimary;
-        console.log(curFiles);
 
         imgRef.current.forEach((img,index) => {
             if(img !== null){
                 if(picIdx == index && curFiles[index].isPrimary){
                     img.style.color="orange"
                 }else{
+                    console.log(index);
                     img.style.color = "black";
                     curFiles[index].isPrimary = false;
                 }
+            }else{
+                curFiles[index].isPrimary = false;
             }
         })
-
+        //console.log(curFiles);
         setUploadFiles(curFiles);
     }
 
@@ -131,9 +144,9 @@ function EditBike(props){
             })
     }
 
-    const uploadAttachment = async (listingId) => {
+    const updateAttachment = async (listingId) => {
         //update status
-        setModalText("Saving images...");
+        setModalText("Updating images...");
         //create form data
         let formData = new FormData();
         //add listing id to formData
@@ -141,11 +154,14 @@ function EditBike(props){
         //add files to formData
         let fileCt = 0;
         let primaryFilename = "";
+        let fileToRemove = [];
         for(let i = 0; i < uploadFiles.length; i++){
             if(uploadFiles[i].willUpload){
                 primaryFilename = uploadFiles[i].isPrimary ? uploadFiles[i].name : "";
                 formData.append('aws_multiple_images', uploadFiles[i]);
                 fileCt++;
+            }else if(uploadFiles[i].remove && uploadFiles[i].isOld){
+                fileToRemove.push(uploadFiles[i]);
             }
         }
         //add upload file count to formData
@@ -153,7 +169,8 @@ function EditBike(props){
         //add primary image information to formData
         formData.append('primaryImg', primaryFilename);
 
-
+        //fetch backend to delete files
+        
         //fetch backend to upload
         await fetch('/api/aws/upload',{
             method: 'POST',
@@ -181,6 +198,7 @@ function EditBike(props){
         console.log("SENDING NEW BIKE INFO");
         console.log(bikeInfo);
         setDisableButton(true);
+        /*
         setModalShow(true);     //modal show
         await fetch(`/api/update/bike/${bike.id}`,{
             method: 'PUT',
@@ -189,7 +207,8 @@ function EditBike(props){
                 ...bikeInfo,
             })
         })
-            // .then((res) => {return res.json()})
+        .then((res) => {return res.json()})
+        .then((res) => {console.log(res)});
             // .then(async (res) => {
             //     console.log("HERE")
             //     console.log(res);
@@ -204,7 +223,7 @@ function EditBike(props){
             //         // await uploadAttachment(res.bikeId);
             //     }
             //
-            // })
+            // })*/
     }
 
     const closeAlert = () => {
@@ -235,8 +254,37 @@ function EditBike(props){
         window.location = '/userBikes';
     }
 
+    const checkImagesTotal = (imgArr) => {
+        let imageCt = 0;
+            for(let i = 0; i < imgArr.length; i++){
+                if(!imgArr[i].remove){
+                    imageCt++;
+                }
+            }
+            setTotalFileCt(imageCt);
+            return imageCt;
+    }
+
     useEffect(() => {
         fetchUser();
+        function saveOldPics(){
+            let oldImageArr = bike.images.map((image)=>{
+                let curFile = {
+                    url:image.url,
+                    id:image.id,
+                    ranKey:Math.floor(Math.random() * 100000),
+                    willUpload:false,
+                    isPrimary:image.isPrimary,
+                    isOld:true,
+                    remove:false
+                }
+                return curFile;
+            })
+            setUploadFiles(oldImageArr);
+            checkImagesTotal(oldImageArr);           
+            
+        }
+        saveOldPics();
     },[])
 
     return (
@@ -284,7 +332,7 @@ function EditBike(props){
                                         </Form.Group>
                                         <Form.Group as={Col} lg={6}>
                                             <Form.Label>Type</Form.Label>
-                                            <CustomDropDown label="" name="category" sendSelected={dropDownSelected}/>
+                                            <CustomDropDown label="" name="category" selectedValue={bike.name} sendSelected={dropDownSelected}/>
                                         </Form.Group>
                                     </Form.Row>
 
@@ -301,7 +349,7 @@ function EditBike(props){
                                         </Form.Group>
 
                                         <Form.Group as={Col}>
-                                            <CustomDropDown label="" name="state" sendSelected={dropDownSelected}/>
+                                            <CustomDropDown label="" name="state" selectedValue={bike.state} sendSelected={dropDownSelected}/>
 
                                         </Form.Group>
 
@@ -315,7 +363,7 @@ function EditBike(props){
 
                                         <Form.Group as={Col} lg={3}>
                                             <Form.Label>Features</Form.Label>
-                                            <FeaturesCheckboxes getUpdatedFeatures={updateFeatures} />
+                                            <FeaturesCheckboxes bikeId={bike.id} getUpdatedFeatures={updateFeatures} />
 
                                         </Form.Group>
                                         <Form.Group as={Col} lg={9}>
@@ -327,25 +375,32 @@ function EditBike(props){
 
                                     <Form.Row>
                                         <Form.Group>
+                                            <Form.Label>Images</Form.Label>
+                                            <div style={{display:"flex",flexFlow:"row wrap"}}>
+                                                {uploadFiles.length > 0 ?
+                                                    uploadFiles.map((file,index) => 
+ 
+                                                        (<>{!file.remove?
+                                                        <div key={"container"+file.ranKey} id={"img"+file.ranKey} style={{display:"flex", position: "relative"}}>
+                                                            <img className="img-wrap" key={"img"+file.ranKey} style={{objectFit:"contain",width:"160px",height:"90px",background:"gray",order:1,margin:"5px"}}
+                                                                 src={file.isOld?file.url:URL.createObjectURL(file)}/>
+                                                            <div key={file.ranKey} id={index} onClick={textChangeHandler} className="closeImg">x</div>
+                                                            <div key={file.ranKey+"_1"} id={index} onClick={setFavoritePic} ref={(el) => (imgRef.current[index] = el)} className="markFavorite" id={"fav-"+index}>{'★'}</div>
+
+                                                        </div>
+                                                        :null}</>)
+
+                                                    ):null
+                                                }
+                                            </div>
+                                            {totalFileCt < 4?
                                             <Form.File id="FormFile1" style={{display:"flex", position:"relative"}}>
 
                                                 <Form.File.Label style={{color:"blue",textDecoration:"underline blue", cursor:"pointer"}}>Add pictures of your bike (4 max)</Form.File.Label>
                                                 <Form.File.Input accept="image/*" style={{opacity:0, position:"absolute", zIndex:-1}} onChange={textChangeHandler} ref={fileRef} onClick={resetFileValue} name="filesUpload" multiple/>
 
                                             </Form.File>
-                                            <div style={{display:"flex",flexFlow:"row wrap"}}>
-                                                {uploadFiles.length > 0 ?
-                                                    uploadFiles.map((file,index) => (
-                                                        <div key={"container"+file.ranKey} id={"img"+file.ranKey} style={{display:"flex", position: "relative"}}>
-                                                            <img className="img-wrap" key={"img"+file.ranKey} style={{objectFit:"contain",width:"160px",height:"90px",background:"gray",order:1,margin:"5px"}}
-                                                                 src={URL.createObjectURL(file)}/>
-                                                            <div key={file.ranKey} id={index} onClick={textChangeHandler} className="closeImg">x</div>
-                                                            <div key={file.ranKey+"_1"} id={index} onClick={setFavoritePic} ref={(el) => (imgRef.current[index] = el)} className="markFavorite" id={"fav-"+index}>{'★'}</div>
-
-                                                        </div>
-                                                    )):null
-                                                }
-                                            </div>
+                                            :<div></div>}
 
                                         </Form.Group>
                                     </Form.Row>
