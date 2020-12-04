@@ -84,7 +84,7 @@ function EditBike(props){
                 
                 setUploadFiles(curFiles);
                 checkImagesTotal(curFiles);
-                break;
+                break;      
             default:
                 oldBikeInfo[curInputField] = curInput;
                 break;
@@ -170,27 +170,39 @@ function EditBike(props){
         formData.append('primaryImg', primaryFilename);
 
         //fetch backend to delete files
-        
-        //fetch backend to upload
-        await fetch('/api/aws/upload',{
+        await fetch('/api/aws/delete',{
             method: 'POST',
-            body: formData
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({removeList:fileToRemove})
         })
-            .then((res) => {
-                return res.json();
-            })
-            .then((res) => {
-                //console.log(res);
-                if(res.err === undefined){
-                    closeModal("Your bike has been added successfully!", true, '/', 5000, res);
-                }else{
-                    console.log(res.err);
-                    closeModal("Bike added but image upload failed!", true, '/', 5000, res);
-                }
-            })
-            .catch((err) => {
-                closeModal("Image upload err: " + err, true, '/', 5000, err);
-            });
+        .then((res) => {return res.json();})
+        .then(async (res) => {
+            if(res.err == undefined){
+                //fetch backend to upload
+                await fetch('/api/aws/upload',{
+                    method: 'POST',
+                    body: formData
+                })
+                    .then((res) => {
+                        return res.json();
+                    })
+                    .then((res) => {
+                        //console.log(res);
+                        if(res.err === undefined){
+                            closeModal("Your bike has been updated successfully!", true, '/', 5000, res);
+                        }else{
+                            console.log(res.err);
+                            closeModal("Bike updated but image upload failed!", true, '/', 5000, res);
+                        }
+                    })
+                    .catch((err) => {
+                        closeModal("Image upload err: " + err, true, '/', 5000, err);
+                    });
+            }else{
+                closeModal("Error deleting images: " + res.err, true, '/', 5000, res.err);
+            }
+        });
+        
     }
 
     const putBike = async () => {
@@ -198,7 +210,7 @@ function EditBike(props){
         console.log("SENDING NEW BIKE INFO");
         console.log(bikeInfo);
         setDisableButton(true);
-        /*
+        
         setModalShow(true);     //modal show
         await fetch(`/api/update/bike/${bike.id}`,{
             method: 'PUT',
@@ -208,22 +220,20 @@ function EditBike(props){
             })
         })
         .then((res) => {return res.json()})
-        .then((res) => {console.log(res)});
-            // .then(async (res) => {
-            //     console.log("HERE")
-            //     console.log(res);
-            //     if(res.isAuthenticated == false){
-            //         props.passUser({...res});
-            //         closeModal("You are not logged in! Please login!",true, "/login",2000,res);
-            //     }else if(res.hasOwnProperty('err')){
-            //         setAlertInfo({hasError:true, status:res});
-            //         closeModal("Posting Error! Please try again later!",false, "",5000,res);
-            //     }else{
-            //         //upload images
-            //         // await uploadAttachment(res.bikeId);
-            //     }
-            //
-            // })*/
+        .then(async (res) => {
+            console.log(res);
+            if(res.isAuthenticated == false){
+                props.passUser({...res});
+                closeModal("You are not logged in! Please login!",true, "/login",2000,res);
+            }else if(res.hasOwnProperty('err')){
+                setAlertInfo({hasError:true, status:res});
+                closeModal("Posting Error! Please try again later!",false, "",5000,res);
+            }else{
+                //update images
+                 await updateAttachment(bike.id);
+            }
+       
+        })          
     }
 
     const closeAlert = () => {
@@ -268,23 +278,26 @@ function EditBike(props){
     useEffect(() => {
         fetchUser();
         function saveOldPics(){
-            let oldImageArr = bike.images.map((image)=>{
-                let curFile = {
-                    url:image.url,
-                    id:image.id,
-                    ranKey:Math.floor(Math.random() * 100000),
-                    willUpload:false,
-                    isPrimary:image.isPrimary,
-                    isOld:true,
-                    remove:false
-                }
-                return curFile;
-            })
-            setUploadFiles(oldImageArr);
-            checkImagesTotal(oldImageArr);           
-            
+            if(bike.images){
+                let oldImageArr = bike.images.map((image)=>{
+                    let curFile = {
+                        url:image.url,
+                        id:image.id,
+                        ranKey:Math.floor(Math.random() * 100000),
+                        willUpload:false,
+                        isPrimary:image.isPrimary,
+                        isOld:true,
+                        remove:false
+                    }
+                    return curFile;
+                })
+                setUploadFiles(oldImageArr);
+                checkImagesTotal(oldImageArr);           
+            }
         }
         saveOldPics();
+        //save address info
+        setBikeInfo({...bikeInfo,address:bike.address,city:bike.city,state:bike.state,zip:bike.zip,category:bike.name});
     },[])
 
     return (
@@ -301,7 +314,9 @@ function EditBike(props){
                                         pathname: '/login',
                                         state: {
                                             showAlert: true,
-                                            warningText: "You must login to continue!"
+                                            warningText: "You must login to continue!",
+                                            from: props.location.pathname,
+                                            ...props.location.state
                                         }
                                     }}/>:null
                                 }
