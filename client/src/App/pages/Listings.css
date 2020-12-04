@@ -82,4 +82,8 @@
 	.left {
 		width: 90%;
 	}
+
+	.card {
+		width: 18rem;
+	}
 }

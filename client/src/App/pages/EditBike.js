@@ -311,7 +311,7 @@ function EditBike(props){
                 <Row className="AddNewBike">
                     <Col></Col>
                     <Col lg={8} style={{marginTop: "100px",maxWidth:"800px"}}>
-                        <Card>
+                        <Card id="mobile-settings">
                             <Card.Body>
                                 {!isAuthenticated?<Redirect
                                     to={{
