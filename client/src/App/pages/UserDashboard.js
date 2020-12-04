@@ -92,7 +92,7 @@ const UserDashboard = (props) => {
                         <Card.Body>
                             <Card.Img variant="top" style={{objectFit:"contain", maxHeight:"200px",background:"none",order:1,margin:"5px"}} src={require("../images/bikeList.jpg")} />
                             <Card.Title as={Link} to="/profile">Profile</Card.Title>
-                            <Card.Text>See your bikes listed</Card.Text>
+                            <Card.Text>See your user profile</Card.Text>
                         </Card.Body>
                     </Card>
                 </Col>
