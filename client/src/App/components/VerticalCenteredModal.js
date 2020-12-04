@@ -9,7 +9,7 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
 function VerticalCenteredModal(props){
-    console.log(props)
+    //console.log(props)
     return (
         <Modal 
             {...props}

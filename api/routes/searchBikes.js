@@ -198,7 +198,7 @@ router.get('/features', (req, res) => {
     const bike_id = req.query.id;
 
     // get features for bike with passed in id
-    let query = 'SELECT f.name,f.pic_filename' +
+    let query = 'SELECT f.id,f.name,f.pic_filename' +
                 ' FROM feature f inner join bike_feature bf on f.id = bf.feature_id' +
                 ' WHERE bf.bike_id = ?;'
 
@@ -247,7 +247,7 @@ router.post('/advanced', async (req, res) => {
     let havingConstrains = [];
 
     //base query without filters to select all bikes combining category and features, but group by bike.id
-    let baseQueryColumns = 'SELECT b.id, b.price, b.bike_details, b.brand, b.bikeName,b.penalty,' +
+    let baseQueryColumns = 'SELECT b.id, b.price, b.bike_details, b.brand, b.bikeName,b.penalty,b.user_id,' +
                             'u.user_name, u.email,h.id as host_id,' +
                             'l.address, l.city, l.state, l.zip, l.latitude, l.longitude,';
     

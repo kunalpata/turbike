@@ -83,11 +83,17 @@ router.post('/upload', (req, res) => {
   });
 
 
-router.post('/delete', (req,res)=>{
+router.post('/delete', async(req,res)=>{
     //req.body.deleteList has array of attachment information:
     //an object: {deleteCt:,files:[{attachId:,filename:}]}
-    let deleteCt = req.body.deleteList.deleteCt;
-    let fileList = req.body.deleteList.files;
+    console.log(req.body);
+
+    //Before delete files, update the isPrimary for existing files
+    await updatePrimaryImages(req.body.oldFileList);
+
+    //gather necessary information
+    let deleteCt = req.body.removeList.length;
+    let fileList = req.body.removeList;
     console.log(fileList[0]);
 
     if(deleteCt > 0){
@@ -100,8 +106,9 @@ router.post('/delete', (req,res)=>{
         let fileArr = [];
         let idArr = "(";
         for(let i = 0; i < fileList.length; i++){
-            fileArr.push({Key:fileList[i].filename});
-            idArr = idArr + fileList[i].attachId + ",";
+            let filenameParts = fileList[i].url.split("/");
+            fileArr.push({Key:filenameParts[filenameParts.length-1]});
+            idArr = idArr + fileList[i].id + ",";
         }
         idArr = idArr.substr(0,idArr.length-1) + ")";
         parmas.Delete = {Objects:fileArr,Quiet:false};
@@ -109,11 +116,12 @@ router.post('/delete', (req,res)=>{
         console.log(fileArr);
         console.log(idArr);
         //delete the attachment from the attachment table
-        pool.query('DELETE FROM Attachments WHERE attachmentID IN ' + idArr, function (err, result){
+        pool.query('DELETE FROM image WHERE id IN ' + idArr, function (err, result){
             let context = {};
             if(err){
                 context.err = err;
                 context.deleteStatus = "Cannot remove entries from database!";
+                res.send(context);
             }else{
                 //ask aws to delete files
                 s3.deleteObjects(parmas, function(err, data){                   
@@ -124,10 +132,9 @@ router.post('/delete', (req,res)=>{
                         context.data = data;
                         context.deleteStatus = "Attachments deleted successfully!";
                     }
+                    res.send(context);
                 })
             }
-            res.send(context);
-            console.log(context);
         })
         
     }else{
@@ -137,6 +144,28 @@ router.post('/delete', (req,res)=>{
 
 
 //functions
+function updatePrimaryImages(oldFileList){
+    let promise = new Promise(async(resolve, reject) => {
+        const pArray = oldFileList.map(updateOneImage);
+        let finalResults = await Promise.all(pArray);
+        resolve(finalResults);
+    })
+    return promise;
+}
+
+function updateOneImage(image){
+    let promise = new Promise((resolve, reject) => {
+        pool.query('UPDATE image set isPrimary=? where id=?',[image.isPrimary,image.id],(err,result) => {
+            if(err){
+                resolve({err:err});
+            }else{
+                resolve({status:"updated"+image.id});
+            }
+        })
+    })
+    return promise;
+}
+
 function imageFilter(req, file, cb) {
     // Accept images only
     if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {

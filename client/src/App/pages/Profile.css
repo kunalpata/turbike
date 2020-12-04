@@ -1,0 +1,46 @@
+.dashboard-body {
+    margin-top: 130px;
+}
+
+.dashboard-title {
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+.dashboard-bike-title {
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.profile-ratings {
+    margin-top: 15px;
+}
+
+.confirmed-body {
+    margin-top: 10px;
+}
+
+li {
+    list-style-type: none;
+}
+
+.wheel-img {
+    margin: 0 auto;
+    margin-top: 40px;
+    display: block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .wheel-img {
+        animation: wheel-img-spin infinite 20s linear;
+    }
+}
+
+@keyframes wheel-img-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

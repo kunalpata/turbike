@@ -14,7 +14,10 @@ const DropDown = (props) => {
     const fetchCategory = async ()=>{
         await fetch('/api/get/categories')
         .then((res) => {return res.json()})
-        .then((res) => {console.log(res); setOptions(res.data)})
+        .then((res) => {
+            //console.log(res); 
+            setOptions(res.data);
+        })
         .catch((err) => {console.log(err)});
     }
 
@@ -31,7 +34,7 @@ const DropDown = (props) => {
         await fetch('/api/get/cities')
         .then((res) => {return res.json()})
         .then((res) => {
-            console.log(res);
+            //console.log(res);
             setOptions(res.data.map((item, index) => {
                 return {id:index,name:item.city};
             }))
@@ -70,7 +73,7 @@ const DropDown = (props) => {
             <Form.Control size={props.size} as="select" name={props.name} defaultValue="Choose..." onChange={textChangeHandler}>
                 <option>Choose...</option>
                 {options.map((option) =>
-                     (<option key={option.id}>{option.name}</option>)   
+                     (<option key={option.id} selected={option.name==props.selectedValue}>{option.name}</option>)   
                 )}
             </Form.Control>
        

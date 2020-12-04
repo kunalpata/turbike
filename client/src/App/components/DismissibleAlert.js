@@ -6,15 +6,15 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 function DismissibleAlert(props){
-    console.log(props)
+    //console.log(props)
     const[show, setShow] = useState(true);
     const[redir, setRedir] = useState(false);
 
     const autoDismissRedirect = (second, closeAlert) => {
         if(closeAlert) setShow(!closeAlert);
-        console.log("outside");
+        //console.log("outside");
         setTimeout(()=>{
-            console.log("I was called")
+            //console.log("I was called")
             setShow(false);
             setRedir(props.shouldRedirect);
         },second);
