@@ -12,8 +12,8 @@ import Card from 'react-bootstrap/Card'
 
 const Rating = (props) => {
     //props contain rating details: {host:{id:,name:},customer:{id:,name:},bike:{id:,name:},contract_id:,user_id:}
-    console.log("rating");
-    console.log(props);
+    //console.log("rating");
+    //console.log(props);
     //set person to either host or customer
     const person = props.host != undefined ? props.host : props.customer;
 
@@ -50,7 +50,7 @@ const Rating = (props) => {
     const submitFeedback = async (e) => {
         let thisBtn = submitBtnRefs.current[e.target.id];
         thisBtn.disabled = true;
-        console.log(toggleUpdateModes)
+        //console.log(toggleUpdateModes)
         //build the review object for sending
         let requestURL = '/api/add/rating';
         let reviewObj = {
@@ -71,7 +71,7 @@ const Rating = (props) => {
         reviewObj.rating_details = comments[reviewType];
         reviewObj[reviewType+"_id"] = props[reviewType].id;
         
-        console.log(reviewObj);
+        //console.log(reviewObj);
 
         //post to backend
         thisBtn.textContent = "Submitting..."
@@ -84,7 +84,7 @@ const Rating = (props) => {
             return res.json();
         })
         .then((res) => {
-            console.log(res);
+            //console.log(res);
             if(res.isAuthenticated == false){
                 props.passUser({...res});
             }
@@ -96,7 +96,7 @@ const Rating = (props) => {
             }
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
             thisBtn.textContent = "Unknown error! Retry?";
             thisBtn.disabled = false;
         })
@@ -104,7 +104,7 @@ const Rating = (props) => {
     }
 
     const checkFeedbackExist = async () => {
-        console.log("check feedback exist");
+        //console.log("check feedback exist");
         await fetch('/api/get/rating',{
             method: 'POST',
             headers: { 'Content-Type' : 'application/json'},
@@ -112,7 +112,7 @@ const Rating = (props) => {
         })
         .then((res) => {return res.json()})
         .then((res) => {
-            console.log(res);
+            //console.log(res);
             let updateModes = [...toggleUpdateModes];
             let newRatingIds = {...ratingIds};
             let newComments = {...comments};
@@ -153,7 +153,7 @@ const Rating = (props) => {
         await fetch('/api/auth/user')
         .then(res => res.json())
         .then((res) => {
-            console.log(res);
+            //console.log(res);
             props.passUser({...res});
             setIsAuthenticated(res.isAuthenticated);
         })

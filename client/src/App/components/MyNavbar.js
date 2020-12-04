@@ -12,6 +12,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown'
 import DismissibleAlert from './DismissibleAlert.js';
 
 const MyNavbar = (props) => {
+  //console.log(props);
   //const {user} = props.userInfo;
   let location = props.location || {pathname:'/',state:{}};
   let curUser = props.userInfo.user || {isAuthenticated:false};
@@ -20,6 +21,7 @@ const MyNavbar = (props) => {
 		await fetch('/api/auth/logout')
 		.then((res) => {return res.json()})
 		.then((res) => {
+                      //console.log(res);
                       setLoggingOut(res.isLogOut);
                       props.passUser({isAuthenticated:false,user:{}});
 
