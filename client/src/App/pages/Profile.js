@@ -23,6 +23,7 @@ const Profile = (props) => {
     const [hostRating, setHostRating] = useState({});
     const [reviewerNames, setReviewerNames] = useState([]);
     const [bikes, setBikes] = useState({});
+    const [randBikes, setRandBikes] = useState({});
 
 
     const fetchUser = async() => {
@@ -120,6 +121,27 @@ const Profile = (props) => {
 
     };
 
+    const getRandomBikes = async() => {
+
+        // get the current user to send
+        const data = await fetch('/api/auth/user')
+            .catch((err)=>{console.log(err)});
+
+        const currentUser = await data.json()
+            .then((currentUser)=> {
+                if (currentUser.isAuthenticated) {
+                    // console.log("IN IF");
+                    // console.log(currentUser.user.last_name);
+                    fetch('/api/getBikes/getRandomBikes')
+                        .then(res => res.json())
+                        .then((res) => {
+                            console.log(res);
+                            setRandBikes(res);
+                        })
+                }
+            })
+    };
+
     function testPrint(test) {
         console.log(test)
     }
@@ -129,6 +151,7 @@ const Profile = (props) => {
         fetchRating();
         fetchRatedBy();
         lookForMatch();
+        getRandomBikes();
     },[])
 
 
@@ -146,7 +169,7 @@ const Profile = (props) => {
                 }}/>:null
             }
 
-            {/*{reviewerNames.hasOwnProperty("hasError") && !reviewerNames.hasError}*/}
+            {/*{randBikes.hasOwnProperty("hasError") && !randBikes.hasError ? console.log(randBikes):null}*/}
             <Row>
                 <Col sm={{span: 5, offset: 0}}>
                     <Card>
@@ -203,19 +226,54 @@ const Profile = (props) => {
             </Row>
 
             <Row>
+                <Col sm={6}>
 
-                {(bikes.hasOwnProperty("hasError") && !bikes.hasError) ?
-                    <div className="dashboard-bike-title">
-                        <h1>Bikes by {props.userInfo.user!==undefined?props.userInfo.user.first_name:null}</h1>
-                        <div style={{ height: '500px', overflowY: 'scroll' }}>
-                            <div>
-                                <BikeCards bikes={bikes.data}/>
+                    {(bikes.hasOwnProperty("hasError") && !bikes.hasError) ?
+                        <div className="dashboard-bike-title">
+                            <h2>Bikes by {props.userInfo.user!==undefined?props.userInfo.user.first_name:null}</h2>
+                            <div style={{ height: '500px', overflowY: 'scroll' }}>
+                                <div>
+                                    <BikeCards bikes={bikes.data}/>
+                                </div>
                             </div>
                         </div>
+                        :
+                        <div>
+                            {
+                                randBikes.hasOwnProperty("hasError") && !randBikes.hasError ?
+                                    <div className="dashboard-bike-title">
+                                        <h2>{props.userInfo.user!==undefined?props.userInfo.user.first_name:null} doesn't have any bikes yet, but you might be interested in these!</h2>
+                                        <div style={{ height: '500px', overflowY: 'scroll' }}>
+                                            <div>
+                                                <BikeCards bikes={randBikes.data}/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    :
+                                    null
+                            }
+                        </div>
+                    }
+
+                </Col>
+
+                <Col sm={6}>
+                    <div>
+                        {
+                            (bikes.hasOwnProperty("hasError") && !bikes.hasError) && randBikes.hasOwnProperty("hasError") && !randBikes.hasError ?
+                                <div className="dashboard-bike-title">
+                                    <h2>More bikes to check out!</h2>
+                                    <div style={{ height: '500px', overflowY: 'scroll' }}>
+                                        <div>
+                                            <BikeCards bikes={randBikes.data}/>
+                                        </div>
+                                    </div>
+                                </div>
+                                :
+                                null
+                        }
                     </div>
-                    :
-                    null
-                }
+                </Col>
 
 
             </Row>
