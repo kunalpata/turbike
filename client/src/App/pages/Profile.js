@@ -20,7 +20,7 @@ const Profile = (props) => {
 
     const [isAuthenticated, setIsAuthenticated] = useState(true);
     const [curUser, setCurUser] = useState({});
-    const [hostRating, setHostRating] = useState([]);
+    const [hostRating, setHostRating] = useState({});
     const [reviewerNames, setReviewerNames] = useState([]);
     const [bikes, setBikes] = useState({});
 
@@ -52,6 +52,9 @@ const Profile = (props) => {
                         .then(async (res) => {
                             if (!res.hasError) {
                                 // console.log(res);
+                                setHostRating(res);
+                            }
+                            else {
                                 setHostRating(res);
                             }
                         })
@@ -174,9 +177,9 @@ const Profile = (props) => {
                 </Col>
 
                 <Col sm={6}>
-                    {(hostRating.hasOwnProperty("hasError") && hostRating.hasError)
+                    {(hostRating.hasOwnProperty("hasError") && (hostRating.hasError === 1))
                         ?
-                        <h2>This user has no ratings yet!</h2>
+                        <h2 style={{marginLeft: "145px", marginTop: "15px", fontSize:"20px"}}>This user has no ratings yet!</h2>
                         :
                         null
                     }

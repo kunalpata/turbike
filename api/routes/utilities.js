@@ -131,16 +131,17 @@ router.post('/profileRating', async (req, res) => {
                         console.log(err);
                     }else {
                         // console.log(result[0].rating_details);
-                        let feedbacks = {rating_details:[], scores:[], err:"", hasError:0};
-                        for (let i = 0; i < result.length; i++) {
-                            feedbacks.rating_details[i] = result[i].rating_details;
-                            feedbacks.scores[i] = result[i].rating_score;
+                        if (result[0] === undefined) {
+                            res.send({err:err, hasError:1});
+                        }else {
+                            let feedbacks = {rating_details:[], scores:[], err:"", hasError:0};
+                            for (let i = 0; i < result.length; i++) {
+                                feedbacks.rating_details[i] = result[i].rating_details;
+                                feedbacks.scores[i] = result[i].rating_score;
+                            }
+
+                            res.send(feedbacks);
                         }
-
-                        // console.log("FEDDBACK");
-                        // console.log(feedbacks);
-
-                        res.send(feedbacks);
                     }
                 })
             }else {
