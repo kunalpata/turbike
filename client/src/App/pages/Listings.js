@@ -55,7 +55,7 @@ const Listings = (props) => {
 
     const bikes = await data.json()
     .then((bikes)=>{
-      console.log(bikes);
+      //console.log(bikes);
       // check if no bikes found
       if (bikes.data.length == 0){
         // send back home and dispaly message
@@ -84,7 +84,7 @@ const Listings = (props) => {
     })
     .then((res) => res.json())
     .then((bikes) => {
-      console.log(bikes);
+      //console.log(bikes);
       if(bikes.data.length == 0){
         push({
           pathname: './',
@@ -92,6 +92,7 @@ const Listings = (props) => {
         })
       }
       setBikes(bikes);
+      setRatingLabel(bikes);
       if(bikes.data.length != 0){
         setLocation(bikes.data[0]["city"]);
       }

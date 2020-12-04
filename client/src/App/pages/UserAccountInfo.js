@@ -15,7 +15,7 @@ import Card from "react-bootstrap/Card";
 
 
 function UserAccountInfo (props){
-    console.log(props)
+    //console.log(props)
     let {email,first_name,id,last_name,user_name} = props.userInfo.user != null? props.userInfo.user:{email:null,first_name:null,id:null,last_name:null,user_name:null};
 	const [newUsername, setNewUsername] = useState("");
 	const [newPassword, setNewPassword] = useState("");
@@ -56,9 +56,9 @@ function UserAccountInfo (props){
 			})
 			.then((res) => { return res.json()})
 			.then((res) => { 
-                console.log(res);
+                //console.log(res);
                 if(res.isAuthenticated != undefined && !res.isAuthenticated){
-                    console.log("not authenticated")
+                    //console.log("not authenticated")
                     setIsAuthenticated(false);
                 }else if(res.err != undefined){
                     saveBtnRef.current.textContent = "Error! Try again?";
@@ -99,7 +99,7 @@ function UserAccountInfo (props){
                                 newCheckStatus[targetKey].isNotExist = true;
                             }
 							
-							console.log(newCheckStatus);
+							//console.log(newCheckStatus);
 							setCheckStatus(newCheckStatus);
 					   })
 		.catch((err) => {console.log(err)});
@@ -187,7 +187,7 @@ function UserAccountInfo (props){
 
 	/* This function performs extensive input test using regular expression.*/
 	const inputTest = (regexPattern, targetInput) => {
-		console.log(targetInput)
+		//console.log(targetInput)
 		const regex = RegExp(regexPattern);
 		return regex.test(targetInput);
     }

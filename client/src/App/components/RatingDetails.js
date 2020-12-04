@@ -68,7 +68,7 @@ const RatingDetails = (props) => {
                                         ))}
                                     </td>
                                     <td colSpan="4" style={{overflow:"hidden"}}>
-                                        {review.rating_details}
+                                        {review.rating_details == ""?<em style={{color:"gray"}}>Reviewer did not leave a comment.</em>:review.rating_details}
                                     </td>
                                 </tr>
                             ))

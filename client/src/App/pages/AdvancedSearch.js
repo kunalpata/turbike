@@ -37,7 +37,7 @@ const AdvancedSearch = (props) => {
     const textChangeHandler = (e) => {
         let curName = e.target.name;
         let curValue = e.target.value;
-        console.log(e.target.name, e.target.id)
+        //console.log(e.target.name, e.target.id)
         let curSearchObj = {...advancedSearch};
         switch(curName){
             case "lowPrice":
@@ -66,7 +66,7 @@ const AdvancedSearch = (props) => {
             default:
                 curSearchObj[curName] = curValue;
         }
-        console.log(curSearchObj);
+        //console.log(curSearchObj);
         setAdvancedSearch(curSearchObj);
     }
 
@@ -83,12 +83,12 @@ const AdvancedSearch = (props) => {
             default:
                 curSearchObj[name]=value;
         }
-        console.log(curSearchObj);
+        //console.log(curSearchObj);
         setAdvancedSearch(curSearchObj);
     }
 
     const updateFeatures = (featureObj) => {
-        console.log(featureObj);
+        //console.log(featureObj);
         let curSearchObj = {...advancedSearch};
         curSearchObj.features = {...featureObj};
         setAdvancedSearch(curSearchObj);
