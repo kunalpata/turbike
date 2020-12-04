@@ -1,0 +1,32 @@
+.dashboard-body {
+    margin-top: 130px;
+}
+
+.dashboard-title {
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+.dashboard-bike-title {
+    margin-top: 40px;
+    margin-left: 15px;
+}
+
+.profile-ratings {
+    margin-top: 15px;
+}
+
+.confirmed-body {
+    margin-top: 10px;
+}
+
+li {
+    list-style-type: none;
+}
+
+@media only screen and (min-width:576px){
+    .dashboard-header{
+        margin-top:200px;
+        margin-bottom:100px;
+    }
+}

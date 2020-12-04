@@ -19,6 +19,7 @@ import EditBike from "./pages/EditBike";
 import MyNavbar from './components/MyNavbar';
 import AdvancedSearch from './pages/AdvancedSearch';
 import UserContract from './pages/UserContract';
+import Profile from "./pages/Profile";
 
 
 
@@ -60,14 +61,14 @@ class App extends Component {
           <MyNavbar userInfo={this.state.user} passUser={this.authenticateInfo}/>
           <Switch>
               <Route exact path='/' render={(props) => <Home {...props} userInfo={this.state.user}/>} />
-              
+
               <Route path='/bikeTable' component={BikeTable} />
-              <Route 
-                path='/register' 
+              <Route
+                path='/register'
                 render={(props) => !this.state.isAuthenticated?<Register {...props} passUser={this.authenticateInfo}/> : <Redirect to='/' />}
               />
-              <Route 
-                path='/login' 
+              <Route
+                path='/login'
                 render={(props) => !this.state.isAuthenticated?<Login {...props} passUser={this.authenticateInfo}/> : <Redirect to='/' />}
               />
 
@@ -79,15 +80,16 @@ class App extends Component {
               <Route exact path='/advancedSearch' component={AdvancedSearch}/>
 
               <Route exact path='/dashboard' render={(props) => <UserDashboard {...props} userInfo={this.state.user} passUser={this.authenticateInfo}/>}/>
+              <Route exact path='/profile' render={(props) => <Profile {...props} userInfo={this.state.user} passUser={this.authenticateInfo}/>}/>
               <Route exact path='/userInfo' render={(props) => <UserAccountInfo {...props} userInfo={this.state.user} passUser={this.authenticateInfo}/>}/>
               <Route exact path='/userContracts' render={(props) => <UserContract {...props} userInfo={this.state.user} passUser={this.authenticateInfo} />}/>
               <Route exact path='/userBikes' render={(props) => <UserBikeList {...props} userInfo={this.state.user} passUser={this.authenticateInfo} authUser={this.state.isAuthenticated} />} />
 
-              
+
               {/*{console.log(this.state.user)}*/}
           </Switch>
       </Router>
-      
+
     );
   }
 }
