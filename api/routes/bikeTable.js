@@ -57,7 +57,7 @@ router.post('/submittedBikes', (req, res) => {
                 }
             }
 
-            console.log(bikes);
+            // console.log(bikes);
 
             if (bikes.length === 0) {
                 res.send({data:[],err:"",hasError:1});
@@ -67,6 +67,48 @@ router.post('/submittedBikes', (req, res) => {
             }
         }
     });
+
+});
+
+router.get('/getRandomBikes', (req, res) => {
+
+    let query = 'SELECT b.id,b.bikeName,b.brand,b.price,b.bike_details,u.user_name,u.email,l.address,l.city,l.state,l.zip' +
+        ' FROM bike b inner join user u on b.user_id = u.id ' +
+        'inner join location l on b.location_id = l.id;';
+
+    pool.query(query, (err, result)=>{
+        if(err){
+            res.send({data:[],err:err,hasError:1});
+
+        }else{
+            // console.log(result[6]);
+
+            let ceiling = result.length - 1;
+            console.log(ceiling);
+
+            let storeNum = [];
+            // 10 Random bikes
+            for (let i = 0; i < ceiling; i++) {
+                let idx = Math.floor(Math.random() * ceiling);
+                storeNum[i] = idx;
+            }
+
+            let unique = storeNum.filter((item, i, ar) => ar.indexOf(item) === i);
+            console.log(unique);
+
+            let bikes = [];
+            for (let i = 0; i < unique.length; i++){
+                let item = {
+                    ...result[unique[i]],
+                }
+                bikes.push(item);
+            }
+
+            // console.log(bikes);
+
+            res.send(JSON.stringify({data:bikes,err:"",hasError:0}));
+        }
+    })
 
 });
 
