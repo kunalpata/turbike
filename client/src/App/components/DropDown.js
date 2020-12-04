@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form';
 
 
 const DropDown = (props) => {
-    //console.log(props);
+    console.log(props);
 
     //props has label, name, sendSelected (function)
 
@@ -70,7 +70,7 @@ const DropDown = (props) => {
             <Form.Control size={props.size} as="select" name={props.name} defaultValue="Choose..." onChange={textChangeHandler}>
                 <option>Choose...</option>
                 {options.map((option) =>
-                     (<option key={option.id}>{option.name}</option>)   
+                     (<option key={option.id} selected={option.name==props.selectedValue}>{option.name}</option>)   
                 )}
             </Form.Control>
        

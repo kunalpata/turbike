@@ -92,6 +92,7 @@ const Listings = (props) => {
         })
       }
       setBikes(bikes);
+      setRatingLabel(bikes);
       if(bikes.data.length != 0){
         setLocation(bikes.data[0]["city"]);
       }
