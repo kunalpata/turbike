@@ -107,7 +107,7 @@ const AdvancedSearch = (props) => {
                 <Row className="AdvancedSearch">
                     <Col></Col>
                     <Col lg={8} style={{marginTop:"100px", maxWidth:"800px"}}>
-                        <Card>
+                        <Card id="mobile-settings">
                             <Card.Body>
                                 <Card.Title style={{display:"flex", flexFlow:"column", justifyContent:"center"}}>
                                     <div style={{width:"100%",fontSize:"40px",textAlign:"center",marginBottom:"10px" }}><strong>Customize Your Search</strong></div>
