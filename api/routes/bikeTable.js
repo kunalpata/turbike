@@ -57,10 +57,14 @@ router.post('/submittedBikes', (req, res) => {
                 }
             }
 
-            // console.log(bikes);
+            console.log(bikes);
 
-            // send back an obj
-            res.send(JSON.stringify({data:bikes,err:"",hasError:0}));
+            if (bikes.length === 0) {
+                res.send({data:[],err:"",hasError:1});
+            }else {
+                // send back an obj
+                res.send(JSON.stringify({data:bikes,err:"",hasError:0}));
+            }
         }
     });
 
