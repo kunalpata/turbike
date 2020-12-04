@@ -101,7 +101,13 @@ const Reservation = (props) => {
 
 		resetNumDays(start, end);
 		setBadDates(false);
+
+		//checkForConflicts(dates);
 	}
+
+	useEffect(()=>{
+		checkForConflicts(contractDates);
+	}, [startDT, endDT, badDates]);
 
 	/* Called if user selects new dates. It calcs the number of days in the new range
 	and rests numDays */
@@ -170,14 +176,27 @@ const Reservation = (props) => {
 		contractEnd = new Date(contractEnd).getTime();
 		let desiredStart = new Date(startDT + 'T' + formInfo.startTime).getTime();
 		let desiredEnd = new Date(endDT + 'T' + formInfo.endTime).getTime();
-		
-		// See if they overlap
+
+		// See if desired start is within contracted range
 		if (desiredStart >= contractStart && desiredStart <= contractEnd) {
 			return true;
 		}
+
+		// See if desired end is within contracted range
 		if (desiredEnd >= contractStart && desiredEnd <= contractEnd) {
 			return true;
 		}
+
+		// See if contract start is within desired range
+		if (contractStart >= desiredStart && contractStart <= desiredEnd) {
+			return true;
+		}
+
+		// See if contract end is within desired range
+		if (contractEnd >= desiredStart && contractEnd <= desiredEnd) {
+			return true;
+		}
+
 		return false;
 	}
 
@@ -250,7 +269,7 @@ const Reservation = (props) => {
     		<Row>
     		{/* Contract area */}
     			<Col md={{span: 7, offset: 0}}>
-    				<Container>
+    				<Container style={{paddingBottom: 20}}>
     					<div className="float-right">Step {stepNum} of 3</div>
 	    				<div className="main-title">Book your ride with {bike.bikeName}</div>
 	    				<div>	
@@ -295,7 +314,7 @@ const Reservation = (props) => {
 
     		{/* Billing area */}
     			<Col md={{span: 5, offset: 0}}>
-    				<Container>
+    				<Container style={{paddingBottom: 20}}>
     				<div className="billing-area">
 						<div className="billing-heading">{bike.brand} - {bike.name} Bike</div>
 						<div>{formInfo.location}</div>
@@ -303,8 +322,8 @@ const Reservation = (props) => {
 							<td>
 								<img id="star-img" alt="star" src={require("../images/star_200.png")} height="15vh" width="15vh"/>
 							</td>
-							<span>{bike.rating ? bike.rating : " -"}</span>   
-							<span className="sub-title">{bike.ratingLabel}</span>
+							<span>{bike.rating ? ' ' + bike.rating.toFixed(1) : " -"}</span>   
+							<span className="sub-title"><em>{bike.ratingLabel}</em></span>
 						</div>	
 						<div className="billing-dates">
 							<LineItem label="Start Trip" amount={startDate.month +' '+ startDate.day} />
@@ -327,7 +346,6 @@ const Reservation = (props) => {
     	</Container>
     );
 };
-
 
 
 /*----------------------- Helper Components --------------------------------*/
@@ -365,8 +383,8 @@ const Calendar = (props) => {
 	return(
 		<div>
 		<Container className="calendar-page">
-			<h3>The dates you have selected are not available for this bike.</h3>
-			<p>Please review the calendar below to select a different range.</p>
+			<h3>Some or all of the dates you have selected are not available for this bike.</h3>
+			<p>Please review the calendar below to select a range without blacked out dates.</p>
 			<p><strong>Start:</strong> {displayStart ? displayStart.toDateString() : ""}</p>
 			<p><strong>End:</strong> {displayEnd ? displayEnd.toDateString() : ""}</p>
 			<DatePicker

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import './MyNavbar.css';
 
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
@@ -35,11 +36,34 @@ const MyNavbar = (props) => {
     }
   },[props.userInfo]);
 
+  // Add background color to navbar if not at top
+  // Source: https://stackoverflow.com/questions/59510990/
+  let listener = null;
+  const [scrollState, setScrollState] = useState("top");
+
+  useEffect(() => {
+    listener = document.addEventListener("scroll", e => {
+      let scrolled = document.scrollingElement.scrollTop;
+
+      if (scrolled >= 1) {
+        if (scrollState !== "scrolling") {
+          setScrollState("scrolling");
+        } 
+      } else {
+        if (scrollState !== "top") {
+          setScrollState("top");
+        }
+      }
+    })
+    return () => {
+      document.removeEventListener("scroll", listener);
+    }
+  }, [scrollState]);
 
 	return (
-	  <Navbar expand="md" fixed="top">
+	  <Navbar id="mobile-background" expand="md" fixed="top" style={{backgroundColor: scrollState === "top" ? null : '#F3F3F3'}} >
         <Navbar.Brand as={Link} to="./">
-          <img alt="turbike logo" src={require("../images/logo_black_200.png")} height="100" width="100"/>
+          <img id="logo" alt="turbike logo" src={require("../images/logo_black_200.png")} height="100" width="100"/>
         </Navbar.Brand>
         
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

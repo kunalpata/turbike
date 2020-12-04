@@ -32,16 +32,16 @@ const UserDashboard = (props) => {
 
     return (
         <Container className="dashboard-body">
-            {!isAuthenticated?<Redirect 
-                                        to={{
-                                            pathname: '/login',
-                                            state: {
-                                                showAlert: true,
-                                                warningText: "You must login to continue!",
-                                                from: props.location.pathname,
-                                                ...props.location.state
-                                            }
-                                        }}/>:null
+            {!isAuthenticated?<Redirect
+                to={{
+                    pathname: '/login',
+                    state: {
+                        showAlert: true,
+                        warningText: "You must login to continue!",
+                        from: props.location.pathname,
+                        ...props.location.state
+                    }
+                }}/>:null
             }
             <Row className="dashboard-header">
                 <h1 className="dashboard-title">Welcome back, {props.userInfo.user!==undefined?props.userInfo.user.first_name+" "+props.userInfo.user.last_name:null}</h1>
@@ -49,7 +49,7 @@ const UserDashboard = (props) => {
 
             <Row>
                 <Col sm={12}><h4 style={{color:"gray",marginTop:"20px"}}>Select one of the following to continue...</h4></Col>
-                <Col sm={4}>
+                <Col sm={6}>
                     <Card className="hoverShadow">
                         <Card.Body>
                             <Card.Img variant="top" style={{objectFit:"contain", maxHeight:"200px",background:"none",order:1,margin:"5px"}} src={require("../images/personalform.jpg")} />
@@ -59,7 +59,7 @@ const UserDashboard = (props) => {
                     </Card>
                 </Col>
 
-                <Col sm={4}>
+                <Col sm={6}>
                     <Card className="hoverShadow">
                         <Card.Body>
                             <Card.Img variant="top" style={{objectFit:"contain", maxHeight:"200px",background:"none",order:1,margin:"5px"}} src={require("../images/bikeList.jpg")} />
@@ -69,17 +69,30 @@ const UserDashboard = (props) => {
                     </Card>
                 </Col>
 
-                <Col sm={4}>
+            </Row>
+
+            <Row>
+                <Col sm={6}>
                     <Card className="hoverShadow">
                         <Card.Body>
                             <Card.Img variant="top" style={{objectFit:"contain",maxHeight:"200px",background:"none",order:1,margin:"5px"}} src={require("../images/contracts.jpg")} />
                             <Card.Title as={Link} to={{
-                                                        pathname: './userContracts',
-                                                        state: {
-                                                            userId: props.userInfo.user !== undefined ? props.userInfo.user.id : 0
-                                                        }
-                                                    }}>Leasing Contracts</Card.Title>
+                                pathname: './userContracts',
+                                state: {
+                                    userId: props.userInfo.user !== undefined ? props.userInfo.user.id : 0
+                                }
+                            }}>Leasing Contracts</Card.Title>
                             <Card.Text>See all your contract details</Card.Text>
+                        </Card.Body>
+                    </Card>
+                </Col>
+
+                <Col sm={6}>
+                    <Card className="hoverShadow">
+                        <Card.Body>
+                            <Card.Img variant="top" style={{objectFit:"contain", maxHeight:"200px",background:"none",order:1,margin:"5px"}} src={require("../images/bikeList.jpg")} />
+                            <Card.Title as={Link} to="/profile">Profile</Card.Title>
+                            <Card.Text>See your bikes listed</Card.Text>
                         </Card.Body>
                     </Card>
                 </Col>

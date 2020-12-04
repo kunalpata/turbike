@@ -38,7 +38,8 @@ const Home = (props) => {
         search: search,
         category: category,
         latitude: latitude,
-        longitude: longitude
+        longitude: longitude,
+        catSearch: ""
       }
     })
     }

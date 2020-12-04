@@ -115,6 +115,91 @@ router.get('/ratings', async (req, res) => {
                 })
 })
 
+router.post('/profileRating', async (req, res) => {
+    let userID = req.body.user.id;
+    let getHostID = 0;
+
+    pool.query('SELECT id FROM host WHERE user_id=?', [userID], (err, result) => {
+        if (err) {
+            console.log(err);
+        }else {
+            if (result[0] !== undefined) {
+                getHostID = result[0].id;
+                // console.log(getHostID);
+                pool.query('SELECT rating_details, rating_score FROM rating WHERE host_id=?', [getHostID], (err, result) => {
+                    if (err){
+                        console.log(err);
+                    }else {
+                        // console.log(result[0].rating_details);
+                        if (result[0] === undefined) {
+                            res.send({err:err, hasError:1});
+                        }else {
+                            let feedbacks = {rating_details:[], scores:[], err:"", hasError:0};
+                            for (let i = 0; i < result.length; i++) {
+                                feedbacks.rating_details[i] = result[i].rating_details;
+                                feedbacks.scores[i] = result[i].rating_score;
+                            }
+
+                            res.send(feedbacks);
+                        }
+                    }
+                })
+            }else {
+                let errorRes = {
+                    err:"There was an error processing your request",
+                    hasError: 1
+                };
+                res.send(errorRes);
+            }
+
+        }
+    });
+
+});
+
+router.post('/ratedUser', async (req, res) => {
+    let userID = req.body.user.id;
+    let getHostID = 0;
+    let ratedByID = 0;
+
+    pool.query('SELECT id FROM host WHERE user_id=?', [userID], (err, result) => {
+        if (err) {
+            console.log(err);
+        }else {
+            if (result[0] !== undefined) {
+                getHostID = result[0].id;
+                let query = 'SELECT r.id,r.host_id,t1.user_name as host_username,u.first_name as reviewer_firstname,u.last_name as reviewer_lastname, r.rating_score, r.rating_details, r.rated_by_id, r.contract_id FROM rating r ' +
+                    'inner join user u on u.id = r.rated_by_id ' +
+                    'inner join (SELECT h.id as host_id, u2.* from host h inner join user u2 on h.user_id = u2.id) as t1 on t1.host_id = ? ' +
+                    'where r.host_id is not null and r.host_id=?';
+                pool.query(query, [getHostID, getHostID], (err, result) => {
+                    if (err) {
+                        console.log(err);
+                    }else {
+                        // console.log(result);
+                        let feedbacks = {reviewers:[], err:"", hasError:0};
+                        for (let i = 0; i < result.length; i++) {
+                            // console.log(result[i].reviewer_firstname + " " + result[i].reviewer_lastname);
+                            feedbacks.reviewers[i] = result[i].reviewer_firstname + " " + result[i].reviewer_lastname;
+                        }
+
+                        // console.log(feedbacks);
+
+                        res.send(feedbacks);
+                    }
+                })
+            }else {
+                let errorRes = {
+                    err:"There was an error processing your request",
+                    hasError: 1
+                };
+                res.send(errorRes);
+            }
+        }
+    })
+})
+
+
 //helper functions
 
 function getHostCustomerIds(userId){

@@ -33,7 +33,7 @@ function DismissibleAlert(props){
                 <Row>
                     <Col md={2}></Col>
                     <Col md={8}>
-                        <Alert variant={props.type} style={{position:"relative",zIndex:10}} onClose={()=>autoDismissRedirect(500,true)} dismissible>
+                        <Alert variant={props.type} style={{position:"fixed",zIndex:10, marginTop: 20, width: 60+'%'}} onClose={()=>autoDismissRedirect(500,true)} dismissible>
                             <Alert.Heading>{props.title}</Alert.Heading>
                             <p>
                                 {props.message}
