@@ -49,7 +49,7 @@ const UserDashboard = (props) => {
 
             <Row>
                 <Col sm={12}><h4 style={{color:"gray",marginTop:"20px"}}>Select one of the following to continue...</h4></Col>
-                <Col sm={6}>
+                <Col md={12} lg={6}>
                     <Card className="hoverShadow">
                         <Card.Body>
                             <Card.Img variant="top" style={{objectFit:"contain", maxHeight:"200px",background:"none",order:1,margin:"5px"}} src={require("../images/personalform.jpg")} />
@@ -59,7 +59,7 @@ const UserDashboard = (props) => {
                     </Card>
                 </Col>
 
-                <Col sm={6}>
+                <Col md={12} lg={6}>
                     <Card className="hoverShadow">
                         <Card.Body>
                             <Card.Img variant="top" style={{objectFit:"contain", maxHeight:"200px",background:"none",order:1,margin:"5px"}} src={require("../images/bikeList.jpg")} />
@@ -72,7 +72,7 @@ const UserDashboard = (props) => {
             </Row>
 
             <Row>
-                <Col sm={6}>
+                <Col md={12} lg={6}>
                     <Card className="hoverShadow">
                         <Card.Body>
                             <Card.Img variant="top" style={{objectFit:"contain",maxHeight:"200px",background:"none",order:1,margin:"5px"}} src={require("../images/contracts.jpg")} />
@@ -87,7 +87,7 @@ const UserDashboard = (props) => {
                     </Card>
                 </Col>
 
-                <Col sm={6}>
+                <Col md={12} lg={6}>
                     <Card className="hoverShadow">
                         <Card.Body>
                             <Card.Img variant="top" style={{objectFit:"contain", maxHeight:"200px",background:"none",order:1,margin:"5px"}} src={require("../images/bikeList.jpg")} />
