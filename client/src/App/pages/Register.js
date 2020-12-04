@@ -16,7 +16,7 @@ import DismissibleAlert from '../components/DismissibleAlert.js';
 
 
 function Register (props){
-	console.log(props)
+	//console.log(props)
 	const [regUsername, setRegisterUsername] = useState("");
 	const [regPassword, setRegisterPassword] = useState("");
 	const [regEmail, setRegisterEmail] = useState("");
@@ -42,13 +42,13 @@ function Register (props){
 				if(res.err == undefined){
 					setRegisterStatus(res);
 				}else{
-					console.log(res.err);
+					//console.log(res.err);
 					regBtnRef.current.textContent = "Server Error! Retry?";
 					regBtnRef.current.disabled = false;
 				}
 			})
 			.catch((err) => {
-				console.log(err);
+				//console.log(err);
 				regBtnRef.current.textContent = "Server Error! Retry?";
 				regBtnRef.current.disabled = false;
 			})
@@ -79,7 +79,7 @@ function Register (props){
 							let newCheckStatus = {...checkStatus};
 							newCheckStatus[targetKey].isNotExist = !res.isExist;
 							
-							console.log(newCheckStatus);
+							//console.log(newCheckStatus);
 							setCheckStatus(newCheckStatus);
 					   })
 		.catch((err) => {console.log(err)});
@@ -89,7 +89,7 @@ function Register (props){
 	const textChangeHandler = async (e) => {
 		let inputName = e.target.name;
 		let inputValue = e.target.value;
-		console.log(e.target, inputName)
+		//console.log(e.target, inputName)
 		switch(inputName){
 			case "username":
 				setRegisterUsername(e.target.value);
@@ -167,7 +167,7 @@ function Register (props){
 
 	/* This function performs extensive input test using regular expression.*/
 	const inputTest = (regexPattern, targetInput) => {
-		console.log(targetInput)
+		//console.log(targetInput)
 		const regex = RegExp(regexPattern);
 		return regex.test(targetInput);
 	}

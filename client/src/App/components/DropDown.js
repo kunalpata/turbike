@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form';
 
 
 const DropDown = (props) => {
-    console.log(props);
+    //console.log(props);
 
     //props has label, name, sendSelected (function)
 
@@ -14,7 +14,10 @@ const DropDown = (props) => {
     const fetchCategory = async ()=>{
         await fetch('/api/get/categories')
         .then((res) => {return res.json()})
-        .then((res) => {console.log(res); setOptions(res.data)})
+        .then((res) => {
+            //console.log(res); 
+            setOptions(res.data);
+        })
         .catch((err) => {console.log(err)});
     }
 
@@ -31,7 +34,7 @@ const DropDown = (props) => {
         await fetch('/api/get/cities')
         .then((res) => {return res.json()})
         .then((res) => {
-            console.log(res);
+            //console.log(res);
             setOptions(res.data.map((item, index) => {
                 return {id:index,name:item.city};
             }))

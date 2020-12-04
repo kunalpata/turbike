@@ -15,8 +15,8 @@ import InformSpan from '../components/InformSpan.js';
 import DismissibleAlert from '../components/DismissibleAlert.js';
 
 function Login (props){
-	console.log("login route")
-	console.log(props);
+	//console.log("login route")
+	//console.log(props);
 	const [loginUsername, setLoginUsername] = useState("");
 	const [loginPassword, setLoginPassword] = useState("");
 	const [loginStatus, setLoginStatus] = useState({});
@@ -37,7 +37,7 @@ function Login (props){
 		})
 		.then((res) => { return res.json()})
 		.then((res) => { 
-							console.log(res);
+							//console.log(res);
 							if(res.login != undefined){
 								setLoginStatus(res);
 								props.passUser({isAuthenticated:res.login,user:res.user});
@@ -51,7 +51,7 @@ function Login (props){
 							}
 						})
 		.catch((err) => { 
-			console.log(err);
+			//console.log(err);
 			btnRef.current.textContent = "Server Error! Retry?";
 			btnRef.current.disabled = false;
 		})

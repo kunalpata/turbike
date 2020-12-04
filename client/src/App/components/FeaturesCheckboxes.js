@@ -44,7 +44,7 @@ const FeaturesCheckboxes = (props) => {
     }
 
     const updateSelectedFeatures = (e) => {
-        console.log(e.target.getAttribute("data-index"));
+        //console.log(e.target.getAttribute("data-index"));
         let oldFeatures = {...selectedFeatures};
         oldFeatures[e.target.id] = e.target.checked?true:false;
         props.getUpdatedFeatures(oldFeatures);

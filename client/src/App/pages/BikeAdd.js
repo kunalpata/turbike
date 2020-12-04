@@ -19,7 +19,7 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 import './BikeAdd.css'
 
 function BikeAdd(props){
-    console.log(props)
+    //console.log(props)
 
     const [bikeInfo, setBikeInfo] = useState({});
     const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -84,7 +84,7 @@ function BikeAdd(props){
 
         let curFiles = [...uploadFiles];
         curFiles[picIdx].isPrimary = !curFiles[picIdx].isPrimary;
-        console.log(curFiles);
+        //console.log(curFiles);
 
         imgRef.current.forEach((img,index) => {
             if(img !== null){
@@ -110,7 +110,7 @@ function BikeAdd(props){
         let oldBikeInfo = {...bikeInfo};
         let newFeatures = {...selectedFeatures};
         oldBikeInfo.bikeFeatures = newFeatures;
-        console.log(oldBikeInfo);
+        //console.log(oldBikeInfo);
         setBikeInfo(oldBikeInfo);
     }
 
@@ -118,7 +118,7 @@ function BikeAdd(props){
         await fetch('/api/auth/user')
         .then(res => res.json())
         .then((res) => {
-            console.log(res);
+            //console.log(res);
             props.passUser({...res});
             setIsAuthenticated(res.isAuthenticated);
         })
@@ -160,7 +160,7 @@ function BikeAdd(props){
             if(res.err === undefined){
                 closeModal("Your bike has been added successfully!", true, '/', 5000, res);
             }else{
-                console.log(res.err);
+                //console.log(res.err);
                 closeModal("Bike added but image upload failed!", true, '/', 5000, res);
             }
         })

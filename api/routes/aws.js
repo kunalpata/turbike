@@ -83,10 +83,13 @@ router.post('/upload', (req, res) => {
   });
 
 
-router.post('/delete', (req,res)=>{
+router.post('/delete', async(req,res)=>{
     //req.body.deleteList has array of attachment information:
     //an object: {deleteCt:,files:[{attachId:,filename:}]}
     console.log(req.body);
+
+    //Before delete files, update the isPrimary for existing files
+    await updatePrimaryImages(req.body.oldFileList);
 
     //gather necessary information
     let deleteCt = req.body.removeList.length;
@@ -141,6 +144,28 @@ router.post('/delete', (req,res)=>{
 
 
 //functions
+function updatePrimaryImages(oldFileList){
+    let promise = new Promise(async(resolve, reject) => {
+        const pArray = oldFileList.map(updateOneImage);
+        let finalResults = await Promise.all(pArray);
+        resolve(finalResults);
+    })
+    return promise;
+}
+
+function updateOneImage(image){
+    let promise = new Promise((resolve, reject) => {
+        pool.query('UPDATE image set isPrimary=? where id=?',[image.isPrimary,image.id],(err,result) => {
+            if(err){
+                resolve({err:err});
+            }else{
+                resolve({status:"updated"+image.id});
+            }
+        })
+    })
+    return promise;
+}
+
 function imageFilter(req, file, cb) {
     // Accept images only
     if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {

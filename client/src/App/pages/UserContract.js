@@ -15,7 +15,7 @@ import Modal from 'react-bootstrap/Modal';
 import { Redirect,Link } from 'react-router-dom';
 
 const UserContract = (props) => {
-    console.log(props);
+    //console.log(props);
     let userId = props.userInfo.user != undefined? props.userInfo.user.id : 0;
     const [contracts, setContracts] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -69,7 +69,7 @@ const UserContract = (props) => {
             curContractObj.bike = {id:thisContract.bike_id, name: thisContract.bikeName};
         }
         
-        console.log(curContractObj);
+        //console.log(curContractObj);
         setCurContract(curContractObj);
         setShowModal(true);
     }

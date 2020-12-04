@@ -20,10 +20,10 @@ import './BikeAdd.css'
 
 function EditBike(props){
     // TODO: Remove
-    console.log("BIKE TO EDIT");
-    console.log(props);
+    //console.log("BIKE TO EDIT");
+    //console.log(props);
     const bike = props.location.state.bike;
-    console.log(bike);
+    //console.log(bike);
 
     const [bikeInfo, setBikeInfo] = useState({});
     const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -59,7 +59,7 @@ function EditBike(props){
             case "filesUpload":
                 let userfiles = [...uploadFiles];
                 let currentFileCt = checkImagesTotal(userfiles);
-                console.log(currentFileCt);
+                //console.log(currentFileCt);
                 //limit files to the first four selected
                 let fileLimit = (e.target.files.length > (4-currentFileCt)? (4-currentFileCt): e.target.files.length);
                 for(let i = 0; i < fileLimit; i++){
@@ -71,7 +71,7 @@ function EditBike(props){
                     curFile.remove=false;
                     userfiles.push(curFile);
                 }
-                console.log(userfiles);
+                //console.log(userfiles);
                 setUploadFiles(userfiles);
                 checkImagesTotal(userfiles);
                 break;
@@ -80,7 +80,7 @@ function EditBike(props){
                 let curFiles = [...uploadFiles];
                 curFiles[e.target.id].willUpload = false;
                 curFiles[e.target.id].remove = true;
-                console.log(curFiles);
+                //console.log(curFiles);
                 
                 setUploadFiles(curFiles);
                 checkImagesTotal(curFiles);
@@ -108,7 +108,7 @@ function EditBike(props){
                 if(picIdx == index && curFiles[index].isPrimary){
                     img.style.color="orange"
                 }else{
-                    console.log(index);
+                    //console.log(index);
                     img.style.color = "black";
                     curFiles[index].isPrimary = false;
                 }
@@ -130,7 +130,7 @@ function EditBike(props){
         let oldBikeInfo = {...bikeInfo};
         let newFeatures = {...selectedFeatures};
         oldBikeInfo.bikeFeatures = newFeatures;
-        console.log(oldBikeInfo);
+        //console.log(oldBikeInfo);
         setBikeInfo(oldBikeInfo);
     }
 
@@ -138,7 +138,7 @@ function EditBike(props){
         await fetch('/api/auth/user')
             .then(res => res.json())
             .then((res) => {
-                console.log(res);
+                //console.log(res);
                 props.passUser({...res});
                 setIsAuthenticated(res.isAuthenticated);
             })
@@ -155,6 +155,7 @@ function EditBike(props){
         let fileCt = 0;
         let primaryFilename = "";
         let fileToRemove = [];
+        let oldFileList = [];
         for(let i = 0; i < uploadFiles.length; i++){
             if(uploadFiles[i].willUpload){
                 primaryFilename = uploadFiles[i].isPrimary ? uploadFiles[i].name : "";
@@ -162,6 +163,9 @@ function EditBike(props){
                 fileCt++;
             }else if(uploadFiles[i].remove && uploadFiles[i].isOld){
                 fileToRemove.push(uploadFiles[i]);
+            }
+            if(uploadFiles[i].isOld){
+                oldFileList.push(uploadFiles[i]);
             }
         }
         //add upload file count to formData
@@ -173,7 +177,7 @@ function EditBike(props){
         await fetch('/api/aws/delete',{
             method: 'POST',
             headers: { 'Content-Type': 'application/json'},
-            body: JSON.stringify({removeList:fileToRemove})
+            body: JSON.stringify({removeList:fileToRemove, oldFileList:oldFileList})
         })
         .then((res) => {return res.json();})
         .then(async (res) => {
@@ -191,7 +195,7 @@ function EditBike(props){
                         if(res.err === undefined){
                             closeModal("Your bike has been updated successfully!", true, '/', 5000, res);
                         }else{
-                            console.log(res.err);
+                            //console.log(res.err);
                             closeModal("Bike updated but image upload failed!", true, '/', 5000, res);
                         }
                     })
@@ -207,8 +211,8 @@ function EditBike(props){
 
     const putBike = async () => {
         // TODO: Remove
-        console.log("SENDING NEW BIKE INFO");
-        console.log(bikeInfo);
+        //console.log("SENDING NEW BIKE INFO");
+        //console.log(bikeInfo);
         setDisableButton(true);
         
         setModalShow(true);     //modal show
@@ -221,7 +225,7 @@ function EditBike(props){
         })
         .then((res) => {return res.json()})
         .then(async (res) => {
-            console.log(res);
+            //console.log(res);
             if(res.isAuthenticated == false){
                 props.passUser({...res});
                 closeModal("You are not logged in! Please login!",true, "/login",2000,res);
@@ -400,7 +404,7 @@ function EditBike(props){
                                                             <img className="img-wrap" key={"img"+file.ranKey} style={{objectFit:"contain",width:"160px",height:"90px",background:"gray",order:1,margin:"5px"}}
                                                                  src={file.isOld?file.url:URL.createObjectURL(file)}/>
                                                             <div key={file.ranKey} id={index} onClick={textChangeHandler} className="closeImg">x</div>
-                                                            <div key={file.ranKey+"_1"} id={index} onClick={setFavoritePic} ref={(el) => (imgRef.current[index] = el)} className="markFavorite" id={"fav-"+index}>{'★'}</div>
+                                                            <div key={file.ranKey+"_1"} id={index} onClick={setFavoritePic} style={{color:(file.isPrimary)?"orange":"black"}} ref={(el) => (imgRef.current[index] = el)} className="markFavorite" id={"fav-"+index}>{'★'}</div>
 
                                                         </div>
                                                         :null}</>)
