@@ -183,7 +183,7 @@ router.post('/ratedUser', async (req, res) => {
                             feedbacks.reviewers[i] = result[i].reviewer_firstname + " " + result[i].reviewer_lastname;
                         }
 
-                        console.log(feedbacks);
+                        // console.log(feedbacks);
 
                         res.send(feedbacks);
                     }

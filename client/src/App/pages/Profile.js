@@ -108,6 +108,9 @@ const Profile = (props) => {
                             if (!res.hasError) {
                                 // console.log(res)
                                 setBikes(res);
+                            }else {
+                                console.log(res);
+                                setBikes(res);
                             }
                         })
                 }
@@ -181,7 +184,7 @@ const Profile = (props) => {
                         ?
                         <div>
                             <h2 style={{marginTop:"25px", textAlign:"center", fontSize:"20px",display:"block"}}>This user has no ratings yet!</h2>
-                            <img alt="cancel bike" src={require("../images/wheels.png")} height="100vh" width="100vh" className="wheel-img"/>
+                            <img alt="cancel bike" src={require("../images/wheels.png")} height="120vh" width="120vh" className="wheel-img"/>
                         </div>
                         :
                         null
@@ -201,15 +204,19 @@ const Profile = (props) => {
 
             <Row>
 
-                <div className="dashboard-bike-title">
-                    <h1>Bikes by {props.userInfo.user!==undefined?props.userInfo.user.first_name:null}</h1>
-                    <div style={{ height: '500px', overflowY: 'scroll' }}>
-                        <div>{(bikes.hasOwnProperty("hasError") && !bikes.hasError) ?
-                            (<BikeCards bikes={bikes.data}/>):"No bikes from this user yet!"
-                        }
+                {(bikes.hasOwnProperty("hasError") && !bikes.hasError) ?
+                    <div className="dashboard-bike-title">
+                        <h1>Bikes by {props.userInfo.user!==undefined?props.userInfo.user.first_name:null}</h1>
+                        <div style={{ height: '500px', overflowY: 'scroll' }}>
+                            <div>
+                                <BikeCards bikes={bikes.data}/>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    :
+                    null
+                }
+
 
             </Row>
 
