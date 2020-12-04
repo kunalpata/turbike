@@ -132,7 +132,11 @@ const Profile = (props) => {
                 if (currentUser.isAuthenticated) {
                     // console.log("IN IF");
                     // console.log(currentUser.user.last_name);
-                    fetch('/api/getBikes/getRandomBikes')
+                    fetch('/api/getBikes/getRandomBikes', {
+                        method: 'POST',
+                        headers: { 'Content-Type' : 'application/json'},
+                        body: JSON.stringify({...currentUser})
+                    })
                         .then(res => res.json())
                         .then((res) => {
                             console.log(res);

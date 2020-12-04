@@ -70,7 +70,8 @@ router.post('/submittedBikes', (req, res) => {
 
 });
 
-router.get('/getRandomBikes', (req, res) => {
+router.post('/getRandomBikes', (req, res) => {
+    let userID = req.body.user.user_name;
 
     let query = 'SELECT b.id,b.bikeName,b.brand,b.price,b.bike_details,u.user_name,u.email,l.address,l.city,l.state,l.zip' +
         ' FROM bike b inner join user u on b.user_id = u.id ' +
@@ -94,14 +95,17 @@ router.get('/getRandomBikes', (req, res) => {
             }
 
             let unique = storeNum.filter((item, i, ar) => ar.indexOf(item) === i);
-            console.log(unique);
 
             let bikes = [];
             for (let i = 0; i < unique.length; i++){
-                let item = {
-                    ...result[unique[i]],
+                if (userID !== result[unique[i]].user_name) {
+                    console.log("UNQ ID: " + result[unique[i]].id);
+
+                    let item = {
+                        ...result[unique[i]],
+                    }
+                    bikes.push(item);
                 }
-                bikes.push(item);
             }
 
             // console.log(bikes);
