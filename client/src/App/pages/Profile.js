@@ -179,7 +179,10 @@ const Profile = (props) => {
                 <Col sm={6}>
                     {(hostRating.hasOwnProperty("hasError") && (hostRating.hasError === 1))
                         ?
-                        <h2 style={{marginLeft: "145px", marginTop: "15px", fontSize:"20px"}}>This user has no ratings yet!</h2>
+                        <div>
+                            <h2 style={{marginTop:"25px", textAlign:"center", fontSize:"20px",display:"block"}}>This user has no ratings yet!</h2>
+                            <img alt="cancel bike" src={require("../images/wheels.png")} height="100vh" width="100vh" className="wheel-img"/>
+                        </div>
                         :
                         null
                     }

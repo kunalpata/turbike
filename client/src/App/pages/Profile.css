@@ -24,9 +24,22 @@ li {
     list-style-type: none;
 }
 
-@media only screen and (min-width:576px){
-    .dashboard-header{
-        margin-top:200px;
-        margin-bottom:100px;
+.wheel-img {
+    margin: 0 auto;
+    display: block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .wheel-img {
+        animation: wheel-img-spin infinite 20s linear;
+    }
+}
+
+@keyframes wheel-img-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }
